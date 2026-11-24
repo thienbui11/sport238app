@@ -58,7 +58,7 @@ function importProducts(list) {
   return { products: list.length, variants: nv };
 }
 
-const CATEGORIES = ["Cờ, Cúp, Huy Chương", "Giày bóng đá", "Quần áo CLB/Đội tuyển", "Quần áo không logo", "Quần áo trẻ em", "Phụ kiện thể thao", "Vớ/tất ống đồng", "Cầu lông"];
+const CATEGORIES = ["Cờ, Cúp, Huy Chương", "Giày bóng đá", "Giày thể thao", "Quần áo CLB/Đội tuyển", "Quần áo không logo", "Quần áo trẻ em", "Phụ kiện thể thao", "Vớ/tất ống đồng", "Cầu lông"];
 
 // Thông tin chỉ có trên web (Sapo không quản lý): không bị ghi đè khi nhập lại từ Sapo
 function setProductInfo(id, o) {

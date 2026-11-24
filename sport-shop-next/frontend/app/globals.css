@@ -228,3 +228,6 @@ background-image:radial-gradient(900px 520px at 88% 18%,rgba(214,40,60,.6),trans
 @media(max-width:400px){.strip #sfb{display:none}}
 @media(max-width:600px){.cat{justify-content:flex-start}}
 @media(max-width:600px){.cat i{line-height:1}}
+
+/* 9 danh mục: máy tính 3 cột */
+@media(min-width:861px){.cats{grid-template-columns:repeat(3,1fr)}}

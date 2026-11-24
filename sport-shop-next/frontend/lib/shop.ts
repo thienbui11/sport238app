@@ -1,10 +1,11 @@
 import raw from "../data/products.json";
 import rawImages from "../data/images.json";
 
-/** 8 danh mục của web. Thứ tự và màu ô danh mục sửa ở đây. Tên phải khớp với tên danh mục trong dữ liệu. */
+/** 9 danh mục của web. Thứ tự và màu ô danh mục sửa ở đây. Tên phải khớp với tên danh mục trong dữ liệu. */
 export const CATEGORIES = [
   { name: "Cờ, Cúp, Huy Chương", emoji: "🏆", c1: "#7c5a10", c2: "#c99a2e" },
   { name: "Giày bóng đá", emoji: "👟", c1: "#a3122a", c2: "#d63a50" },
+  { name: "Giày thể thao", emoji: "🏃", c1: "#44403c", c2: "#857467" },
   { name: "Quần áo CLB/Đội tuyển", emoji: "⚽", c1: "#2b2b30", c2: "#55555e" },
   { name: "Quần áo không logo", emoji: "👕", c1: "#8a0f23", c2: "#bd2a3f" },
   { name: "Quần áo trẻ em", emoji: "🧒", c1: "#c2410c", c2: "#f0883e" },
@@ -14,7 +15,7 @@ export const CATEGORIES = [
 ] as const;
 export const EMO: Record<string, string> = Object.fromEntries(CATEGORIES.map((c) => [c.name, c.emoji]));
 /** Danh mục mà khách cần chọn size */
-export const NEED_SIZE = ["Giày bóng đá", "Quần áo CLB/Đội tuyển", "Quần áo không logo", "Quần áo trẻ em"];
+export const NEED_SIZE = ["Giày bóng đá", "Giày thể thao", "Quần áo CLB/Đội tuyển", "Quần áo không logo", "Quần áo trẻ em"];
 
 /** Nhận cả tên ("Sport238") lẫn đường dẫn đầy đủ ("https://www.facebook.com/Sport238"), luôn trả về tên trang */
 export function fbUser(v: string): string {
@@ -123,7 +124,7 @@ export const imgsFor = (p: Product, color: string) => p.images[`${p.id}:${color}
 export const priceText = (p: Product) => (p.min !== p.max ? "Từ " : "") + money(p.min);
 export const stockStatus = (p: Product): [string, string] => (p.stock <= 0 ? ["Hết hàng", "out"] : p.stock <= 5 ? ["Sắp hết", "warn"] : ["Còn hàng", ""]);
 export function sizeGroup(cat: string, s: string): string {
-  if (cat === "Giày bóng đá" || !s) return "";
+  if (cat === "Giày bóng đá" || cat === "Giày thể thao" || !s) return "";
   if (/^\d+$/.test(s)) return "Trẻ em";
   return /^(XS|S|M|L|XL|XXL|XXXL|XXXXL|[2-6]XL)$/i.test(s) ? "Người lớn" : "";
 }

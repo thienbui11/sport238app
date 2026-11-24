@@ -28,7 +28,7 @@ with sync_playwright() as p:
     if lines>3:fail(f"tiêu đề hero {lines} dòng")
     tiles=pg.eval_on_selector_all(".cat","els=>els.map(e=>[e.querySelector('b').textContent,e.querySelector('span').textContent])")
     print("Ô danh mục:",tiles)
-    if len(tiles)!=8:fail("không đủ 8 ô danh mục")
+    if len(tiles)!=9:fail("không đủ 9 ô danh mục")
     # 2. không có chữ ship/giao hàng
     html=pg.content()
     bad=re.findall(r"(?i)\bship\b|giao hàng|phí giao|gửi hàng|vận chuyển",pg.inner_text("body"))
@@ -40,7 +40,7 @@ with sync_playwright() as p:
         print(" ",sel,"→",got)
         if got!=want:fail(f"{sel}: {got} != {want}")
     # 4. lọc theo danh mục
-    for c in ["Cờ, Cúp, Huy Chương","Giày bóng đá","Quần áo CLB/Đội tuyển","Quần áo không logo","Quần áo trẻ em","Phụ kiện thể thao","Vớ/tất ống đồng","Cầu lông"]:
+    for c in ["Cờ, Cúp, Huy Chương","Giày bóng đá","Giày thể thao","Quần áo CLB/Đội tuyển","Quần áo không logo","Quần áo trẻ em","Phụ kiện thể thao","Vớ/tất ống đồng","Cầu lông"]:
         pg.click(f".cat[data-go='{c}']");pg.wait_for_timeout(120);show_all(pg)
         got=pg.eval_on_selector_all("#grid .card","e=>e.length");want=sum(1 for x in prods if x["category"]==c)
         if got!=want:fail(f"danh mục {c}: hiện {got}, đúng {want}")
@@ -70,7 +70,7 @@ with sync_playwright() as p:
             else:
                 pg.click(f"[data-sz='{sizes[0]}']")
                 if not pg.is_disabled("#ad"):fail(f"{x['title']}: hết hàng nhưng nút thêm vẫn bật")
-        elif x["category"] in("Giày bóng đá","Quần áo CLB/Đội tuyển","Quần áo không logo","Quần áo trẻ em"):
+        elif x["category"] in("Giày bóng đá","Giày thể thao","Quần áo CLB/Đội tuyển","Quần áo không logo","Quần áo trẻ em"):
             if not pg.query_selector(".note"):fail(f"{x['title']}: thiếu ghi chú chưa có size")
         checked+=1
     print("Đã kiểm tra",checked,"trang chi tiết")

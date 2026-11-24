@@ -43,10 +43,10 @@ var uniq=function(a){return a.filter(function(x,i){return a.indexOf(x)===i})};
 function fold(s){return String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/đ/g,"d")}
 var ADULT=["S","M","L","XL","XXL","XXXL","XXXXL"];
 function sk(s){var n=+s;return isNaN(n)?100+ADULT.indexOf(s):n}
-function grp(c,s){return c==="Giày bóng đá"||!s?"":(/^\d+$/.test(s)?"Trẻ em":/^(XS|S|M|L|XL|XXL|XXXL|XXXXL|[2-6]XL)$/i.test(s)?"Người lớn":"")}
-var CATS=[["Cờ, Cúp, Huy Chương","🏆","#7c5a10","#c99a2e"],["Giày bóng đá","👟","#a3122a","#d63a50"],["Quần áo CLB/Đội tuyển","⚽","#2b2b30","#55555e"],["Quần áo không logo","👕","#8a0f23","#bd2a3f"],["Quần áo trẻ em","🧒","#c2410c","#f0883e"],["Phụ kiện thể thao","🎒","#3a3a40","#1d1d20"],["Vớ/tất ống đồng","🧦","#b3202f","#e0566a"],["Cầu lông","🏸","#0f6a45","#2faa6f"]];
+function grp(c,s){return c==="Giày bóng đá"||c==="Giày thể thao"||!s?"":(/^\d+$/.test(s)?"Trẻ em":/^(XS|S|M|L|XL|XXL|XXXL|XXXXL|[2-6]XL)$/i.test(s)?"Người lớn":"")}
+var CATS=[["Cờ, Cúp, Huy Chương","🏆","#7c5a10","#c99a2e"],["Giày bóng đá","👟","#a3122a","#d63a50"],["Giày thể thao","🏃","#44403c","#857467"],["Quần áo CLB/Đội tuyển","⚽","#2b2b30","#55555e"],["Quần áo không logo","👕","#8a0f23","#bd2a3f"],["Quần áo trẻ em","🧒","#c2410c","#f0883e"],["Phụ kiện thể thao","🎒","#3a3a40","#1d1d20"],["Vớ/tất ống đồng","🧦","#b3202f","#e0566a"],["Cầu lông","🏸","#0f6a45","#2faa6f"]];
 var EMO={};CATS.forEach(function(c){EMO[c[0]]=c[1]});
-var NEEDSIZE=["Giày bóng đá","Quần áo CLB/Đội tuyển","Quần áo không logo","Quần áo trẻ em"];
+var NEEDSIZE=["Giày bóng đá","Giày thể thao","Quần áo CLB/Đội tuyển","Quần áo không logo","Quần áo trẻ em"];
 function hue(t){var h=0;String(t).split("").forEach(function(c){h=(h*31+c.charCodeAt(0))%360});return h}
 
 /* ---------- dữ liệu ---------- */

@@ -21,3 +21,12 @@ Mỗi bài in "KẾT QUẢ: 0 lỗi" khi đạt.
 
 Mỗi bài tự bật máy chủ quản trị Node riêng với dữ liệu mẫu trong thư mục tạm (không đụng dữ liệu thật).
 - `tests/py/test_nap_anh.py`: nạp ảnh hàng loạt theo mã SKU (đúng SP/màu, WebP ≤ 1400 px, xoay đúng chiều, giữ ảnh cũ, không nạp trùng, báo cáo).
+- `tests/py/test_sapo_parser.py`: bộ đọc Excel Python (9 danh mục, tách size, file thật 14/11: 175 SP, 953 phiên bản, 632 SP trong file, bỏ 68 phiên bản giá 0, không có giá nhập; dữ liệu mẫu = kết quả bộ đọc).
+- `tests/py/test_server.py`: máy chủ Node (đường dẫn lỗi mã hóa → 400; chọn file Excel ở trang quản trị → báo rõ cách nhập).
+
+## Đối chiếu bộ đọc Python với Java (khi sửa quy tắc phân loại)
+Cần JDK 21 và Maven (bản zip di động trong thư mục tạm là đủ; đặt JAVA_HOME và PATH trong phiên lệnh):
+
+    py sport-shop-app/tools/sapo_xlsx_to_json.py <file.xlsx> py.json
+    cd sport-shop-next/backend
+    SAPO_XLSX=<file.xlsx> PY_JSON=<đường dẫn py.json> mvn -B test     # ParityWithPythonTest in "Python = Java: 175 sản phẩm…"

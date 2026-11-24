@@ -57,4 +57,14 @@ class SapoParserTest {
         assertEquals(SapoParser.CLUB, SapoParser.classify("Quần áo HD 2026- MU - Mẫu Mới", "Quần áo bóng đá", List.of("S", "M")));
         assertNull(SapoParser.classify("Bình sữa", "Đồ cho bé", List.of()));
     }
+
+    @Test
+    void separatesSportShoesFromFootballShoes() {   // danh mục "Giày thể thao" (chủ shop duyệt 24/11/2026)
+        assertEquals(SapoParser.SPORT_SHOE, SapoParser.classify("Giày thể thao CP-005", "Giày bóng đá", List.of("39")));
+        assertEquals(SapoParser.SPORT_SHOE, SapoParser.classify("Giày vải - Đế bằng", "Giày bóng đá", List.of()));
+        assertEquals(SapoParser.SPORT_SHOE, SapoParser.classify("Giày  vải", "", List.of()));
+        assertEquals(SapoParser.SHOE, SapoParser.classify("Giày bóng đá Hunter", "Giày bóng đá", List.of("40")));
+        assertEquals(SapoParser.SHOE, SapoParser.classify("Giày Mira Lux 2.6 TF", "Giày bóng đá", List.of()));
+        assertEquals(9, SapoParser.CATEGORIES.size());
+    }
 }

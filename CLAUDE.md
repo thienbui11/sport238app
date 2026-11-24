@@ -11,7 +11,7 @@
 - Dữ liệu hàng lấy từ **Sapo POS** bằng file Excel (nút "Xuất file"), **không có API**. Tồn kho là ảnh chụp theo đợt (ghi "Tồn kho cập nhật ngày …", shop xác nhận khi chốt đơn).
 - **Tuyệt đối không đưa giá nhập, giá vốn, giá buôn lên web.** Bộ đọc Excel chỉ đọc giá bán lẻ và tồn kho. Đừng thêm các cột khác vào API công khai.
 - Shop còn bán đồ mẹ và bé trong cùng Sapo: các sản phẩm đó phải bị loại (xem `classify`).
-- 8 danh mục: Cờ, Cúp, Huy Chương · Giày bóng đá · Quần áo CLB/Đội tuyển · Quần áo không logo · Quần áo trẻ em · Phụ kiện thể thao · Vớ/tất ống đồng · Cầu lông. Người dùng có thể chọn tay danh mục trong trang quản trị (không bị ghi đè khi nhập lại Excel).
+- 9 danh mục: Cờ, Cúp, Huy Chương · Giày bóng đá · **Giày thể thao** (giày vải, thể dục, thể thao không phải giày đá bóng; chủ shop duyệt 24/11/2026) · Quần áo CLB/Đội tuyển · Quần áo không logo · Quần áo trẻ em · Phụ kiện thể thao · Vớ/tất ống đồng · Cầu lông. Người dùng có thể chọn tay danh mục trong trang quản trị (không bị ghi đè khi nhập lại Excel).
 - Giao diện: tiếng Việt, màu theo logo (đỏ đô + xám đen), dùng được trên điện thoại, có chế độ tối, bàn phím và trình đọc màn hình dùng được.
 
 ## Cấu trúc
