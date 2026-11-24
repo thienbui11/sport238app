@@ -20,11 +20,11 @@ Xếp theo lợi ích ÷ công sức (cao trước). Độ khó: S < nửa ngày
 ## Đợt 2 – giao diện và chức năng cho khách (trên bản chính sau khi hợp nhất)
 | Mã | Việc | Lợi ích | Độ khó | Xong khi… | TT |
 |---|---|---|---|---|---|
-| D1 | Hệ thống thiết kế (màu, chữ, khoảng cách, bo góc, nút, trạng thái) + làm lại trang chủ, thẻ, trang chi tiết, giỏ | Đẹp, chuyên nghiệp, dễ mua | L | Ảnh `screenshots/after/`, trang so sánh; Lighthouse mobile ≥ 90 cả 4 mục | ⬜ |
+| D1 | Hệ thống thiết kế (màu, chữ, khoảng cách, bo góc, nút, trạng thái) + làm lại trang chủ, thẻ, trang chi tiết, giỏ | Đẹp, chuyên nghiệp, dễ mua | L | Ảnh `screenshots/after/`, trang so sánh; Lighthouse mobile ≥ 90 cả 4 mục | ✅ 24/11: trang chủ 99/100/100/100, trang SP 95–100/100/100/100 |
 | E1 | Bảng size + link cạnh chỗ chọn size + gợi ý size theo chiều cao, cân nặng | Chọn đúng size | M | Kiểm thử mở đúng hãng, gợi ý đúng theo bảng | ⬜ |
 | E2 | Lọc theo size còn hàng, khoảng giá, nhãn hiệu (nút "Lọc" trên điện thoại) | "Size 42 còn không" tự xem | M | Kiểm thử từng bộ lọc | ⬜ |
 | E3 | Hỏi shop về SP: sao chép sẵn tên, mã, size | Khách không gõ lại | S | Kiểm thử clipboard | ⬜ |
-| E4 | Khối "Ghé shop": bản đồ (tải khi kéo tới), chỉ đường, giờ mở cửa, nút gọi (ẩn tới khi có số, Q2) | Khách tìm tới shop | S | Kiểm thử | ⬜ |
+| E4 | Khối "Ghé shop": bản đồ (tải khi kéo tới), chỉ đường, giờ mở cửa ~~nút gọi~~ (Q2: không làm) | Khách tìm tới shop | S | Kiểm thử | 🔄 trang SP đã có địa chỉ, giờ, chỉ đường Google Maps; còn bản đồ nhúng |
 | E5 | Đặt đồng phục đội: chọn mẫu, số lượng theo size, tên + số in áo, tin nhắn Zalo | Đơn lớn | M–L | Kiểm thử tạo tin nhắn đúng | ⬜ |
 | E6 | Sản phẩm liên quan, đã xem gần đây | Xem thêm hàng | S | Kiểm thử | ⬜ |
 | E7 | Yêu thích (lưu trên máy), chia sẻ SP | Quay lại mua | S | Kiểm thử | ⬜ |
@@ -55,3 +55,8 @@ Các mục đã xong trước đó: xem PROGRESS.md.
 - Lighthouse điện thoại – trang chủ: hiệu năng **66** (tổng thời gian chặn 4,2 s: chuyển động chạy liên tục, tính kiểu/bố cục nặng, dữ liệu 175 SP nhúng vào trang), truy cập 100, thực hành tốt 100, SEO 100. Trang SP: 98 / 95 / 100 / 100.
 - axe: 17 lỗi serious (3 loại) → **đã sửa, 0 lỗi** trên cả hai bản: nhãn link ảnh SP và nút size không khớp chữ hiển thị; tương phản chữ đỏ nhỏ trên nền tối (.eyebrow, giá), chữ "hết" của size hết hàng bị mờ.
 - **Phân tích hiệu năng trang chủ (24/11/2026):** điểm 66–72 trên máy này. Bản ghi hiệu năng (CPU chậm 4 lần) cho thấy một lần tính bố cục 0,9–1,1 s; **trang 404 trống cũng tốn ~0,5 s** → phần lớn là chi phí cố định của Chrome khởi tạo phông chữ Windows lúc đo, không phải do trang. Đã thử và loại trừ: tắt chuyển động, bỏ làm mờ nền, ẩn emoji, phông hệ thống, chỉ gửi 20 SP (75 điểm). Bỏ hẳn emoji giảm ~120 ms; `content-visibility` giảm ~170 ms (trong sai số đo). Việc nên làm trong D1: thay emoji bằng biểu tượng SVG, ảnh WebP tải lười; **đo lại bằng PageSpeed Insights sau khi đưa lên mạng** hoặc Lighthouse trong CI Linux (số liệu thật hơn máy Windows này). Trang sản phẩm: 98 điểm.
+
+## Số liệu sau khi làm lại giao diện (D1–D4, 24/11/2026 tối, web tĩnh Next + python http.server, không nén)
+- Lighthouse điện thoại – trang chủ: **99 / 100 / 100 / 100** (FCP 1,7 s, LCP 1,7 s, TBT 60 ms, CLS 0); trang SP: **95–100 / 100 / 100 / 100**. Ba lần đo trang chủ đều 99.
+- Nguyên nhân chính trước đây không phải chỉ do phông chữ: trang chủ nhúng toàn bộ 175 SP dạng đầy đủ (235 KB HTML) + emoji + chuyển động liên tục. Nay: danh sách SP gửi dạng gọn (138 KB HTML), SVG thay emoji, không chuyển động lặp, giỏ trống không tải `products.json`.
+- axe: 0 lỗi (kể cả mức nhẹ). CLS = 0. Không tràn ngang ở 320/390/768/1366 px.
