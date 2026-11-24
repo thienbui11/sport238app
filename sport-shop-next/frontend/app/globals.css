@@ -231,3 +231,10 @@ background-image:radial-gradient(900px 520px at 88% 18%,rgba(214,40,60,.6),trans
 
 /* 9 danh mục: máy tính 3 cột */
 @media(min-width:861px){.cats{grid-template-columns:repeat(3,1fr)}}
+
+/* ===== Truy cập (axe, 24/11/2026): chữ đỏ nhỏ đủ tương phản ở chế độ tối; size hết hàng không làm mờ chữ ===== */
+:root{--accent-ink:var(--accent2)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--accent-ink:#ff8a9a}}
+:root[data-theme="dark"]{--accent-ink:#ff8a9a}
+.eyebrow,.price,.bigp,.sum b{color:var(--accent-ink)}
+.opt small{opacity:1}.opt.out{opacity:1;color:var(--muted)}.opt.out small{color:inherit}

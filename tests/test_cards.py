@@ -83,7 +83,7 @@ def run(label,vp,touch=False):
         lk.click();pg.wait_for_selector(".det h1");ok(oos["title"][:10] in pg.inner_text(".det h1"),"bấm Xem chi tiết → mở trang sản phẩm")
         # --- F. trang chi tiết hiện số lượng ---
         pg.goto(B+"/#p-"+p["id"]);pg.wait_for_selector(".det h1")
-        small=pg.eval_on_selector_all(".opt[data-sz] small","e=>e.map(x=>x.textContent)");ok(len(small)>0 and all(re.fullmatch(r"còn \d+|hết",s) for s in small),f"mỗi size hiện số lượng còn: {small[:5]}")
+        small=pg.eval_on_selector_all(".opt[data-sz] small","e=>e.map(x=>x.textContent.trim())");ok(len(small)>0 and all(re.fullmatch(r"còn \d+|hết",s) for s in small),f"mỗi size hiện số lượng còn: {small[:5]}")
         pg.click(f".opt[data-col='{c2}']");pg.click(f".opt[data-sz='{v['option1']}']");pg.wait_for_timeout(100)
         ok(f"Còn {v['inventory_quantity']} sản phẩm" in pg.inner_text(".st"),"trạng thái ghi đúng số lượng: "+pg.inner_text(".st"))
         ok(not pg.evaluate("document.documentElement.scrollWidth>document.documentElement.clientWidth"),"không tràn ngang")

@@ -42,7 +42,8 @@ function Card({ p }: { p: Product }) {
   };
   return (
     <article className={"card" + (need ? " need" : "")} data-pid={p.id}>
-      <Link className="thumb" href={href} aria-label={`Xem ${p.name}`} onClick={remember}>
+      {/* ảnh là link trùng với tên SP: ẩn với trình đọc màn hình, không dừng phím Tab */}
+      <Link className="thumb" href={href} aria-hidden="true" tabIndex={-1} onClick={remember}>
         <span className={`badge l ${cls}`}>{st}</span>
         {p.feat && <span className="badge r">Nổi bật</span>}
         {first ? <img src={first} alt={p.name} loading="lazy" /> : <Placeholder p={p} />}
@@ -108,7 +109,7 @@ export default function Storefront({ products, updated }: { products: Product[];
   // Bấm "Xem thêm": đưa con trỏ bàn phím tới sản phẩm đầu tiên vừa hiện
   useEffect(() => {
     if (focusFrom.current < 0) return;
-    (grid.current?.children[focusFrom.current]?.querySelector("a.thumb") as HTMLElement | null)?.focus();
+    (grid.current?.children[focusFrom.current]?.querySelector("a.nm") as HTMLElement | null)?.focus();
     focusFrom.current = -1;
   }, [S.limit]);
 

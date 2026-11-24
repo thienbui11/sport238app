@@ -53,4 +53,4 @@ Các mục đã xong trước đó: xem PROGRESS.md.
 
 ## Số liệu nền (24/11/2026, bản Next.js xuất tĩnh, trước khi làm lại giao diện)
 - Lighthouse điện thoại – trang chủ: hiệu năng **66** (tổng thời gian chặn 4,2 s: chuyển động chạy liên tục, tính kiểu/bố cục nặng, dữ liệu 175 SP nhúng vào trang), truy cập 100, thực hành tốt 100, SEO 100. Trang SP: 98 / 95 / 100 / 100.
-- axe: 17 lỗi serious (3 loại): nhãn link ảnh SP và nút size không khớp chữ hiển thị; tương phản chữ đỏ nhỏ trên nền tối (.eyebrow, giá), chữ "hết" của size hết hàng bị mờ.
+- axe: 17 lỗi serious (3 loại) → **đã sửa, 0 lỗi** trên cả hai bản: nhãn link ảnh SP và nút size không khớp chữ hiển thị; tương phản chữ đỏ nhỏ trên nền tối (.eyebrow, giá), chữ "hết" của size hết hàng bị mờ.

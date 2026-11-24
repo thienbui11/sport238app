@@ -64,7 +64,7 @@ export default function ProductDetail({ p, updated }: { p: Product; updated: str
               <div className="lab">{optLabel(p) === "Màu" ? "Màu sắc" : "Phân loại"}: <small>{color}</small></div>
               <div className="opts">{p.colors.map((c) => {
                 const n = colorStock(p, c);
-                return <button key={c} className="opt" data-col={c} aria-pressed={c === color} aria-label={`${c}, ${n ? `còn ${n}` : "hết hàng"}`} onClick={() => pickColor(c)}>{c}<small>{n ? `còn ${n}` : "hết"}</small></button>;
+                return <button key={c} className="opt" data-col={c} aria-pressed={c === color} onClick={() => pickColor(c)}>{c}<small> {n ? `còn ${n}` : "hết"}</small></button>;
               })}</div>
             </>
           ) : p.colors[0] !== "Mặc định" && <div className="lab">{optLabel(p) === "Màu" ? "Màu sắc" : "Phân loại"}: <small>{p.colors[0]}</small></div>}
@@ -75,8 +75,8 @@ export default function ProductDetail({ p, updated }: { p: Product; updated: str
                 {list.map((s) => {
                   const x = p.variants.find((y) => y.color === color && y.size === s), o = !x || x.stock <= 0;
                   return (
-                    <button key={s} className={"opt" + (o ? " out" : "")} data-sz={s} aria-pressed={size === s} aria-label={`Size ${s}, ${o ? "hết hàng" : `còn ${x!.stock}`}`} title={o ? "Tạm hết hàng" : undefined} onClick={() => pickSize(s)}>
-                      {s}<small>{o ? "hết" : `còn ${x!.stock}`}</small>
+                    <button key={s} className={"opt" + (o ? " out" : "")} data-sz={s} aria-pressed={size === s} title={o ? "Tạm hết hàng" : undefined} onClick={() => pickSize(s)}>
+                      {s}<small> {o ? "hết" : `còn ${x!.stock}`}</small>
                     </button>
                   );
                 })}
