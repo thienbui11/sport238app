@@ -63,3 +63,4 @@ tương phản chữ các thành phần mới ở sáng/tối; khung ảnh vuôn
     py tests/test_trang_sp.py http://localhost:3602    # hỏi shop (sao chép câu hỏi), chia sẻ, bản đồ tải khi bấm, SP cùng loại, đã xem gần đây
     py tests/test_loc.py http://localhost:3602         # lọc size còn hàng, giá, hãng (so với products.json), Yêu thích (lưu trên máy)
     py tests/test_dat_doi.py http://localhost:3602     # đặt đồng phục đội: tiền áo, giá in (dưới 5 bộ báo giá, từ 5 bộ 15k, từ 10 bộ 10k), danh sách in, tin nhắn Zalo
+    py tests/test_pwa_anh.py http://localhost:3602     # cài như ứng dụng (manifest, biểu tượng, favicon) + gửi đơn kèm ảnh (chia sẻ của điện thoại)

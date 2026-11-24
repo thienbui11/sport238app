@@ -54,7 +54,7 @@ function Card({ p }: { p: Product }) {
     if (hasSize && !size) { setNeed(true); toast("Bạn chưa chọn size. Bấm vào một size ở trên thẻ."); return; }
     if (!chosen || chosen.stock <= 0) { toast(multi ? `${lbl} này tạm hết hàng, hãy chọn ${lbl.toLowerCase()} khác` : "Sản phẩm tạm hết hàng"); return; }
     const label = [chosen.size && `Size ${chosen.size}`, multi && `${lbl} ${chosen.color}`].filter(Boolean).join(" · ");
-    add({ id: chosen.id, name: p.name, label, sku: chosen.sku, price: chosen.price, stock: chosen.stock });
+    add({ id: chosen.id, name: p.name, label, sku: chosen.sku, price: chosen.price, stock: chosen.stock, img: imgsFor(p, chosen.color)[0] });
   };
   return (
     <article className={"card" + (need ? " need" : "")} data-pid={p.id}>

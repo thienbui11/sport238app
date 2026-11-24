@@ -5,7 +5,8 @@ import { money, OVER, PAGE, type Site } from "@/lib/shop";
 
 /** Giỏ lưu giống hệt bản HTML thuần: localStorage "cart5" = [{id, lb, qty}]. Tên, mã, giá, tồn lấy từ danh mục (VM). */
 type Saved = { id: string; lb: string; qty: number };
-type Info = { name: string; sku: string; price: number; stock: number };
+/** img: ảnh của món (theo màu), dùng để gửi đơn kèm ảnh (N1) */
+type Info = { name: string; sku: string; price: number; stock: number; img?: string };
 export type Item = Saved & Info;
 /** Màu, size khách đã chọn cho từng sản phẩm: dùng chung cho thẻ và trang chi tiết */
 export type Pick = { c: string; s: string | null };
@@ -31,12 +32,17 @@ export const useShop = () => {
 };
 const KEY = "cart5", FAV = "yeuthich";
 
-type ApiCatalog = { products: { title: string; display_title?: string; variants: { id: string; sku?: string; price: number; inventory_quantity: number }[] }[] };
+type ApiCatalog = { products: { id: string; title: string; display_title?: string; variants: { id: string; sku?: string; option2?: string; price: number; inventory_quantity: number }[] }[]; images?: Record<string, string[]> };
 const toVM = (d: ApiCatalog) => {
-  const vm: Record<string, Info> = {};
-  for (const p of d.products) for (const v of p.variants) vm[v.id] = { name: p.display_title || p.title, sku: v.sku || v.id, price: v.price, stock: Math.max(0, v.inventory_quantity) };
+  const vm: Record<string, Info> = {}, im = d.images ?? {};
+  for (const p of d.products) for (const v of p.variants) {
+    const img = (im[`${p.id}:${v.option2}`] ?? im[p.id] ?? [])[0];
+    vm[v.id] = { name: p.display_title || p.title, sku: v.sku || v.id, price: v.price, stock: Math.max(0, v.inventory_quantity), ...(img ? { img } : {}) };
+  }
   return vm;
 };
+/** Đường dẫn ảnh đầy đủ (để shop bấm mở được từ tin nhắn) */
+export const absUrl = (u: string) => (/^https?:/.test(u) || typeof window === "undefined" ? u : location.origin + u);
 
 export default function Providers({ site, children }: { site: Site; children: ReactNode }) {
   const router = useRouter();
@@ -97,7 +103,7 @@ export default function Providers({ site, children }: { site: Site; children: Re
 
   // Không chặn khi vượt tồn kho: vẫn thêm, cảnh báo rõ. Chỉ chặn hàng đã hết hẳn (tồn 0).
   const add = (i: Info & { id: string; label: string }) => {
-    setVm((old) => ({ ...(old ?? {}), [i.id]: { ...(old?.[i.id] ?? {}), name: i.name, sku: i.sku, price: i.price, stock: i.stock } }));
+    setVm((old) => ({ ...(old ?? {}), [i.id]: { ...(old?.[i.id] ?? {}), name: i.name, sku: i.sku, price: i.price, stock: i.stock, ...(i.img ? { img: i.img } : {}) } }));
     if (i.stock <= 0) { toast("Sản phẩm này tạm hết hàng"); return; }
     const qty = (cart.find((x) => x.id === i.id)?.qty ?? 0) + 1;
     setCart((list) => (list.some((x) => x.id === i.id) ? list.map((x) => (x.id === i.id ? { ...x, qty: x.qty + 1 } : x)) : [...list, { id: i.id, lb: i.label, qty: 1 }]));
@@ -112,7 +118,7 @@ export default function Providers({ site, children }: { site: Site; children: Re
   const orderText = () => {
     if (items.length === 0) return "Chào shop, mình muốn hỏi về sản phẩm ạ.";
     const over = items.some((i) => i.qty > i.stock);
-    const lines = items.map((i, n) => `${n + 1}. ${i.name}${i.lb ? " – " + i.lb : ""} [${i.sku}] x${i.qty} = ${money(i.price * i.qty)}${i.qty > i.stock ? ` (vượt tồn kho trên web, web ghi còn ${i.stock})` : ""}`);
+    const lines = items.map((i, n) => `${n + 1}. ${i.name}${i.lb ? " – " + i.lb : ""} [${i.sku}] x${i.qty} = ${money(i.price * i.qty)}${i.qty > i.stock ? ` (vượt tồn kho trên web, web ghi còn ${i.stock})` : ""}${i.img ? `\n   Ảnh: ${absUrl(i.img)}` : ""}`);
     return `Chào shop, mình muốn đặt:\n${lines.join("\n")}${over ? "\nLưu ý: có món số lượng vượt tồn kho trên web, nhờ shop kiểm tra lại khi chốt đơn." : ""}\nTổng: ${money(total)}\nMình sẽ ghé shop nhận hàng. Shop giữ hàng giúp mình nhé!`;
   };
   const setPick = useCallback((id: string, p: Pick) => setPicks((o) => ({ ...o, [id]: p })), []);

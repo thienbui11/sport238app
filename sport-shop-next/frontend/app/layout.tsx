@@ -17,6 +17,8 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  icons: { apple: "/icon-192.png" },
+  appleWebApp: { capable: true, title: "SPORT 238", statusBarStyle: "default" },
   ...(SITE_URL ? { metadataBase: new URL(SITE_URL), alternates: { canonical: "/" } } : {}),
   openGraph: { type: "website", locale: "vi_VN", siteName: "SPORT 238", title: "SPORT 238 – Đồ bóng đá, giày, phụ kiện", description: "Chọn size, thêm vào giỏ rồi nhắn shop qua Zalo hoặc Messenger. Ghé shop nhận hàng tại KCN An Hiệp, Vĩnh Long.", ...(SITE_URL ? { url: "/", images: [{ url: "/logo.png", alt: "SPORT 238" }] } : {}) },
   title: "SPORT 238 – Đồ bóng đá, giày, phụ kiện | KCN An Hiệp",

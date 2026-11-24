@@ -60,6 +60,26 @@ export default function CartDrawer() {
     setMsg({ ok, where });
     toast(ok ? "Đã sao chép đơn hàng" : "Chưa sao chép được, hãy sao chép thủ công");
   };
+  // N1: gửi đơn kèm ảnh sản phẩm bằng nút chia sẻ của điện thoại (chọn Zalo/Messenger trong bảng chia sẻ).
+  // Chỉ hiện khi máy chia sẻ được tệp và có món có ảnh thật. Chép chữ trước: một số ứng dụng bỏ chữ khi nhận ảnh.
+  const [canFiles, setCanFiles] = useState(false);
+  useEffect(() => {
+    try { setCanFiles(!!navigator.canShare?.({ files: [new File([new Blob(["x"])], "a.jpg", { type: "image/jpeg" })] })); } catch { setCanFiles(false); }
+  }, []);
+  const withImg = items.filter((i) => i.img);
+  const shareImages = async () => {
+    const ok = await copyText(text);
+    try {
+      const files = await Promise.all([...new Map(withImg.map((i) => [i.img!, i])).values()].map(async (i) => {
+        const b = await (await fetch(i.img!)).blob();
+        return new File([b], `${i.sku}.${(b.type.split("/")[1] || "jpg").replace("jpeg", "jpg")}`, { type: b.type || "image/jpeg" });
+      }));
+      await navigator.share({ files, text });
+      setMsg({ ok, where: "ứng dụng vừa chọn" });
+    } catch (e) {
+      if ((e as Error)?.name !== "AbortError") toast("Máy chưa gửi được ảnh. Hãy dùng nút Sao chép đơn & mở Zalo.");
+    }
+  };
 
   return (
     <>
@@ -119,6 +139,7 @@ export default function CartDrawer() {
           <div className="sum" hidden={!has}><span>Tạm tính</span><b id="dt">{money(total)}</b></div>
           <a className="btn" id="zs" href={l.zalo} target="_blank" rel="noopener" onClick={() => { if (has) void run("Zalo"); }}><Icon n="chat" />{has ? "Sao chép đơn & mở Zalo" : "Nhắn Zalo cho shop"}</a>
           <a className="btn ghost" id="fs" href={l.messenger} target="_blank" rel="noopener" onClick={() => { if (has) void run("Messenger"); }}><Icon n="messenger" />{has ? "Sao chép đơn & mở Messenger" : "Nhắn Messenger"}</a>
+          {has && canFiles && withImg.length > 0 && <button type="button" className="btn ghost" id="shareimg" onClick={() => void shareImages()}><Icon n="share" />Gửi đơn kèm ảnh ({withImg.length} ảnh)</button>}
         </div>
       </div>
     </>

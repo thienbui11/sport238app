@@ -73,7 +73,7 @@ export default function ProductDetail({ p, updated, related = [] }: { p: Product
     }
     if (v.stock <= 0) return;
     const label = [v.size && `Size ${v.size}`, multi && `${lbl} ${v.color}`].filter(Boolean).join(" · ");
-    add({ id: v.id, name: p.name, label, sku: v.sku, price: v.price, stock: v.stock });
+    add({ id: v.id, name: p.name, label, sku: v.sku, price: v.price, stock: v.stock, img: imgsFor(p, v.color)[0] });
   };
   const status = !v ? (needSize ? `Tồn kho${multi ? ` ${lbl.toLowerCase()} này` : ""}: ${colorStock(p, color)} sản phẩm. Chọn size để xem từng size.` : "Tạm hết hàng")
     : v.stock <= 0 ? "Tạm hết hàng. Nhắn shop để hỏi khi nào có hàng." : `Còn ${v.stock} sản phẩm`;
