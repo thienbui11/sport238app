@@ -6,7 +6,7 @@ import { scrollMode, colorStock, defaultColor, HOURS, imgsFor, links, money, NEE
 import { cartLabel } from "./Header";
 import { Icon } from "./Icons";
 import { useShop } from "./Providers";
-import { Placeholder, swatch } from "./Shop";
+import { FavButton, Placeholder, swatch } from "./Shop";
 import { SizeHelp } from "./SizeGuide";
 import { AskShop, MapEmbed, MiniRow, RecentlyViewed, ShareButton, useRecordView, type Mini } from "./Extras";
 
@@ -97,7 +97,7 @@ export default function ProductDetail({ p, updated, related = [] }: { p: Product
         <div className="pinfo">
           <div className="ttl">
             <p className="crumb"><span className="pill">{p.cat}</span>{p.brand && <span>Hãng {p.brand}</span>}</p>
-            <ShareButton title={`${p.name} | SPORT 238`} text={`${p.name} – ${priceText(p)} tại SPORT 238`} />
+            <span className="acts"><FavButton id={p.id} name={p.name} className="ib" /><ShareButton title={`${p.name} | SPORT 238`} text={`${p.name} – ${priceText(p)} tại SPORT 238`} /></span>
           </div>
           <h1>{p.name}</h1>
           <div className="bigp">{v ? money(v.price) : priceText(p)}</div>

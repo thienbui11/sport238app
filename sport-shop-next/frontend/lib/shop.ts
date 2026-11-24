@@ -36,6 +36,14 @@ export type Site = typeof DEFAULT_SITE;
 export const HOURS = { time: "8:00–21:00", days: "tất cả các ngày trong tuần" };
 /** Số sản phẩm hiện mỗi lần; bấm "Xem thêm" để hiện tiếp */
 export const PAGE = 20;
+/** A6: khoảng giá để lọc (chọn theo dữ liệu thật: giá thấp nhất mỗi SP, trung vị khoảng 120.000đ) */
+export const PRICE_RANGES = [
+  { id: "duoi-100", label: "Dưới 100.000đ", lo: 0, hi: 99_999 },
+  { id: "100-150", label: "100.000đ – 150.000đ", lo: 100_000, hi: 149_999 },
+  { id: "150-200", label: "150.000đ – 200.000đ", lo: 150_000, hi: 199_999 },
+  { id: "200-400", label: "200.000đ – 400.000đ", lo: 200_000, hi: 399_999 },
+  { id: "tren-400", label: "Từ 400.000đ", lo: 400_000, hi: Number.POSITIVE_INFINITY },
+];
 /** Không chặn khi vượt tồn kho (tồn trên web có thể chưa kịp cập nhật): vẫn cho thêm, cảnh báo rõ */
 export const OVER = "Số lượng vượt tồn kho trên web, shop sẽ kiểm tra lại khi chốt đơn";
 /** Bỏ dấu tiếng Việt để tìm kiếm: "Giày" -> "giay", "Đỏ" -> "do" */

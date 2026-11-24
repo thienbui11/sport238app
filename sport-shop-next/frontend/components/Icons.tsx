@@ -21,6 +21,9 @@ const UI = {
   arrow: "M5 12h13.5M13 6.5l5.5 5.5-5.5 5.5",
   plus: "M12 5.5v13M5.5 12h13",
   minus: "M5.5 12h13",
+  heart: "M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z",
+  "heart-on": "M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z",
+  filter: "M4 6h16M7 12h10M10 18h4",
   share: "M15 5.5a3 3 0 1 0 6 0 3 3 0 1 0-6 0M3 12a3 3 0 1 0 6 0 3 3 0 1 0-6 0M15 18.5a3 3 0 1 0 6 0 3 3 0 1 0-6 0M8.6 13.5l6.8 3.6M15.4 6.9l-6.8 3.6",
   trash: "M4.5 7h15M9.5 7V4.8h5V7M6.5 7l.9 12.2a1.5 1.5 0 0 0 1.5 1.3h6.2a1.5 1.5 0 0 0 1.5-1.3L17.5 7M10.2 10.5v6.5M13.8 10.5v6.5",
   copy: "M9.5 8.5h9a1.5 1.5 0 0 1 1.5 1.5v9a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 8 19v-9a1.5 1.5 0 0 1 1.5-1.5zM16 8.5V5.5A1.5 1.5 0 0 0 14.5 4h-9A1.5 1.5 0 0 0 4 5.5v9A1.5 1.5 0 0 0 5.5 16H8",
@@ -36,7 +39,7 @@ export type IconName = keyof typeof UI;
 
 export function Icon({ n, className }: { n: IconName; className?: string }) {
   return (
-    <svg className={"i" + (className ? " " + className : "")} viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor"
+    <svg className={"i" + (className ? " " + className : "")} viewBox="0 0 24 24" width="1em" height="1em" fill={n === "heart-on" ? "currentColor" : "none"} stroke="currentColor"
       strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d={UI[n]} /></svg>
   );
 }

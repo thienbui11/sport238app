@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
-import { artColors, CATEGORIES, scrollMode, colorStock, defaultColor, fold, hexesIn, ICON_OF, imgsFor, links, money, optLabel, PAGE, stockStatus, unpack, type Packed, type Product } from "@/lib/shop";
+import { artColors, CATEGORIES, scrollMode, PRICE_RANGES, sizeKey, colorStock, defaultColor, fold, hexesIn, ICON_OF, imgsFor, links, money, optLabel, PAGE, stockStatus, unpack, type Packed, type Product } from "@/lib/shop";
 import { focusSearch, searchIntent } from "./Header";
 import { Art, CatIcon, Icon } from "./Icons";
 import { useShop } from "./Providers";
@@ -18,6 +18,17 @@ export const swatch = (c: string): CSSProperties | undefined => { const h = hexe
 function useRemember() {
   const { ret } = useShop();
   return () => { ret.current = { y: window.scrollY, url: location.pathname + location.hash }; };
+}
+
+/** C1: nút yêu thích (lưu trên máy khách) */
+export function FavButton({ id, name, className = "" }: { id: string; name: string; className?: string }) {
+  const { favs, toggleFav } = useShop();
+  const on = favs.includes(id);
+  return (
+    <button type="button" className={"fav " + className} data-fav={id} aria-pressed={on} aria-label={on ? `Bỏ ${name} khỏi Yêu thích` : `Lưu ${name} vào Yêu thích`} onClick={() => toggleFav(id, name)}>
+      <Icon n={on ? "heart-on" : "heart"} />
+    </button>
+  );
 }
 
 function Card({ p }: { p: Product }) {
@@ -57,6 +68,7 @@ function Card({ p }: { p: Product }) {
         )}
         {first ? <img src={first} alt={p.name} loading="lazy" decoding="async" width={400} height={400} /> : <Placeholder p={p} color={color} />}
       </Link>
+      <FavButton id={p.id} name={p.name} />
       <div className="cinfo">
         <small className={p.brand ? "hb" : undefined}><span className="mc">{p.cat}</span>{p.brand && <span className="mbr"><span className="sep"> · </span>{p.brand}</span>}</small>
         <h3><Link href={href} className="nm" onClick={remember}>{p.name}</Link></h3>
@@ -93,18 +105,28 @@ function Card({ p }: { p: Product }) {
 
 /** Danh mục + toàn bộ sản phẩm (lọc, tìm không cần dấu, xem thêm) + khối đồng phục đội */
 export default function Storefront({ data, updated }: { data: Packed; updated: string }) {
-  const { site, list: S, setList, ret } = useShop();
+  const { site, list: S, setList, ret, favs } = useShop();
+  const [fopen, setFopen] = useState(false);
   const products = useMemo(() => unpack(data), [data]);
   const l = links(site);
   const grid = useRef<HTMLDivElement>(null);
   const focusFrom = useRef(-1);
 
+  const range = PRICE_RANGES.find((r) => r.id === S.price);
+  // A6: lựa chọn lọc theo danh mục đang xem: size đang còn hàng, hãng (kèm số SP)
+  const inCat = useMemo(() => products.filter((p) => S.cat === "Tất cả" || p.cat === S.cat), [products, S.cat]);
+  const sizeOpts = useMemo(() => [...new Set(inCat.flatMap((p) => p.variants.filter((v) => v.size && v.stock > 0).map((v) => v.size)))].sort((a, b) => sizeKey(a) - sizeKey(b) || a.localeCompare(b)), [inCat]);
+  const brandOpts = useMemo(() => Object.entries(inCat.reduce<Record<string, number>>((a, p) => { if (p.brand) a[p.brand] = (a[p.brand] ?? 0) + 1; return a; }, {})).sort((a, b) => b[1] - a[1]), [inCat]);
+  const nFilter = [S.size, S.price, S.brand, S.fav].filter(Boolean).length;
   const found = useMemo(() => {
     const words = fold(S.q).split(/\s+/).filter(Boolean);
     return products
-      .filter((p) => (S.cat === "Tất cả" || p.cat === S.cat) && (!S.st || (S.st === "in") === p.stock > 0) && words.every((w) => p.key.includes(w)))
+      .filter((p) => (S.cat === "Tất cả" || p.cat === S.cat) && (!S.st || (S.st === "in") === p.stock > 0) && words.every((w) => p.key.includes(w))
+        && (!S.size || p.variants.some((v) => v.size === S.size && v.stock > 0))
+        && (!range || p.variants.some((v) => v.price >= range.lo && v.price <= range.hi))
+        && (!S.brand || p.brand === S.brand) && (!S.fav || favs.includes(p.id)))
       .sort((a, b) => (S.sort === "asc" ? a.min - b.min : S.sort === "desc" ? b.min - a.min : Number(b.feat) - Number(a.feat) || Number(b.stock > 0) - Number(a.stock > 0)));
-  }, [products, S.cat, S.q, S.st, S.sort]);
+  }, [products, S.cat, S.q, S.st, S.sort, S.size, S.brand, S.fav, range, favs]);
   const shown = found.slice(0, S.limit), rest = found.length - shown.length, q = S.q.trim();
   const perCat = useMemo(() => Object.fromEntries(CATEGORIES.map((c) => [c.name, products.filter((p) => p.cat === c.name).length])), [products]);
 
@@ -159,14 +181,32 @@ export default function Storefront({ data, updated }: { data: Packed; updated: s
             <option value="">Sắp xếp</option><option value="asc">Giá thấp → cao</option><option value="desc">Giá cao → thấp</option>
           </select>
         </div>
+        <div className="filters">
+          <button type="button" className="fbtn" id="flt" aria-expanded={fopen} aria-controls="fpanel" onClick={() => setFopen(!fopen)}>
+            <Icon n="filter" />Lọc thêm{nFilter > 0 && <b className="cnt">{nFilter}</b>}
+          </button>
+          <div className="fpanel" id="fpanel" data-open={fopen}>
+            <select className="sel" id="fsz" aria-label="Lọc theo size còn hàng" value={S.size} onChange={(e) => set({ size: e.target.value })}>
+              <option value="">Mọi size</option>{sizeOpts.map((s) => <option key={s} value={s}>Size {s} còn hàng</option>)}
+            </select>
+            <select className="sel" id="fgia" aria-label="Lọc theo giá" value={S.price} onChange={(e) => set({ price: e.target.value })}>
+              <option value="">Mọi mức giá</option>{PRICE_RANGES.map((r) => <option key={r.id} value={r.id}>{r.label}</option>)}
+            </select>
+            <select className="sel" id="fhang" aria-label="Lọc theo hãng" value={S.brand} onChange={(e) => set({ brand: e.target.value })}>
+              <option value="">Mọi hãng</option>{brandOpts.map(([b, n]) => <option key={b} value={b}>{b} ({n})</option>)}
+            </select>
+            <button type="button" className="chip" id="ffav" aria-pressed={S.fav} onClick={() => set({ fav: !S.fav })}><Icon n={S.fav ? "heart-on" : "heart"} />Yêu thích ({favs.length})</button>
+            {nFilter > 0 && <button type="button" className="clr" id="fclear" onClick={() => set({ size: "", price: "", brand: "", fav: false })}>Xóa lọc</button>}
+          </div>
+        </div>
         <div className="chips" role="group" aria-label="Lọc theo danh mục">
           {["Tất cả", ...CATEGORIES.map((c) => c.name)].map((c) => (
             <button key={c} type="button" className="chip" data-c={c} aria-pressed={c === S.cat} onClick={() => set({ cat: c })}>{c}</button>
           ))}
         </div>
-        <p className="count" id="cnt" aria-live="polite">{rest > 0 && `Đang xem ${shown.length}/`}{found.length} sản phẩm{S.cat !== "Tất cả" && ` trong “${S.cat}”`}{q && ` cho “${q}”`}</p>
+        <p className="count" id="cnt" aria-live="polite">{rest > 0 && `Đang xem ${shown.length}/`}{found.length} sản phẩm{S.cat !== "Tất cả" && ` trong “${S.cat}”`}{q && ` cho “${q}”`}{S.size && `, còn size ${S.size}`}{range && `, giá ${range.label.toLowerCase()}`}{S.brand && `, hãng ${S.brand}`}{S.fav && ", trong Yêu thích"}</p>
         <div className="grid" id="grid" ref={grid}>
-          {shown.length ? shown.map((p) => <Card key={p.id} p={p} />) : <p className="empty">Không tìm thấy sản phẩm phù hợp{q && ` với “${q}”`}. Thử từ khóa khác, hoặc nhắn shop để hỏi nhé.</p>}
+          {shown.length ? shown.map((p) => <Card key={p.id} p={p} />) : <p className="empty">{S.fav && !favs.length ? "Bạn chưa lưu sản phẩm nào vào Yêu thích. Bấm hình trái tim trên sản phẩm để lưu." : <>Không tìm thấy sản phẩm phù hợp{q && ` với “${q}”`}. Thử bỏ bớt bộ lọc, hoặc nhắn shop để hỏi nhé.</>}</p>}
         </div>
         <div className="more" id="more" hidden={rest <= 0}>
           <button type="button" className="btn ghost" id="moreb" onClick={() => { focusFrom.current = shown.length; setList((s) => ({ ...s, limit: s.limit + PAGE })); }}>

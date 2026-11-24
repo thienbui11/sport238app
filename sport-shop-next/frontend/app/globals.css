@@ -560,3 +560,24 @@ footer .fnote{grid-column:1/-1;padding-top:var(--sp-4);border-top:1px solid rgba
 }
 .visit2 .row .map,.about .map{flex-basis:100%;width:100%}
 @media(max-width:600px){.ask{grid-template-columns:1fr}}
+
+/* ===== Lọc size/giá/hãng (A6) + Yêu thích (C1) ===== */
+.badges{right:56px}
+.card .fav{position:absolute;top:6px;right:6px;z-index:2;display:grid;place-items:center;width:44px;height:44px;border:0;border-radius:50%;background:var(--surface);color:var(--muted);font-size:20px;box-shadow:var(--sh-1);cursor:pointer}
+.fav[aria-pressed="true"]{color:var(--danger)}
+.fav:hover{color:var(--danger)}
+.acts{display:flex;gap:var(--sp-2);flex:none}
+.filters{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-3)}
+.fbtn{display:none;position:relative;align-items:center;gap:8px;min-height:44px;padding:0 var(--sp-4);border:1.5px solid var(--line-strong);border-radius:var(--r-pill);background:var(--surface);color:var(--ink);font-weight:600;cursor:pointer}
+.fbtn[aria-expanded="true"]{background:var(--surface-2)}
+.fpanel{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-2);flex:1 1 auto}
+.fpanel .sel{flex:1 1 170px;min-width:0}
+.fpanel .chip{display:inline-flex;align-items:center;gap:6px}
+.fpanel .chip[aria-pressed="true"] .i{color:var(--danger)}
+.clr{min-height:44px;padding:0 var(--sp-2);border:0;background:none;color:var(--brand-ink);font-weight:600;text-decoration:underline;cursor:pointer}
+@media(max-width:860px){
+ .fbtn{display:inline-flex}
+ .fpanel{flex-basis:100%}
+ .fpanel[data-open="false"]{display:none}
+ .fpanel .sel{flex-basis:100%}
+}

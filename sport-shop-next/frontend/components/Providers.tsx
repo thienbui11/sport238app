@@ -10,13 +10,16 @@ export type Item = Saved & Info;
 /** Màu, size khách đã chọn cho từng sản phẩm: dùng chung cho thẻ và trang chi tiết */
 export type Pick = { c: string; s: string | null };
 /** Bộ lọc danh sách sản phẩm: giữ lại khi sang trang chi tiết rồi quay về */
-export type ListState = { cat: string; q: string; st: string; sort: string; limit: number };
+/** size: chỉ SP còn size này · price: mã khoảng giá (PRICE_RANGES) · brand: hãng · fav: chỉ SP yêu thích */
+export type ListState = { cat: string; q: string; st: string; sort: string; limit: number; size: string; price: string; brand: string; fav: boolean };
 type Ctx = {
   site: Site; items: Item[]; count: number; total: number;
   add: (i: Info & { id: string; label: string }) => void; change: (id: string, d: number) => void; clear: () => void;
   open: boolean; setOpen: (v: boolean) => void; toast: (t: string) => void; orderText: () => string;
   picks: Record<string, Pick>; setPick: (id: string, p: Pick) => void;
   list: ListState; setList: (f: (s: ListState) => ListState) => void;
+  /** C1: sản phẩm yêu thích (lưu trên máy khách, localStorage "yeuthich") */
+  favs: string[]; toggleFav: (id: string, name: string) => void;
   /** vị trí cuộn của trang danh sách trước khi mở trang chi tiết (để quay lại đúng chỗ) */
   ret: React.MutableRefObject<{ y: number; url: string } | null>;
 };
@@ -26,7 +29,7 @@ export const useShop = () => {
   if (!c) throw new Error("useShop phải nằm trong <Providers>");
   return c;
 };
-const KEY = "cart5";
+const KEY = "cart5", FAV = "yeuthich";
 
 type ApiCatalog = { products: { title: string; display_title?: string; variants: { id: string; sku?: string; price: number; inventory_quantity: number }[] }[] };
 const toVM = (d: ApiCatalog) => {
@@ -44,7 +47,8 @@ export default function Providers({ site, children }: { site: Site; children: Re
   const [msg, setMsg] = useState("");
   const [on, setOn] = useState(false);
   const [picks, setPicks] = useState<Record<string, Pick>>({});
-  const [list, setListState] = useState<ListState>({ cat: "Tất cả", q: "", st: "", sort: "", limit: PAGE });
+  const [list, setListState] = useState<ListState>({ cat: "Tất cả", q: "", st: "", sort: "", limit: PAGE, size: "", price: "", brand: "", fav: false });
+  const [favs, setFavs] = useState<string[]>([]);
   const ret = useRef<{ y: number; url: string } | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
@@ -66,6 +70,9 @@ export default function Providers({ site, children }: { site: Site; children: Re
   useEffect(() => {
     if (loaded) try { localStorage.setItem(KEY, JSON.stringify(cart)); } catch {}
   }, [cart, loaded]);
+  useEffect(() => {
+    try { const a = JSON.parse(localStorage.getItem(FAV) ?? "[]"); if (Array.isArray(a)) setFavs(a.filter((x) => typeof x === "string")); } catch {}
+  }, []);
 
   // Đường dẫn kiểu cũ của bản HTML thuần (/#p-MÃ) chuyển sang trang sản phẩm riêng
   useEffect(() => {
@@ -110,9 +117,15 @@ export default function Providers({ site, children }: { site: Site; children: Re
   };
   const setPick = useCallback((id: string, p: Pick) => setPicks((o) => ({ ...o, [id]: p })), []);
   const setList = useCallback((f: (s: ListState) => ListState) => setListState(f), []);
+  const toggleFav = (id: string, name: string) => {
+    const has = favs.includes(id), next = has ? favs.filter((x) => x !== id) : [id, ...favs];
+    setFavs(next);
+    try { localStorage.setItem(FAV, JSON.stringify(next)); } catch {}
+    toast(has ? `Đã bỏ ${name} khỏi Yêu thích` : `Đã lưu ${name} vào Yêu thích`);
+  };
 
   return (
-    <C.Provider value={{ site, items, count: cart.reduce((a, i) => a + i.qty, 0), total, add, change, clear: () => setCart([]), open, setOpen, toast, orderText, picks, setPick, list, setList, ret }}>
+    <C.Provider value={{ site, items, count: cart.reduce((a, i) => a + i.qty, 0), total, add, change, clear: () => setCart([]), open, setOpen, toast, orderText, picks, setPick, list, setList, ret, favs, toggleFav }}>
       {children}
       <div className={"toast" + (on ? " on" : "")} id="toast" role="status">{msg}</div>
     </C.Provider>
