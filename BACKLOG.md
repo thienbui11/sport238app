@@ -39,3 +39,14 @@ Xếp theo lợi ích ÷ công sức (cao trước). Độ khó: S < nửa ngày
 | L17 | Admin bản Node nhận `.xlsx` nhưng báo lỗi chung chung | S | ⬜ |
 
 Các mục đã xong trước đó: xem PROGRESS.md.
+
+## Chủ shop đã duyệt (24/11/2026)
+- Duyệt từ PROPOSALS.md: **A1–A7, B1–B6, C1, C3, D1–D7, E2** (hợp nhất về một giao diện Next.js xuất web tĩnh; bản HTML giữ làm dự phòng, chưa xóa). Đồng ý tải JDK + Maven bản di động, miễn phí, vào thư mục tạm để đối chiếu Python–Java (A2). Không đưa thẻ tích điểm lên web.
+- Việc mới:
+  | Mã | Việc | Lợi ích | Độ khó | Xong khi… | TT |
+  |---|---|---|---|---|---|
+  | N1 | Sao chép đơn và mở Zalo/Messenger **kèm hình sản phẩm**. Trên điện thoại dùng nút "Chia sẻ" của máy (gửi được cả ảnh lẫn chữ sang Zalo/Messenger); máy không hỗ trợ thì tin nhắn kèm link ảnh từng món. Cần có ảnh thật (A1) | Shop nhìn ảnh là biết đúng món | M | Kiểm thử trên điện thoại giả lập: chia sẻ có ảnh + chữ; dự phòng có link ảnh | ⬜ |
+  | N2 | Làm lại giao diện trang quản trị cho dễ nhìn (theo hệ thống thiết kế D1, hai bản sao giống nhau) | Chủ shop thao tác nhanh, ít nhầm | M | Ảnh trước–sau; Playwright quản trị đạt ở máy tính, điện thoại, sáng, tối | ⬜ |
+
+## Ghi chú vận hành
+- Lần chạy đợt 1 bằng agent song song (24/11) **không ra kết quả**: tạo worktree bị lỗi đọc cấu hình git, rồi chạm giới hạn 5 giờ. Không có thay đổi nào trong mã. Lần sau chạy từng việc tuần tự, không dùng worktree.
