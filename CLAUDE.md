@@ -24,7 +24,7 @@
 - **Chức năng mới, giao diện mới: chỉ làm trên bản Next.js** (`sport-shop-next/frontend`). Nút cập nhật hằng ngày xuất bằng Next.js; build lỗi (ví dụ mất mạng khi tải phông chữ) hoặc chưa `npm install` thì tự dùng bản HTML (`XUAT_WEB=html` trong `.env` để luôn dùng HTML).
 - **Bản HTML** (`sport-shop-app/tools/storefront.template.html` → `public/index.html` bằng `build_storefront.py`, không sửa tay `public/index.html`) giữ nguyên làm dự phòng: chỉ sửa lỗi; vẫn phải đạt 4 bài kiểm thử cơ bản. **Chưa xóa** – xóa hẳn phải hỏi chủ shop.
 - Hai bản giữ chung các mã kiểm thử (`#grid .card`, `.szb`, `.clb`, `[data-quick]`, `#cb`, `#dr`, `#ordtxt`, `#more`, khóa giỏ `cart5`…) để 4 bài kiểm thử cơ bản chạy được trên cả hai.
-- CSS dùng chung: `sport-shop-next/frontend/app/globals.css` (bản HTML dựng kèm CSS này). Đổi CSS thì chạy kiểm thử trên cả hai bản.
+- CSS: bản Next.js dùng `sport-shop-next/frontend/app/globals.css` (tự do làm lại giao diện). Bản HTML dự phòng dùng CSS riêng đã chốt `sport-shop-app/tools/storefront.css` (24/11/2026); chỉ sửa khi sửa lỗi bản dự phòng.
 - Trang quản trị: `sport-shop-app/public/admin.html`, bản sao `sport-shop-next/frontend/public/admin/index.html` (giữ giống hệt; không có trong web xuất tĩnh).
 - API công khai: `GET /api/products` (`products`, `images`, `updated`), `GET /api/config`. Trường: `id, title, display_title, description, category, vendor, featured, variants[{id,sku,option1(size),option2(màu/loại),price,inventory_quantity}]`.
 

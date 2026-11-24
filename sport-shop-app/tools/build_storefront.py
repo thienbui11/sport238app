@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
-"""Dựng lại public/index.html (cửa hàng một tệp) từ: tools/storefront.template.html + CSS dùng chung + logo.
-CSS dùng chung nằm ở sport-shop-next/frontend/app/globals.css (cả bản Next.js lẫn bản này cùng dùng một CSS).
+"""Dựng lại public/index.html (cửa hàng một tệp) từ: tools/storefront.template.html + CSS riêng (tools/storefront.css) + logo.
+CSS riêng của bản dự phòng: tools/storefront.css (chốt từ globals.css ngày 24/11/2026).
 Cách dùng:  python sport-shop-app/tools/build_storefront.py     (cần: pip install pillow)"""
 import base64, io, pathlib
 from PIL import Image
 
 APP = pathlib.Path(__file__).resolve().parent.parent
-CSS = APP.parent / "sport-shop-next" / "frontend" / "app" / "globals.css"
+# Bản HTML là bản DỰ PHÒNG (giao diện chính là Next.js): dùng CSS riêng đã chốt, không theo globals.css của Next nữa
+CSS = APP / "tools" / "storefront.css"
 logo = Image.open(APP / "public" / "logo.png")
 
 
