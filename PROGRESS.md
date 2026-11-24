@@ -2,9 +2,13 @@
 
 Cách làm tiếp: đọc tệp này → `CLAUDE.md` → `AUDIT.md` → `PROPOSALS.md`. Quy trình 7 giai đoạn do chủ shop đặt (khảo sát → đề xuất, **dừng chờ duyệt** → sửa lỗi → giao diện, **dừng chờ duyệt** → chức năng mới → nhập hàng Sapo → kiểm thử/CI → đưa lên mạng). Sau mỗi việc: kiểm thử, cập nhật tệp này, commit.
 
+## Cách làm để tiết kiệm lượt dùng (chủ shop duyệt 24/11/2026)
+- Làm tuần tự từng việc, không chạy hàng chục agent cùng lúc; không dùng git worktree (đang lỗi đọc cấu hình git trên máy này).
+- Agent phụ mặc định chạy Sonnet (`CLAUDE_CODE_SUBAGENT_MODEL=sonnet` trong `~/.claude/settings.json`). Việc chỉ đọc, tìm kiếm, chép số liệu: dùng agent `doc-nhanh` (Haiku, `.claude/agents/doc-nhanh.md`). Opus chỉ cho việc lập trình khó.
+
 ## CHẾ ĐỘ TỰ CHỦ (từ 24/11/2026)
 Chủ shop đã chuyển sang chế độ tự chủ tối đa: không dừng chờ duyệt; việc cần chủ shop quyết định ghi vào `QUESTIONS.md` (tạm chọn phương án an toàn) rồi làm tiếp. Danh sách việc và tiêu chí "xong khi…": `BACKLOG.md`. Nhãn bản ổn định trước đợt này: `on-dinh-2026-11-24-sau-sua-loi-dt`.
-- **Đợt 1 (đang chạy):** mỗi việc một nhánh `wf/…` (P1 Giày thể thao + pytest + đối chiếu Java; F nạp ảnh + quản trị; G nhập hàng an toàn; H Next.js xuất tĩnh; T axe/Lighthouse/CI; J hướng dẫn đưa lên mạng) + khảo sát sâu K1, ý tưởng K2, chép bảng size S1. Sau khi xong: gộp từng nhánh vào `dev`, chạy toàn bộ kiểm thử, cập nhật AUDIT/BACKLOG.
+- **Đợt 1 (chạy song song 24/11 bị lỗi worktree + giới hạn lượt dùng, không có kết quả; nay làm tuần tự):** mỗi việc một nhánh `wf/…` (P1 Giày thể thao + pytest + đối chiếu Java; F nạp ảnh + quản trị; G nhập hàng an toàn; H Next.js xuất tĩnh; T axe/Lighthouse/CI; J hướng dẫn đưa lên mạng) + khảo sát sâu K1, ý tưởng K2, chép bảng size S1. Sau khi xong: gộp từng nhánh vào `dev`, chạy toàn bộ kiểm thử, cập nhật AUDIT/BACKLOG.
 - **Đợt 2 (tiếp theo):** làm lại giao diện (hệ thống thiết kế) + chức năng mới cho khách trên bản chính.
 
 ## Đang ở đâu (cập nhật 24/11/2026, trước chế độ tự chủ)
