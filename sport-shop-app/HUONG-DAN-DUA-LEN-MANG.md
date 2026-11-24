@@ -37,16 +37,18 @@ Bản bán ngay hôm nay: giải nén `sport238-website.zip` (đã có 175 sản
 
 ## 4. Quy trình hằng ngày
 
-1. Trên Sapo, xuất danh sách sản phẩm ra Excel (nút Xuất file).
-2. Lưu file vào thư mục `inbox` (không cần đổi tên).
-3. Bấm đúp `cap-nhat-web.bat`. Chương trình sẽ: đọc file Excel, nhập vào trang quản trị (ảnh, tên, mô tả, danh mục bạn đã sửa được giữ nguyên), xuất `dist/` mới, và nếu có `DEPLOY_CMD` thì tự đưa lên hosting.
+Xem chi tiết: **`HUONG-DAN-CAP-NHAT-HANG-NGAY.md`** (kiểm tra file, sao lưu, báo cáo thay đổi, khôi phục, đặt lịch).
+
+1. Trên Sapo, xuất danh sách sản phẩm ra Excel (nút Xuất file). File nằm trong Tải về là được (công cụ tự chép, không xóa file gốc).
+2. Bấm đúp `cap-nhat-web.bat`. Chương trình sẽ: kiểm tra file, sao lưu dữ liệu, nhập vào trang quản trị (ảnh, tên, mô tả, danh mục bạn đã sửa được giữ nguyên), mở báo cáo thay đổi, xuất `dist/` mới, và nếu có `DEPLOY_CMD` thì tự đưa lên hosting.
+3. Lỡ nhập nhầm: đóng trang quản trị, bấm `khoi-phuc.bat`.
 4. Không có Excel mới mà chỉ vừa thêm ảnh hoặc sửa mô tả: vẫn bấm `cap-nhat-web.bat`, chương trình chỉ xuất lại web.
 
 **Đưa lên hosting tự động:** với Cloudflare, cài công cụ `wrangler` (`npm i -g wrangler`), đăng nhập một lần bằng `wrangler login`, rồi đặt trong `.env`:
 `DEPLOY_CMD=npx wrangler pages deploy dist --project-name=sport238`
 (Lệnh này mình viết theo hiểu biết, chưa chạy thử với tài khoản của bạn; nếu lỗi, xem hướng dẫn `wrangler pages deploy` của Cloudflare.)
 
-**Chạy theo lịch:** dùng Task Scheduler của Windows, tạo tác vụ chạy hằng ngày (ví dụ 20:00) với lệnh `python D:\sport238\tools\daily_update.py` (không dùng `cap-nhat-web.bat` vì tệp đó có lệnh dừng chờ phím). Máy phải bật và `chay-quan-tri.bat` phải đang chạy.
+**Chạy theo lịch:** bấm chuột phải `dat-lich.ps1` → Run with PowerShell (mặc định 21:15 mỗi ngày; trang quản trị chưa mở thì tự mở tạm). Máy phải bật.
 
 ## 5. Có tự động hóa được việc lấy dữ liệu từ Sapo không?
 

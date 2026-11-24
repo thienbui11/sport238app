@@ -40,3 +40,7 @@ replay_pid*
 **/data/anh-da-nap.json
 **/bao-cao/
 tests/node_modules
+**/data/sao-luu
+**/data/da-nhap.json
+**/inbox/*.xlsx
+**/inbox/loi

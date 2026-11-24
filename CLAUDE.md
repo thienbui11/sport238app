@@ -39,7 +39,8 @@ cd sport-shop-app
 cp .env.example .env           # đặt ADMIN_PASSWORD
 npm start                      # web http://localhost:3000 , quản trị /admin
 python tools/sapo_xlsx_to_json.py file.xlsx out.json   # cần: pip install pandas openpyxl pillow
-python tools/daily_update.py   # đọc Excel mới nhất trong inbox/, nhập vào admin, xuất dist/
+python tools/daily_update.py   # lấy Excel Sapo mới nhất (Tải về → chép vào inbox/), kiểm tra, sao lưu data/sao-luu, nhập, báo cáo bao-cao/, xuất dist/ (xem HUONG-DAN-CAP-NHAT-HANG-NGAY.md)
+python tools/khoi_phuc.py      # quay lại bản sao lưu (tắt trang quản trị trước)
 python tools/export_static.py  # chỉ xuất web tĩnh
 python tools/build_storefront.py
 cd ../sport-shop-next/frontend && npm install && npm run dev     # Next.js

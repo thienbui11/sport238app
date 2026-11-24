@@ -22,6 +22,7 @@ Mỗi bài in "KẾT QUẢ: 0 lỗi" khi đạt.
 Mỗi bài tự bật máy chủ quản trị Node riêng với dữ liệu mẫu trong thư mục tạm (không đụng dữ liệu thật).
 - `tests/py/test_nap_anh.py`: nạp ảnh hàng loạt theo mã SKU (đúng SP/màu, WebP ≤ 1400 px, xoay đúng chiều, giữ ảnh cũ, không nạp trùng, báo cáo).
 - `tests/py/test_sapo_parser.py`: bộ đọc Excel Python (9 danh mục, tách size, file thật 14/11: 175 SP, 953 phiên bản, 632 SP trong file, bỏ 68 phiên bản giá 0, không có giá nhập; dữ liệu mẫu = kết quả bộ đọc).
+- `tests/py/test_nhap_an_toan.py`: nhập hằng ngày an toàn (chép từ Tải về không xóa gốc, thiếu cột → dừng, số SP/phiên bản giảm > 30% → dừng trừ khi xác nhận, sao lưu/khôi phục, báo cáo thay đổi, tự bật trang quản trị; cả quy trình với bản chép file Excel thật 14/11).
 - `tests/py/test_server.py`: máy chủ Node (đường dẫn lỗi mã hóa → 400; chọn file Excel ở trang quản trị → báo rõ cách nhập).
 
 ## Đối chiếu bộ đọc Python với Java (khi sửa quy tắc phân loại)
