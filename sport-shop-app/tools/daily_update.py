@@ -199,7 +199,8 @@ def main(args=None):
     cmd = env.get("DEPLOY_CMD", "").strip()
     if cmd:
         log(f"Đưa lên hosting: {cmd}")
-        r = subprocess.run(cmd, shell=True, cwd=APP)
+        # env có cả biến trong .env (vd CLOUDFLARE_API_TOKEN); dòng để trống thì bỏ, để wrangler dùng đăng nhập 'wrangler login'
+        r = subprocess.run(cmd, shell=True, cwd=APP, env={k: v for k, v in env.items() if v or not k.startswith("CLOUDFLARE_")})
         log("Đưa lên hosting " + ("thành công." if r.returncode == 0 else f"THẤT BẠI (mã {r.returncode})."))
         return r.returncode
     log("Chưa đặt DEPLOY_CMD: hãy tải thư mục dist lên hosting (xem HUONG-DAN-DUA-LEN-MANG.md).")

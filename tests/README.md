@@ -15,6 +15,16 @@ và chạy ba lệnh trên với `http://localhost:8099`.
 Các bài kiểm thử dựa vào dữ liệu mẫu (175 sản phẩm). Ảnh chụp màn hình ra thư mục `tests/out/`.
 Mỗi bài in "KẾT QUẢ: 0 lỗi" khi đạt.
 
+## Chạy tất cả một lần (và CI)
+
+    py tests/chay_tat_ca.py --pytest --node http://localhost:3000 --web http://localhost:3602 --out <thư mục xuất tĩnh> --site https://vidu.vn --lighthouse
+
+In bảng ✓/✗ từng bài (đọc dòng "KẾT QUẢ: N lỗi"), nhật ký ở `tests/out/chay-tat-ca/`, mã thoát 1 nếu có bài không đạt.
+`--node`: 4 bài cơ bản trên máy chủ Node (bản HTML dự phòng; cần dữ liệu mẫu sạch). `--web`: 4 bài cơ bản + 7 bài của bản Next.js. Luôn chạy `test_admin`.
+
+GitHub Actions: `.github/workflows/kiem-thu.yml` (chưa đẩy lên GitHub). Trên Ubuntu: cài thư viện, `mvn test`, bật máy chủ Node với dữ liệu mẫu ở thư mục tạm,
+xuất web tĩnh Next.js, phát ở cổng 3602, chạy `chay_tat_ca.py --pytest …`; Lighthouse chạy riêng và không chặn (điểm dao động theo máy). Nhật ký, ảnh: artifact `ket-qua-kiem-thu`.
+
 ## pytest (công cụ Python)
 
     py -m pytest          # chạy mọi bài trong tests/py (pytest.ini đã chỉ đúng thư mục)

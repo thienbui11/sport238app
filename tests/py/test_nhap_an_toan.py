@@ -1,6 +1,6 @@
 """Kiểm thử nhập hàng hằng ngày an toàn (G1): lấy file từ Tải về (chép, không xóa), kiểm tra cột, số SP giảm bất thường,
 sao lưu / khôi phục, báo cáo thay đổi, nút cập nhật tự bật trang quản trị. Mọi dữ liệu ở thư mục tạm."""
-import hashlib, json, os, pathlib, shutil, socket, sqlite3, subprocess, time, urllib.request
+import hashlib, json, os, pathlib, shutil, socket, sqlite3, subprocess, sys, time, urllib.request
 
 import pandas as pd
 import pytest
@@ -192,3 +192,21 @@ def test_tu_bat_may_chu(tmp_path, monkeypatch):
     assert len(json.loads((tmp_path / "dist" / "products.json").read_text(encoding="utf-8"))["products"]) == 175
     with socket.socket() as s:
         assert s.connect_ex(("127.0.0.1", port)) != 0, "xong thì tắt máy chủ đã bật tạm"
+
+
+def test_lenh_dua_len_nhan_bien_trong_env(tmp_path, monkeypatch):
+    """DEPLOY_CMD (vd wrangler) phải nhận được biến đặt trong .env như CLOUDFLARE_API_TOKEN."""
+    data = tmp_path / "data"; data.mkdir(); shutil.copy(APP / "data" / "seed-products.json", data)
+    port = free_port(); p = bat(data, port)
+    try:
+        ghi = tmp_path / "token.txt"
+        lenh = tmp_path / "dua_len.py"
+        lenh.write_text("import os, sys\nopen(sys.argv[1], 'w').write(os.environ.get('CLOUDFLARE_API_TOKEN', ''))\n", encoding="utf-8")
+        monkeypatch.setattr(daily_update, "load_env", lambda: {**os.environ, "CLOUDFLARE_API_TOKEN": "khoa-thu", "ADMIN_PASSWORD": PASSWORD,
+                                                                "SERVER_URL": f"http://127.0.0.1:{port}", "TAI_VE": "khong", "INBOX": str(tmp_path / "inbox"),
+                                                                "DATA_DIR": str(data), "XUAT_WEB": "html", "THU_MUC_XUAT": str(tmp_path / "dist"),
+                                                                "DEPLOY_CMD": f'"{sys.executable}" "{lenh}" "{ghi}"'})
+        assert daily_update.main([]) == 0
+        assert ghi.read_text() == "khoa-thu"
+    finally:
+        tat(p)

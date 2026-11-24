@@ -61,7 +61,7 @@ Muốn có dữ liệu sạch để thử: xóa `sport-shop-app/data/shop.db*` v
 2. `sport-shop-next/backend` đã biên dịch, `mvn test` đạt (24/11/2026). Chưa chạy thật với PostgreSQL (`docker compose up`).
 3. Kế hoạch theo giai đoạn: xem `PROGRESS.md` (việc đang làm, việc tiếp), `AUDIT.md` (khảo sát, lỗi), `PROPOSALS.md` (đề xuất chờ chủ shop duyệt), `screenshots/so-sanh.html` (trước–sau).
 4. Ảnh sản phẩm: chủ shop sẽ gom ảnh vào một thư mục, đặt tên theo mã SKU (`PVN3939.jpg`, `PVN3939-1.jpg`…); cần công cụ nạp hàng loạt (tự thu nhỏ, đổi WebP, báo SP chưa có ảnh).
-5. Đưa lên mạng: đề xuất Cloudflare Pages cho web tĩnh (Vercel gói miễn phí chỉ cho phi thương mại nên không dùng). Người dùng tự lo tài khoản, tên miền. Chưa xác nhận thủ tục thông báo website theo Luật Thương mại điện tử 2025 và Nghị định 248/2026/NĐ-CP: nhắc người dùng hỏi Sở Công Thương.
+5. Đưa lên mạng: Cloudflare Pages cho web tĩnh (Vercel gói miễn phí chỉ cho phi thương mại nên không dùng); hướng dẫn và lệnh `wrangler` ở `sport-shop-app/HUONG-DAN-DUA-LEN-MANG.md` (luôn `--branch=main`; web > 1.000 tệp nên không kéo thả). Người dùng tự lo tài khoản, tên miền; không tự chạy lệnh đưa lên. Chưa xác nhận thủ tục thông báo website theo Luật Thương mại điện tử 2025 và Nghị định 248/2026/NĐ-CP: nhắc người dùng hỏi Sở Công Thương.
 6. Tự động hóa lấy dữ liệu Sapo cần API của Sapo (chưa có). Khi có, thay bước xuất Excel trong `tools/daily_update.py`.
 
 ## Việc không nên làm

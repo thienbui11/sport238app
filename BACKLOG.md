@@ -14,8 +14,8 @@ Xếp theo lợi ích ÷ công sức (cao trước). Độ khó: S < nửa ngày
 | G1 | Nhập hàng mỗi ngày: nhận file mới trong Tải về (chép, không xóa), kiểm tra file (thiếu cột, số SP giảm bất thường → dừng), sao lưu trước khi nhập, quay lại bản trước, báo cáo thay đổi HTML, một nút làm hết, hướng dẫn Task Scheduler, tìm hiểu API Sapo | Cập nhật hằng ngày an toàn, ít thao tác | M–L | pytest cho kiểm tra file, báo cáo, sao lưu/khôi phục; chạy thật với file 14/11 trên dữ liệu thử | ✅ `tests/py/test_nhap_an_toan.py` |
 | H1 | Next.js xuất web tĩnh: mỗi SP một trang (tiêu đề, mô tả, Open Graph, dữ liệu cấu trúc), sitemap, robots, tự chép ảnh, font chạy không cần mạng; không đưa trang quản trị ra ngoài | Một bản giao diện; Google và Zalo thấy từng SP | M–L | 4 bài kiểm thử cũ đạt trên thư mục xuất; có kiểm thử trang SP, meta, sitemap | ✅ |
 | S1 | Chép bảng size từ ảnh chủ shop gửi (2 người chép độc lập, đối chiếu) | Dữ liệu cho bảng size, gợi ý size | S | Tệp dữ liệu bảng size khớp ảnh 100%; hãng thiếu ghi rõ | ⬜ |
-| T1 | Kiểm thử axe + Lighthouse tự động, GitHub Actions (chưa push) | Giữ chất lượng lâu dài | M | Lệnh chạy được trên máy; có số liệu nền; tệp CI sẵn sàng | ⬜ |
-| J1 | Hướng dẫn đưa lên mạng miễn phí (điều khoản hiện hành, Cloudflare Pages, tên miền, HTTPS, thống kê) | Chủ shop tự đưa lên được | S–M | HUONG-DAN-DUA-LEN-MANG.md viết lại, có nguồn, lệnh đưa lên tự động | ⬜ |
+| T1 | Kiểm thử axe + Lighthouse tự động, GitHub Actions (chưa push) | Giữ chất lượng lâu dài | M | Lệnh chạy được trên máy; có số liệu nền; tệp CI sẵn sàng | ✅ `tests/chay_tat_ca.py`, `.github/workflows/kiem-thu.yml` (chưa đẩy) |
+| J1 | Hướng dẫn đưa lên mạng miễn phí (điều khoản hiện hành, Cloudflare Pages, tên miền, HTTPS, thống kê) | Chủ shop tự đưa lên được | S–M | HUONG-DAN-DUA-LEN-MANG.md viết lại, có nguồn, lệnh đưa lên tự động | ✅ (chưa đưa lên mạng) |
 
 ## Đợt 2 – giao diện và chức năng cho khách (trên bản chính sau khi hợp nhất)
 | Mã | Việc | Lợi ích | Độ khó | Xong khi… | TT |

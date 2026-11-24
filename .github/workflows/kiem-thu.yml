@@ -1,0 +1,83 @@
+# Kiểm thử tự động mỗi lần đẩy mã lên GitHub (miễn phí với kho công khai; kho riêng có hạn mức phút miễn phí hằng tháng).
+# Tệp này chỉ có tác dụng khi kho được đẩy lên GitHub. Không cần mật khẩu hay khóa bí mật nào.
+# Chạy lại bằng tay: tab Actions → "Kiểm thử" → Run workflow.
+name: Kiểm thử
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  kiem-thu:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      ADMIN_PASSWORD: ci-kiem-thu      # chỉ dùng cho máy chủ thử trong CI
+      PYTHONIOENCODING: utf-8
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: Cài thư viện Python và Chromium
+        run: |
+          pip install pandas openpyxl pillow pytest playwright
+          python -m playwright install --with-deps chromium
+
+      - name: Cài thư viện Node (Next.js; axe-core, Lighthouse)
+        run: |
+          npm ci --prefix sport-shop-next/frontend
+          npm ci --prefix tests
+
+      - name: Backend Java (mvn test)
+        working-directory: sport-shop-next/backend
+        run: mvn -B -q test
+
+      - name: Bật trang quản trị với dữ liệu mẫu (thư mục tạm)
+        run: |
+          mkdir -p "$RUNNER_TEMP/data"
+          cp sport-shop-app/data/seed-products.json "$RUNNER_TEMP/data/"
+          cd sport-shop-app
+          DATA_DIR="$RUNNER_TEMP/data" nohup node --disable-warning=ExperimentalWarning src/server.js > "$RUNNER_TEMP/server.log" 2>&1 &
+          for i in $(seq 100); do curl -sf http://localhost:3000/api/config > /dev/null && break; sleep 0.2; done
+          curl -sf http://localhost:3000/api/config
+
+      - name: Xuất web tĩnh bằng Next.js (bản chính)
+        run: python sport-shop-app/tools/export_next.py --server http://localhost:3000 --out "$RUNNER_TEMP/web" --site-url https://vidu.vn --updated 24/11/2026
+
+      - name: Phát web tĩnh ở cổng 3602
+        run: |
+          nohup python -m http.server 3602 --directory "$RUNNER_TEMP/web" > /dev/null 2>&1 &
+          for i in $(seq 50); do curl -sf http://localhost:3602/ > /dev/null && break; sleep 0.2; done
+
+      - name: pytest + Playwright (2 bản giao diện) + axe + SEO + trang quản trị
+        run: python tests/chay_tat_ca.py --pytest --node http://localhost:3000 --web http://localhost:3602 --out "$RUNNER_TEMP/web" --site https://vidu.vn
+
+      - name: Lighthouse (điện thoại giả lập; điểm dao động theo máy nên không chặn)
+        continue-on-error: true
+        run: python tests/lighthouse.py http://localhost:3602
+
+      - name: Lưu nhật ký và ảnh chụp
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ket-qua-kiem-thu
+          path: tests/out/
+          retention-days: 14
