@@ -67,6 +67,7 @@ export default function Header() {
           <Link className="logo" href="/#top" aria-label={`${site.name} – Trang chủ`}><img src="/logo-96.webp" alt="" width={42} height={42} /><span>{site.name}</span></Link>
           <nav className="menu" aria-label="Điều hướng">
             {MENU.map(([id, t]) => <Link key={id} data-s={id} href={`/#${id}`} className={active === id ? "on" : ""} aria-current={active === id ? "true" : undefined}>{t}</Link>)}
+            <Link href="/bang-size/" className={path === "/bang-size/" || path === "/bang-size" ? "on" : ""}>Bảng size</Link>
           </nav>
           <div className="acts">
             <button className="ib" id="hs" type="button" onClick={search} aria-label="Tìm sản phẩm"><Icon n="search" /></button>
@@ -77,6 +78,7 @@ export default function Header() {
         </div>
         <nav className="mnav" id="mnav" aria-label="Menu" hidden={!menu}>
           {MENU.map(([id, t]) => <Link key={id} href={`/#${id}`} onClick={() => setMenu(false)}>{t}<Icon n="right" /></Link>)}
+          <Link href="/bang-size/" onClick={() => setMenu(false)}>Bảng size<Icon n="right" /></Link>
           <a className="mz" data-zl href={l.zalo} target="_blank" rel="noopener" onClick={() => setMenu(false)}><Icon n="chat" /><span>Nhắn Zalo {phone(site.zalo)}</span></a>
           <p id="mhr"><Icon n="pin" /><span>{site.address}<br />Mở cửa {HOURS.time}, {HOURS.days}</span></p>
         </nav>

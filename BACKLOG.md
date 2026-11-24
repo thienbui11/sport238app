@@ -21,7 +21,7 @@ Xếp theo lợi ích ÷ công sức (cao trước). Độ khó: S < nửa ngày
 | Mã | Việc | Lợi ích | Độ khó | Xong khi… | TT |
 |---|---|---|---|---|---|
 | D1 | Hệ thống thiết kế (màu, chữ, khoảng cách, bo góc, nút, trạng thái) + làm lại trang chủ, thẻ, trang chi tiết, giỏ | Đẹp, chuyên nghiệp, dễ mua | L | Ảnh `screenshots/after/`, trang so sánh; Lighthouse mobile ≥ 90 cả 4 mục | ✅ 24/11: trang chủ 99/100/100/100, trang SP 95–100/100/100/100 |
-| E1 | Bảng size + link cạnh chỗ chọn size + gợi ý size theo chiều cao, cân nặng | Chọn đúng size | M | Kiểm thử mở đúng hãng, gợi ý đúng theo bảng | ⬜ |
+| E1 | Bảng size + link cạnh chỗ chọn size + gợi ý size theo chiều cao, cân nặng | Chọn đúng size | M | Kiểm thử mở đúng hãng, gợi ý đúng theo bảng | ✅ 24/11 |
 | E2 | Lọc theo size còn hàng, khoảng giá, nhãn hiệu (nút "Lọc" trên điện thoại) | "Size 42 còn không" tự xem | M | Kiểm thử từng bộ lọc | ⬜ |
 | E3 | Hỏi shop về SP: sao chép sẵn tên, mã, size | Khách không gõ lại | S | Kiểm thử clipboard | ⬜ |
 | E4 | Khối "Ghé shop": bản đồ (tải khi kéo tới), chỉ đường, giờ mở cửa ~~nút gọi~~ (Q2: không làm) | Khách tìm tới shop | S | Kiểm thử | 🔄 trang SP đã có địa chỉ, giờ, chỉ đường Google Maps; còn bản đồ nhúng |

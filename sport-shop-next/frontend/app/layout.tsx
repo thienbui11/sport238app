@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Link from "next/link";
 import { Be_Vietnam_Pro } from "next/font/google";
 import ArtSprite from "@/components/ArtSprite";
 import CartDrawer from "@/components/CartDrawer";
@@ -43,6 +44,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 <li><Icon n="clock" /><span id="fhr">Mở cửa {HOURS.time}, {HOURS.days}</span></li>
                 <li><Icon n="chat" /><span>Zalo <a id="fz" href={l.zalo} target="_blank" rel="noopener">{phone(site.zalo)}</a> · <a id="ff" href={l.page} target="_blank" rel="noopener">Facebook</a></span></li>
               </ul>
+              <p className="flinks"><Link href="/bang-size/">Bảng size</Link> · <Link href="/#cach-mua">Cách mua</Link> · <Link href="/#ve-shop">Về shop</Link></p>
               <p className="fnote">© {site.name}. Tồn kho cập nhật theo đợt, shop xác nhận còn hàng khi chốt đơn.</p>
             </div>
           </footer>

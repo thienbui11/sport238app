@@ -7,6 +7,7 @@ import { cartLabel } from "./Header";
 import { Icon } from "./Icons";
 import { useShop } from "./Providers";
 import { Placeholder, swatch } from "./Shop";
+import { SizeHelp } from "./SizeGuide";
 
 /** Thư viện ảnh: vuốt ngang (scroll-snap) + ảnh nhỏ bên dưới. Chưa có ảnh thì hiện hình minh họa. */
 function Gallery({ p, color }: { p: Product; color: string }) {
@@ -114,6 +115,7 @@ export default function ProductDetail({ p, updated }: { p: Product; updated: str
                 </div>
               ))}
               {anyOut && <div className="legend">Size gạch chéo là tạm hết hàng. Bạn vẫn có thể nhắn shop để hỏi.</div>}
+              <SizeHelp cat={p.cat} vendor={p.brand} name={p.name} sizes={p.sizes.filter(Boolean)} onPick={(s) => { pickSize(s); sizeBox.current?.scrollIntoView({ behavior: scrollMode(), block: "center" }); }} />
             </div>
           )}
           {!needSize && NEED_SIZE.includes(p.cat) && <div className="note">Chưa có thông tin size của sản phẩm này. Vui lòng nhắn shop để được tư vấn size.</div>}

@@ -56,3 +56,7 @@ thanh "Thêm vào giỏ" dính đáy màn hình ở trang chi tiết trên đi�
 không tràn ngang ở 320/390/768/1366 px; không chuyển động lặp vô hạn, không backdrop-filter, tôn trọng "giảm chuyển động";
 tương phản chữ các thành phần mới ở sáng/tối; khung ảnh vuông, ảnh có width/height, CLS < 0,05; nút tìm nhanh ở đầu trang.
 Ô giữ chỗ ảnh tô theo màu sản phẩm (ví dụ áo "… Đỏ" ra màu đỏ).
+
+## Bảng size và gợi ý size (chỉ bản Next.js)
+
+    py tests/test_bang_size.py http://localhost:3602   # 15 bảng khớp từng ô với data/bang-size.json; gợi ý size đúng như tra tay; nút Bảng size ở trang SP; axe; sáng/tối
