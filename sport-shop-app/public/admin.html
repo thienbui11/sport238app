@@ -120,7 +120,7 @@ $("#dg").addEventListener("cancel",function(e){if(dirty&&!confirm("Bỏ các tha
 $("#s").oninput=function(e){flt.q=e.target.value;list()};$("#ty").onchange=function(e){flt.type=e.target.value;list()};
 $("#lb").onclick=function(){post("/api/admin/login",{password:$("#pw").value}).then(function(){$("#lm").textContent="";return load()}).then(cfg).catch(function(){$("#lm").textContent="Sai mật khẩu hoặc bị khóa tạm thời"})};
 $("#pw").onkeydown=function(e){if(e.key==="Enter")$("#lb").click()};
-$("#out").onclick=function(){document.cookie="sid=;Max-Age=0;Path=/";location.reload()};
+$("#out").onclick=function(){fetch("/api/admin/logout",{method:"POST"}).catch(function(){}).then(function(){location.reload()})};
 document.querySelectorAll(".tabs button").forEach(function(b){b.onclick=function(){document.querySelectorAll(".tabs button").forEach(function(x){x.setAttribute("aria-pressed",x===b);$("#"+x.dataset.t).hidden=x!==b})}});
 $("#imp").onchange=function(e){var f=e.target.files[0];if(!f)return;$("#im").textContent="Đang nhập…";(/\.xlsx$/i.test(f.name)?(function(){var fd=new FormData();fd.append("file",f);return api("/api/admin/import",{method:"POST",body:fd})})():f.text().then(function(t){return post("/api/admin/import",JSON.parse(t))})).then(function(r){$("#im").textContent="Xong: "+r.products+" sản phẩm, "+r.variants+" phiên bản.";return load()}).catch(function(){$("#im").textContent="File không hợp lệ hoặc nhập thất bại."})};
 function cfg(){return fetch("/api/config").then(function(r){return r.json()}).then(function(c){$("#c1").value=c.shopName;$("#c2").value=c.messengerUser;$("#c3").value=c.zaloPhone})}

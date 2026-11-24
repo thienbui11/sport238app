@@ -30,6 +30,14 @@ export const DEFAULT_SITE = {
   address: "238 ấp Thuận Điền, xã Phú Túc, tỉnh Vĩnh Long (Ngã 3 KCN An Hiệp)",
 };
 export type Site = typeof DEFAULT_SITE;
+/** Giờ mở cửa (khách phải ghé shop nhận hàng nên ghi ở nhiều chỗ) */
+export const HOURS = { time: "8:00–21:00", days: "tất cả các ngày trong tuần" };
+/** Số sản phẩm hiện mỗi lần; bấm "Xem thêm" để hiện tiếp */
+export const PAGE = 20;
+/** Không chặn khi vượt tồn kho (tồn trên web có thể chưa kịp cập nhật): vẫn cho thêm, cảnh báo rõ */
+export const OVER = "Số lượng vượt tồn kho trên web, shop sẽ kiểm tra lại khi chốt đơn";
+/** Bỏ dấu tiếng Việt để tìm kiếm: "Giày" -> "giay", "Đỏ" -> "do" */
+export const fold = (s: string) => (s ?? "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d");
 export const links = (s: Site) => ({
   zalo: `https://zalo.me/${s.zalo}`,
   messenger: `https://m.me/${s.messenger}`,
@@ -42,6 +50,8 @@ export type Product = {
   id: string; name: string; cat: string; brand: string; desc: string; feat: boolean;
   variants: Variant[]; colors: string[]; sizes: string[]; min: number; max: number; stock: number;
   images: Record<string, string[]>;
+  /** chuỗi không dấu để tìm: tên, hãng, danh mục, mã, màu */
+  key: string;
 };
 
 type ApiVariant = { id: string; sku?: string; option1: string; option2: string; price: number; inventory_quantity: number };
@@ -94,10 +104,11 @@ export async function getCatalog(): Promise<{ products: Product[]; updated: stri
   const products = d.products.map((x): Product => {
     const variants = x.variants.map((v) => ({ id: v.id, sku: v.sku || v.id, size: v.option1, color: v.option2, price: v.price, stock: Math.max(0, v.inventory_quantity) }));
     const prices = variants.map((v) => v.price);
+    const name = x.display_title || x.title, cat = x.category && EMO[x.category] ? x.category : "Phụ kiện thể thao", colors = uniq(variants.map((v) => v.color));
     return {
-      id: x.id, name: x.display_title || x.title, cat: x.category && EMO[x.category] ? x.category : "Phụ kiện thể thao",
+      id: x.id, name, cat, key: fold([name, x.title, x.vendor, cat, x.id, ...variants.map((v) => v.sku), ...colors].join(" ")),
       brand: x.vendor, desc: x.description ?? "", feat: !!x.featured,
-      variants, colors: uniq(variants.map((v) => v.color)), sizes: uniq(variants.map((v) => v.size)).sort((a, b) => sizeKey(a) - sizeKey(b)),
+      variants, colors, sizes: uniq(variants.map((v) => v.size)).sort((a, b) => sizeKey(a) - sizeKey(b)),
       min: Math.min(...prices), max: Math.max(...prices), stock: variants.reduce((a, v) => a + v.stock, 0),
       images: Object.fromEntries(Object.entries(imgs).filter(([k]) => k === x.id || k.startsWith(x.id + ":"))),
     };

@@ -1,5 +1,5 @@
 import Storefront from "@/components/Shop";
-import { CATEGORIES, getCatalog, getSite, links, phone } from "@/lib/shop";
+import { CATEGORIES, getCatalog, getSite, HOURS, links, phone } from "@/lib/shop";
 
 export const revalidate = 60;
 
@@ -47,6 +47,7 @@ export default async function Home() {
           <p>{site.name} – KCN An Hiệp chuyên cung cấp quần áo, giày, phụ kiện bóng đá, cầu lông… Nhắn shop để được tư vấn size và giữ hàng, sau đó ghé shop nhận hàng.</p>
           <div className="tags">{SERVICES.map((s) => <span key={s}>{s}</span>)}</div>
           <p className="addr2">📍 {site.address}</p>
+          <p className="hours">🕗 Mở cửa {HOURS.time}, {HOURS.days}</p>
           <div className="links"><a data-map href={l.map} target="_blank" rel="noopener">Chỉ đường</a><a data-fp href={l.page} target="_blank" rel="noopener">Facebook</a><a data-zl href={l.zalo} target="_blank" rel="noopener">Zalo {phone(site.zalo)}</a></div>
         </div>
       </section>
@@ -56,7 +57,7 @@ export default async function Home() {
         <div className="steps">
           <div className="step"><i>1</i><b>Chọn món</b><span>Chọn size, màu rồi thêm vào giỏ</span></div>
           <div className="step"><i>2</i><b>Nhắn shop</b><span>Gửi danh sách qua Zalo hoặc Messenger</span></div>
-          <div className="step"><i>3</i><b>Ghé shop nhận hàng</b><span>Shop giữ hàng cho bạn, bạn ghé lấy tại cửa hàng</span></div>
+          <div className="step"><i>3</i><b>Ghé shop nhận hàng</b><span>Shop giữ hàng cho bạn, bạn ghé lấy tại cửa hàng (mở cửa {HOURS.time} hằng ngày)</span></div>
         </div>
         <div className="cta"><a className="btn" data-zl href={l.zalo} target="_blank" rel="noopener">💬 Nhắn Zalo {phone(site.zalo)}</a><a className="btn ghost" data-fb href={l.messenger} target="_blank" rel="noopener">Nhắn Messenger</a></div>
       </section>

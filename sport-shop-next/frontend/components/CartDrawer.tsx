@@ -1,22 +1,46 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { links, money } from "@/lib/shop";
+import { HOURS, links, money, OVER } from "@/lib/shop";
 import { useShop } from "./Providers";
 
 export default function CartDrawer() {
   const { site, items, total, change, clear, open, setOpen, orderText, toast } = useShop();
   const l = links(site);
   const taRef = useRef<HTMLTextAreaElement>(null);
+  const dr = useRef<HTMLElement>(null);
+  const opener = useRef<HTMLElement | null>(null);
   const [msg, setMsg] = useState<{ ok: boolean; where: string } | null>(null);
+  const [ask, setAsk] = useState(false);
   const has = items.length > 0;
   const text = has ? orderText() : "";
+  const count = items.reduce((a, i) => a + i.qty, 0);
 
   useEffect(() => {
-    const k = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    const k = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+      // Tab quay vòng trong giỏ khi giỏ đang mở
+      if (e.key === "Tab" && open && dr.current) {
+        const f = [...dr.current.querySelectorAll<HTMLElement>("button:not([disabled]), a[href], textarea")].filter((x) => x.offsetParent !== null);
+        if (!f.length) return;
+        if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+        else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+      }
+    };
     document.addEventListener("keydown", k);
     return () => document.removeEventListener("keydown", k);
-  }, [setOpen]);
+  }, [setOpen, open]);
   useEffect(() => setMsg(null), [items.length, total]);
+  useEffect(() => { if (!has) setAsk(false); }, [has]);
+
+  // Khi giỏ mở: phần còn lại của trang không bấm/Tab được; con trỏ vào giỏ; đóng thì trả con trỏ về chỗ cũ
+  useEffect(() => {
+    const d = dr.current;
+    if (!d) return;
+    d.inert = !open;
+    document.querySelectorAll<HTMLElement>("body > *").forEach((e) => { if (e !== d && e.id !== "toast" && e.id !== "veil" && e.tagName !== "SCRIPT") e.inert = open; });
+    if (open) { opener.current = document.activeElement as HTMLElement; d.querySelector<HTMLElement>("#dx")?.focus(); }
+    else { setAsk(false); opener.current?.focus?.(); opener.current = null; }
+  }, [open]);
 
   // Sao chép chắc chắn: dùng Clipboard API, nếu trình duyệt không cho thì chọn chữ trong khung và dùng lệnh copy cũ
   const copyText = async (t: string): Promise<boolean> => {
@@ -39,15 +63,18 @@ export default function CartDrawer() {
   return (
     <>
       <div className={"veil" + (open ? " on" : "")} id="veil" onClick={() => setOpen(false)} />
-      <aside className={"drawer" + (open ? " on" : "")} id="dr" aria-label="Giỏ hàng">
-        <div className="dh"><h3>Giỏ hàng của bạn</h3><button id="dx" onClick={() => setOpen(false)} aria-label="Đóng giỏ hàng">✕</button></div>
+      <aside className={"drawer" + (open ? " on" : "")} id="dr" ref={dr} role="dialog" aria-modal="true" aria-labelledby="drh">
+        <div className="dh"><h3 id="drh">Giỏ hàng của bạn</h3><button id="dx" type="button" onClick={() => setOpen(false)} aria-label="Đóng giỏ hàng">✕</button></div>
         <div className="dl" id="dl">
           {!has && <p className="empty" style={{ padding: "40px 0", textAlign: "center", color: "var(--muted)" }}>Giỏ hàng đang trống. Chọn vài món để bắt đầu nhé.</p>}
           {items.map((i, k) => (
             <div className="ci" key={i.id}>
-              <div><b>{i.name}</b><span>{money(i.price)}{i.lb && ` · ${i.lb}`}</span></div>
+              <div>
+                <b>{i.name}</b><span>{money(i.price)}{i.lb && ` · ${i.lb}`}</span>
+                {i.qty > i.stock && <div className="ow">⚠ {OVER} (web ghi còn {i.stock}).</div>}
+              </div>
               <div className="qty">
-                <button data-q="-1" data-k={k} onClick={() => change(i.id, -1)} aria-label="Giảm">−</button>{i.qty}<button data-q="1" data-k={k} onClick={() => change(i.id, 1)} aria-label="Tăng">+</button>
+                <button type="button" data-q="-1" data-k={k} onClick={() => change(i.id, -1)} aria-label={`Giảm số lượng ${i.name}`}>−</button><span>{i.qty}</span><button type="button" data-q="1" data-k={k} onClick={() => change(i.id, 1)} aria-label={`Tăng số lượng ${i.name}`}>+</button>
               </div>
             </div>
           ))}
@@ -63,10 +90,16 @@ export default function CartDrawer() {
                 : "Chưa sao chép được tự động. Hãy bấm vào khung tin nhắn ở trên, chọn hết (Ctrl+A), sao chép (Ctrl+C) rồi dán vào chat.")}
             </div>
           </div>
-          <div className="pick" id="dpick">📍 Ghé shop nhận hàng: {site.address}. Shop sẽ nhắn xác nhận và giữ hàng cho bạn ❤️</div>
+          <div className="pick" id="dpick">📍 Ghé shop nhận hàng: {site.address}. Mở cửa {HOURS.time} hằng ngày. Shop sẽ nhắn xác nhận và giữ hàng cho bạn ❤️</div>
           <a className="btn" id="zs" href={l.zalo} target="_blank" rel="noopener" onClick={() => { if (has) void run("Zalo"); }}>{has ? "📋 Sao chép đơn & mở Zalo" : "💬 Nhắn Zalo cho shop"}</a>
           <a className="btn ghost" id="fs" href={l.messenger} target="_blank" rel="noopener" onClick={() => { if (has) void run("Messenger"); }}>{has ? "Sao chép đơn & mở Messenger" : "Nhắn Messenger"}</a>
-          <button className="rm" id="cc" onClick={clear}>Xóa giỏ hàng</button>
+          {/* Hỏi lại trước khi xóa giỏ */}
+          <button className="rm" id="cc" type="button" hidden={!has || ask} onClick={() => { setAsk(true); setTimeout(() => document.getElementById("ccn")?.focus(), 0); }}>Xóa giỏ hàng</button>
+          <div className="ccq" id="ccq" role="group" aria-label="Xác nhận xóa giỏ hàng" hidden={!ask}>
+            <span id="ccm">Xóa hết {count} món trong giỏ hàng?</span>
+            <button type="button" className="yes" id="ccy" onClick={() => { clear(); setAsk(false); toast("Đã xóa giỏ hàng"); document.getElementById("dx")?.focus(); }}>Xóa hết</button>
+            <button type="button" id="ccn" onClick={() => { setAsk(false); setTimeout(() => document.getElementById("cc")?.focus(), 0); }}>Giữ lại</button>
+          </div>
         </div>
       </aside>
     </>

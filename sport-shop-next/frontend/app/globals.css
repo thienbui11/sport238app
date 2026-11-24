@@ -1,8 +1,8 @@
 /* ===== MÀU SẮC theo logo SPORT 238 (đỏ đô + xám đen). Đổi màu chủ đạo chỉ cần sửa các biến ở đây ===== */
 :root{--accent:#a3122a;--accent2:#7f0d1f;--soft:#fbe9ec;--bg:#faf6f6;--surface:#fff;--ink:#1f1d1e;--muted:#6b6264;--line:#ecdfe1;--on:#fff;--dark:#232326;--danger:#e11d48;--warn:#b45309;--warnbg:#fef3c7;
 --blob1:#f2a3ab;--blob2:#a3122a;--shadow:0 12px 32px -16px rgba(120,20,35,.3);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--accent:#d93a50;--accent2:#ff9aa6;--soft:#3a1a20;--bg:#151213;--surface:#1f1a1b;--ink:#f3eeee;--muted:#b3a8aa;--line:#3a2b2e;--dark:#0f0d0e;--warnbg:#3b2f10;--warn:#fbbf24;--blob1:#7a1626}}
-:root[data-theme="dark"]{--accent:#d93a50;--accent2:#ff9aa6;--soft:#3a1a20;--bg:#151213;--surface:#1f1a1b;--ink:#f3eeee;--muted:#b3a8aa;--line:#3a2b2e;--dark:#0f0d0e;--warnbg:#3b2f10;--warn:#fbbf24;--blob1:#7a1626}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--accent:#d8394f;--accent2:#ff9aa6;--soft:#3a1a20;--bg:#151213;--surface:#1f1a1b;--ink:#f3eeee;--muted:#b3a8aa;--line:#3a2b2e;--dark:#0f0d0e;--warnbg:#3b2f10;--warn:#fbbf24;--blob1:#7a1626}}
+:root[data-theme="dark"]{--accent:#d8394f;--accent2:#ff9aa6;--soft:#3a1a20;--bg:#151213;--surface:#1f1a1b;--ink:#f3eeee;--muted:#b3a8aa;--line:#3a2b2e;--dark:#0f0d0e;--warnbg:#3b2f10;--warn:#fbbf24;--blob1:#7a1626}
 *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:calc(84px + env(safe-area-inset-top,0px))}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.6 var(--font,"Be Vietnam Pro"),system-ui,sans-serif;-webkit-font-smoothing:antialiased}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--surface);z-index:60}
@@ -137,3 +137,94 @@ background-image:radial-gradient(900px 520px at 88% 18%,rgba(214,40,60,.6),trans
 .clb:hover{border-color:var(--ink)}.clb[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}.clb.x{opacity:.55;text-decoration:line-through}
 .stk{font-size:13px;color:var(--muted);margin:2px 0 0}.stk b{color:var(--ink);font-size:14px}.stk.out{color:var(--danger)}
 .opt{line-height:1.25;text-align:center}.opt small{display:block;font-size:11px;font-weight:500;opacity:.75}
+
+/* ===== GIAI ĐOẠN 1 (24/11/2026): điện thoại 2 cột, menu điện thoại, thanh dưới, nút đủ lớn cho ngón tay ===== */
+/* nút bấm tối thiểu 44 px */
+.szb{min-width:44px;min-height:44px;font-size:14px;border-radius:12px;padding:4px 10px}
+.clb{min-height:44px;padding:6px 14px;font-size:13px}
+.qty button{width:44px;height:44px;font-size:20px}
+.dh button{width:44px;height:44px;border-radius:50%}
+.cpb{min-height:44px;padding:8px 14px}
+.back{display:inline-flex;align-items:center;min-height:44px}
+.rm{min-height:44px;padding:0 12px}
+/* giờ mở cửa */
+.strip .hrs{white-space:nowrap;color:#d6cfd1}
+.hours{color:var(--muted);font-size:14px;margin:-10px 0 18px}
+/* nút Zalo trên thanh đầu trang (máy tính) */
+.hz{display:inline-flex;align-items:center;gap:6px;height:46px;padding:0 18px;border-radius:99px;background:var(--accent);color:var(--on);font-weight:700;text-decoration:none;white-space:nowrap}
+.cartbtn{flex:none}
+/* nút menu và bảng menu cho điện thoại, máy tính bảng */
+.mbtn{display:none;flex:none;width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:var(--surface);font-size:22px;line-height:1;place-items:center}
+.mbtn[aria-expanded="true"]{background:var(--accent);color:var(--on);border-color:var(--accent)}
+.mnav{position:absolute;left:0;right:0;top:100%;background:var(--surface);border-bottom:1px solid var(--line);box-shadow:0 18px 30px -18px rgba(0,0,0,.35);padding:8px 20px 16px}
+.mnav a{display:flex;align-items:center;min-height:48px;padding:0 6px;font-weight:700;text-decoration:none;color:var(--ink);border-bottom:1px solid var(--line)}
+.mnav a:last-of-type{border-bottom:0}.mnav .mz{color:var(--accent2)}
+.mnav p{margin:10px 6px 0;font-size:14px;color:var(--muted)}
+@media(max-width:1000px){.mbtn{display:grid}}
+@media(min-width:1001px){.mnav{display:none!important}}
+/* nút Zalo nổi: chỉ hiện khi màn hình đủ rộng để nằm ngoài vùng sản phẩm */
+@media(max-width:1339px){.fab{display:none}}
+/* thanh dưới cùng trên điện thoại: Zalo + giỏ hàng (thay cho nút nổi, không che nút nào) */
+.bbar{display:none}
+@media(max-width:860px){
+ .hz{display:none}
+ .bbar{display:grid;grid-template-columns:1fr 1fr;gap:10px;position:fixed;left:0;right:0;bottom:0;z-index:45;background:var(--surface);border-top:1px solid var(--line);padding:8px 16px calc(8px + env(safe-area-inset-bottom,0px));box-shadow:0 -10px 24px -18px rgba(0,0,0,.35)}
+ .bbar a,.bbar button{display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;border-radius:14px;font-weight:700;text-decoration:none;font-size:15px}
+ .bbar a{background:var(--accent);color:var(--on);border:0}
+ .bbar button{background:var(--surface);color:var(--ink);border:2px solid var(--line)}
+ .bbar b{min-width:22px;height:22px;border-radius:99px;background:var(--danger);color:#fff;font-size:12px;display:grid;place-items:center;padding:0 6px}
+ body{padding-bottom:calc(66px + env(safe-area-inset-bottom,0px))}
+ html{scroll-padding-bottom:80px}
+ .toast{bottom:auto;top:calc(84px + env(safe-area-inset-top,0px));transform:translate(-50%,-20px);max-width:calc(100% - 32px);text-align:center}
+}
+/* xem thêm */
+.more{display:flex;justify-content:center;margin:22px 0 4px}.more .btn{min-width:min(100%,340px)}
+/* cảnh báo vượt tồn kho trong giỏ */
+.ow{margin-top:6px;font-size:12.5px;line-height:1.4;color:var(--warn);background:var(--warnbg);border-radius:8px;padding:5px 8px;font-weight:600}
+/* hỏi lại trước khi xóa giỏ */
+.ccq{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;font-size:14px;margin-top:4px}
+.ccq span{flex:1 0 100%;text-align:center}
+.ccq button{min-height:44px;padding:0 18px;border-radius:99px;font-weight:700;border:2px solid var(--line);background:var(--surface)}
+.ccq .yes{background:var(--danger);border-color:var(--danger);color:#fff}
+/* ĐIỆN THOẠI: phần đầu gọn, danh mục một hàng vuốt ngang, lưới 2 cột */
+@media(max-width:600px){
+ .wrap{padding:0 16px}
+ .nav .wrap{height:64px;gap:10px}.logo{font-size:19px;gap:8px}.logo img{width:38px;height:38px}
+ .herobg .hero{padding:22px 0 8px;gap:0}.art{display:none}
+ .herobg h1{font-size:31px;margin:12px 0 10px}.hero p{font-size:15px;margin:0 0 16px}
+ .herobg .pill{font-size:12px;padding:5px 12px}
+ .hbtns{display:grid;grid-template-columns:1.3fr 1fr;gap:10px}.hbtns .btn{padding:12px 10px;font-size:15px}
+ .herobg .stats{grid-template-columns:repeat(4,1fr);gap:8px;padding:6px 0 18px}
+ .stat{padding:10px 4px;border-radius:14px}.stat b{font-size:19px}.stat span{font-size:11px;line-height:1.3;display:block}
+ .ribbon{padding:9px 0;font-size:12px}
+ .sec{padding-top:30px}.sec h2{font-size:25px}.sec .sub{font-size:14px;margin-bottom:14px}.eyebrow{font-size:11px}
+ .cats{display:flex;overflow-x:auto;gap:10px;padding:2px 2px 10px;scroll-snap-type:x proximity;scrollbar-width:none}
+ .cat{flex:0 0 132px;min-height:84px;padding:10px 12px;border-radius:18px;scroll-snap-align:start}
+ .cat i{font-size:38px;right:6px;top:2px}.cat b{font-size:13.5px;max-width:100%}.cat span{font-size:11.5px}
+ .tools{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}.search{grid-column:1/-1;padding:0 16px}
+ .search input{padding:11px 0}.sel{padding:10px 12px;font-size:14px;width:100%;min-height:44px}
+ .chips{gap:8px;padding-bottom:8px}.chip{padding:8px 14px;font-size:14px;min-height:44px}
+ .count{margin:2px 2px 10px}
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+ .card{border-radius:16px}.card:hover{transform:none}
+ .badge{top:8px;font-size:11px;padding:3px 9px}.badge.l{left:8px}.badge.r{right:8px}
+ .thumb .ph{font-size:56px}
+ .cinfo{padding:10px 10px 12px;gap:6px}
+ .cinfo small{font-size:11.5px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+ .cinfo h3{font-size:14.5px;min-height:0}
+ .cl,.sz{gap:6px;margin:0}.clb{font-size:12px;padding:6px 10px;max-width:100%}
+ .stk{font-size:12px}.stk b{font-size:13px}
+ .price{font-size:17px;margin:0 0 4px}
+ .cinfo .btn{padding:10px 6px;font-size:14px;min-height:44px;border-radius:12px}
+ .promo{padding:24px 20px}.about{padding:26px 18px}
+ .det{gap:18px}.gal .main{border-radius:20px}.gal .main .ph{font-size:110px}
+}
+@media(max-width:600px){.strip .addr{display:none}.strip .hrs{margin-right:auto}}
+
+@media(max-width:600px){
+ .strip{font-size:12.5px}.strip .wrap{gap:12px}
+ .cat{min-height:104px;padding-top:44px}.cat i{font-size:30px;top:8px;right:10px}
+}
+@media(max-width:400px){.strip #sfb{display:none}}
+@media(max-width:600px){.cat{justify-content:flex-start}}
+@media(max-width:600px){.cat i{line-height:1}}

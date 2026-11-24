@@ -10,6 +10,9 @@ except Exception:
 prods=api["products"]
 print("API:",len(prods),"sản phẩm")
 fails=[];errs=[]
+def show_all(pg):
+    # danh sách hiện 20 sản phẩm mỗi lần; bấm "Xem thêm" cho tới hết
+    while pg.locator("#more").is_visible(): pg.click("#more button"); pg.wait_for_timeout(40)
 def fail(m):
     fails.append(m); print("  ✗",m)
 with sync_playwright() as p:
@@ -38,10 +41,10 @@ with sync_playwright() as p:
         if got!=want:fail(f"{sel}: {got} != {want}")
     # 4. lọc theo danh mục
     for c in ["Cờ, Cúp, Huy Chương","Giày bóng đá","Quần áo CLB/Đội tuyển","Quần áo không logo","Quần áo trẻ em","Phụ kiện thể thao","Vớ/tất ống đồng","Cầu lông"]:
-        pg.click(f".cat[data-go='{c}']");pg.wait_for_timeout(120)
+        pg.click(f".cat[data-go='{c}']");pg.wait_for_timeout(120);show_all(pg)
         got=pg.eval_on_selector_all("#grid .card","e=>e.length");want=sum(1 for x in prods if x["category"]==c)
         if got!=want:fail(f"danh mục {c}: hiện {got}, đúng {want}")
-    pg.click(".chip[data-c='Tất cả']");pg.wait_for_timeout(100)
+    pg.click(".chip[data-c='Tất cả']");pg.wait_for_timeout(100);show_all(pg)
     if pg.eval_on_selector_all("#grid .card","e=>e.length")!=len(prods):fail("chip Tất cả sai số lượng")
     # 6. chip size trên thẻ
     withsz=sum(1 for x in prods if any(v["option1"] for v in x["variants"]))
@@ -88,7 +91,7 @@ with sync_playwright() as p:
     if first:first.click()
     ot=pg.evaluate("document.querySelector('#dpick').textContent");print("Ghi chú nhận hàng:",ot[:60],"…")
     pg.screenshot(path=OUTDIR+"/t_cart.png")
-    pg.click("#cc");pg.wait_for_timeout(100)
+    pg.click("#cc");pg.click("#ccy");pg.wait_for_timeout(100)
     # 8. điện thoại
     m=b.new_context(viewport={"width":390,"height":844}).new_page()
     m.goto(B+"/");m.wait_for_selector(".cat")

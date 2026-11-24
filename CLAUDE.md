@@ -6,6 +6,8 @@
 - Cửa hàng: **SPORT 238 – KCN An Hiệp**, 238 ấp Thuận Điền, xã Phú Túc, tỉnh Vĩnh Long (Ngã 3 KCN An Hiệp). Zalo 0962374770. Facebook `facebook.com/Sport238` (Messenger `m.me/Sport238`). Tên Facebook có thể nhập cả đường dẫn; luôn chuẩn hóa về tên trang.
 - Web **chỉ hiển thị sản phẩm**. Khách chọn size/màu, thêm giỏ, **sao chép đơn** rồi nhắn shop qua Zalo/Messenger. Không thanh toán online.
 - **Shop không giao hàng.** Không dùng chữ "ship", "giao hàng", "phí giao", "gửi hàng". Luôn ghi **"ghé shop nhận hàng"** (kèm địa chỉ).
+- **Giờ mở cửa: 8:00–21:00, tất cả các ngày trong tuần** (chủ shop xác nhận 24/11/2026). Sửa ở `CFG.hours` trong `storefront.template.html` và `HOURS` trong `sport-shop-next/frontend/lib/shop.ts`.
+- **Không chặn cứng khi đặt vượt tồn kho** (chủ shop quyết định 24/11/2026): vẫn cho thêm vào giỏ, hiện cảnh báo "Số lượng vượt tồn kho trên web, shop sẽ kiểm tra lại khi chốt đơn", tin nhắn gửi shop có ghi chú. Biến thể tồn 0 thì vẫn không thêm được (ghi "Tạm hết hàng").
 - Dữ liệu hàng lấy từ **Sapo POS** bằng file Excel (nút "Xuất file"), **không có API**. Tồn kho là ảnh chụp theo đợt (ghi "Tồn kho cập nhật ngày …", shop xác nhận khi chốt đơn).
 - **Tuyệt đối không đưa giá nhập, giá vốn, giá buôn lên web.** Bộ đọc Excel chỉ đọc giá bán lẻ và tồn kho. Đừng thêm các cột khác vào API công khai.
 - Shop còn bán đồ mẹ và bé trong cùng Sapo: các sản phẩm đó phải bị loại (xem `classify`).
@@ -44,7 +46,9 @@ cd ../backend && mvn test && docker compose -f ../docker-compose.yml up --build
 Muốn có dữ liệu sạch để thử: xóa `sport-shop-app/data/shop.db*` và `data/uploads`, rồi chạy lại `npm start` (tự nạp `data/seed-products.json`).
 
 ## Kiểm thử (bắt buộc trước khi báo xong)
-- Giao diện cửa hàng: chạy ba bài trong `tests/` (xem `tests/README.md`); phải ra "KẾT QUẢ: 0 lỗi" trên cả máy tính lẫn điện thoại.
+- Giao diện cửa hàng: chạy **bốn** bài trong `tests/` (`test_all`, `test_feat`, `test_cards`, `test_mobile`; xem `tests/README.md`) trên máy chủ Node (3000), web tĩnh và Next.js (3100); phải ra "KẾT QUẢ: 0 lỗi". `test_mobile` chạy cả chế độ sáng lẫn tối và đo tương phản, cỡ nút ≥ 44 px.
+- Danh sách hiện 20 sản phẩm mỗi lần (nút "Xem thêm" `#more button`): bài kiểm thử nào cần đếm toàn bộ thì gọi `show_all(pg)` trước.
+- Build lại Next.js: **tắt máy chủ `next start` trước**, xóa `.next`, rồi build; máy chủ cũ còn chạy sẽ ghi đè trang cũ vào `.next` (trang chi tiết mất CSS).
 - Sửa quy tắc đọc Excel: đối chiếu Python và Java như trên.
 - Mở trình duyệt xem thật những chỗ vừa sửa (ảnh chụp, điện thoại 390 px, chế độ tối).
 - Trước khi kiểm thử, xem cổng đã trống chưa (`netstat -ano | findstr :3100`). Trên Windows, tắt cửa sổ lệnh có thể để sót tiến trình `node` vẫn phát bản build cũ, gây lỗi giả ("module factory is not available", bấm nút không ăn). Tắt hẳn bằng số tiến trình (PID).
@@ -52,8 +56,8 @@ Muốn có dữ liệu sạch để thử: xóa `sport-shop-app/data/shop.db*` v
 ## Tình trạng hiện tại và việc nên làm tiếp
 1. `sport-shop-next/frontend` đã nâng lên Next.js 16.4.6 (24/11/2026; `npm audit` 0 lỗi), build và đạt cả ba bài kiểm thử Playwright (chạy `npx next start -p 3100` rồi dùng `http://localhost:3100`). Bản React dùng cùng `id`/`data-*`, cùng khóa giỏ `cart5` (`[{id,lb,qty}]`) và có `/products.json` như bản HTML; đường dẫn cũ `/#p-MÃ` tự chuyển sang `/san-pham/MÃ`. Khi sửa giao diện, giữ các mã này ở cả hai bản.
 2. `sport-shop-next/backend` đã biên dịch, `mvn test` đạt (24/11/2026). Chưa chạy thật với PostgreSQL (`docker compose up`).
-3. Hỏi người dùng có giữ việc **chặn đặt quá số tồn** trong giỏ không (tồn kho có thể chưa kịp cập nhật nên có thể làm mất đơn).
-4. Ảnh sản phẩm: hiện chưa có ảnh thật. Hỏi người dùng đang lưu ảnh ở đâu (thư mục máy hay link Facebook) để nạp hàng loạt.
+3. Kế hoạch theo giai đoạn: xem `PROGRESS.md` (việc đang làm, việc tiếp), `AUDIT.md` (khảo sát, lỗi), `PROPOSALS.md` (đề xuất chờ chủ shop duyệt), `screenshots/so-sanh.html` (trước–sau).
+4. Ảnh sản phẩm: chủ shop sẽ gom ảnh vào một thư mục, đặt tên theo mã SKU (`PVN3939.jpg`, `PVN3939-1.jpg`…); cần công cụ nạp hàng loạt (tự thu nhỏ, đổi WebP, báo SP chưa có ảnh).
 5. Đưa lên mạng: đề xuất Cloudflare Pages cho web tĩnh (Vercel gói miễn phí chỉ cho phi thương mại nên không dùng). Người dùng tự lo tài khoản, tên miền. Chưa xác nhận thủ tục thông báo website theo Luật Thương mại điện tử 2025 và Nghị định 248/2026/NĐ-CP: nhắc người dùng hỏi Sở Công Thương.
 6. Tự động hóa lấy dữ liệu Sapo cần API của Sapo (chưa có). Khi có, thay bước xuất Excel trong `tools/daily_update.py`.
 

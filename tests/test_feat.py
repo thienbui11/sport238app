@@ -47,6 +47,8 @@ def run(label,viewport,touch=False):
         ok(pg.inner_text("#cn")=="1","thêm vào giỏ từ thẻ: giỏ có 1 món")
         # --- 2. thêm từ trang chi tiết ---
         pg.goto(B+"/#p-"+single_sized["id"]);pg.wait_for_selector(".det h1")
+        ok(pg.locator(f".opt[data-sz='{size_ok['option1']}'][aria-pressed='true']").count()==1,"sang trang chi tiết: giữ size đã chọn trên thẻ")
+        pg.reload();pg.wait_for_selector(".det h1")   # tải lại trang = chưa chọn gì
         pg.click("#ad");ok("chưa chọn size" in pg.inner_text("#toast").lower() or "Bạn chưa chọn size" in pg.inner_text("#toast"),"trang chi tiết: chưa chọn size → báo lỗi")
         pg.click(f".opt[data-sz='{size_ok['option1']}']");pg.click("#ad");pg.wait_for_timeout(100)
         ok(pg.inner_text("#cn")=="2","trang chi tiết: chọn size rồi thêm → giỏ có 2 món")
@@ -100,7 +102,8 @@ def run(label,viewport,touch=False):
         ok(pg2.is_visible("#cpok"),"vẫn hiện thông báo kết quả: "+pg2.inner_text("#cpok")[:70])
         pg2.close()
         # --- 8. giỏ trống ---
-        pg.click("#cc");pg.wait_for_timeout(150)
+        pg.click("#cc");pg.wait_for_timeout(100);ok(pg.is_visible("#ccq") and pg.locator(".ci").count()>0,"bấm Xóa giỏ hàng → hỏi lại trước khi xóa")
+        pg.click("#ccy");pg.wait_for_timeout(150)
         ok(pg.is_hidden("#ordbox"),"giỏ trống: ẩn khung tin nhắn")
         ok("Nhắn Zalo cho shop" in pg.inner_text("#zs"),"giỏ trống: nút Zalo chỉ để nhắn hỏi shop")
         # tràn ngang
