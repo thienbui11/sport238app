@@ -48,13 +48,15 @@ export default function Providers({ site, children }: { site: Site; children: Re
   const ret = useRef<{ y: number; url: string } | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  // Đọc giỏ đã lưu, rồi lấy danh mục mới nhất để có giá, tồn kho; bỏ các món không còn bán
+  // Đọc giỏ đã lưu, rồi lấy danh mục mới nhất để có giá, tồn kho; bỏ các món không còn bán.
+  // Giỏ trống thì không tải danh mục (đỡ ~130 KB cho lần ghé đầu tiên): món thêm vào giỏ đã mang sẵn giá, tồn kho.
   useEffect(() => {
     let saved: Saved[] = [];
     try { saved = JSON.parse(localStorage.getItem(KEY) ?? "[]"); } catch {}
     if (!Array.isArray(saved)) saved = [];
     setCart(saved);
     setLoaded(true);
+    if (!saved.length) { setVm((old) => old ?? {}); return; }
     fetch("/products.json").then((r) => (r.ok ? r.json() : Promise.reject())).then((d: ApiCatalog) => {
       const m = toVM(d);
       setVm((old) => ({ ...m, ...Object.fromEntries(Object.entries(old ?? {}).filter(([k]) => !m[k])) }));
@@ -92,11 +94,11 @@ export default function Providers({ site, children }: { site: Site; children: Re
     if (i.stock <= 0) { toast("Sản phẩm này tạm hết hàng"); return; }
     const qty = (cart.find((x) => x.id === i.id)?.qty ?? 0) + 1;
     setCart((list) => (list.some((x) => x.id === i.id) ? list.map((x) => (x.id === i.id ? { ...x, qty: x.qty + 1 } : x)) : [...list, { id: i.id, lb: i.label, qty: 1 }]));
-    toast(qty > i.stock ? `⚠ ${OVER}` : "Đã thêm vào giỏ hàng");
+    toast(qty > i.stock ? OVER : "Đã thêm vào giỏ hàng");
   };
   const change = (id: string, d: number) => {
     const cur = cart.find((x) => x.id === id);
-    if (cur && d > 0 && cur.qty + d > stockOf(id)) toast(`⚠ ${OVER}`);
+    if (cur && d > 0 && cur.qty + d > stockOf(id)) toast(OVER);
     setCart((list) => list.map((x) => (x.id === id ? { ...x, qty: x.qty + d } : x)).filter((x) => x.qty > 0));
   };
   const total = items.reduce((a, i) => a + i.price * i.qty, 0);

@@ -1,24 +1,56 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { colorStock, defaultColor, HOURS, imgsFor, links, money, NEED_SIZE, optLabel, priceText, sizeGroup, type Product } from "@/lib/shop";
+import { useEffect, useRef, useState } from "react";
+import { colorStock, defaultColor, HOURS, imgsFor, links, money, NEED_SIZE, optLabel, phone, priceText, sizeGroup, type Product } from "@/lib/shop";
+import { cartLabel } from "./Header";
+import { Icon } from "./Icons";
 import { useShop } from "./Providers";
-import { Placeholder } from "./Shop";
+import { Placeholder, swatch } from "./Shop";
+
+/** Thư viện ảnh: vuốt ngang (scroll-snap) + ảnh nhỏ bên dưới. Chưa có ảnh thì hiện hình minh họa. */
+function Gallery({ p, color }: { p: Product; color: string }) {
+  const imgs = imgsFor(p, color);
+  const track = useRef<HTMLDivElement>(null);
+  const [i, setI] = useState(0);
+  useEffect(() => { setI(0); track.current?.scrollTo({ left: 0 }); }, [color]);
+  const go = (k: number) => { const t = track.current; if (t) t.scrollTo({ left: k * t.clientWidth, behavior: "smooth" }); setI(k); };
+  const onScroll = () => { const t = track.current; if (t && t.clientWidth) setI(Math.round(t.scrollLeft / t.clientWidth)); };
+  return (
+    <div className="gal">
+      <div className={"track" + (imgs.length ? "" : " noimg")} ref={track} onScroll={imgs.length > 1 ? onScroll : undefined} tabIndex={imgs.length > 1 ? 0 : undefined}
+        role={imgs.length > 1 ? "region" : undefined} aria-label={imgs.length > 1 ? `Ảnh ${p.name}, vuốt để xem thêm` : undefined}>
+        {imgs.length
+          ? imgs.map((u, k) => <div className="slide" key={u}><img src={u} alt={k ? `${p.name} – ảnh ${k + 1}` : p.name} width={800} height={800} loading={k ? "lazy" : "eager"} decoding="async" /></div>)
+          : <div className="slide"><Placeholder p={p} color={color} /></div>}
+      </div>
+      {imgs.length > 1 && (
+        <>
+          <div className="dots" aria-hidden="true">{imgs.map((u, k) => <span key={u} className={k === i ? "on" : ""} />)}</div>
+          <div className="thumbs">
+            {imgs.map((u, k) => <button key={u} type="button" data-i={k} aria-pressed={k === i} aria-label={`Xem ảnh ${k + 1}`} onClick={() => go(k)}><img src={u} alt="" width={68} height={68} loading="lazy" /></button>)}
+          </div>
+        </>
+      )}
+      {!imgs.length && <p className="phnote">Hình minh họa, chưa có ảnh thật. Nhắn shop để xem ảnh sản phẩm.</p>}
+    </div>
+  );
+}
 
 export default function ProductDetail({ p, updated }: { p: Product; updated: string }) {
-  const { site, add, toast, picks, setPick, ret } = useShop();
+  const { site, add, toast, picks, setPick, ret, count, setOpen } = useShop();
   const router = useRouter();
   const l = links(site);
   const needSize = p.sizes.some(Boolean);
+  const multi = p.colors.length > 1, lbl = optLabel(p);
   // Giữ màu, size khách đã chọn trên thẻ sản phẩm
   const init = picks[p.id];
   const [color, setColor] = useState(init?.c ?? defaultColor(p));
   const [size, setSize] = useState<string | null>(() => (needSize ? (init?.s && p.variants.some((x) => x.color === (init?.c ?? defaultColor(p)) && x.size === init.s) ? init.s : null) : ""));
-  const [i, setI] = useState(0);
+  const [need, setNeed] = useState(false);
+  const sizeBox = useRef<HTMLDivElement>(null);
 
   const v = p.variants.find((x) => x.color === color && x.size === size);
-  const imgs = imgsFor(p, color);
   const groups: Record<string, string[]> = {};
   p.sizes.filter(Boolean).forEach((s) => (groups[sizeGroup(p.cat, s)] ??= []).push(s));
   const isOut = (s: string) => { const x = p.variants.find((y) => y.color === color && y.size === s); return !x || x.stock <= 0; };
@@ -27,70 +59,83 @@ export default function ProductDetail({ p, updated }: { p: Product; updated: str
 
   const pickColor = (c: string) => {
     let s = size;
-    setColor(c); setI(0);
+    setColor(c);
     if (needSize && !p.variants.some((x) => x.color === c && x.size === size && x.stock > 0)) { s = null; setSize(null); }
     keep(c, s);
   };
-  const pickSize = (s: string) => { setSize(s); keep(color, s); };
+  const pickSize = (s: string) => { setSize(s); setNeed(false); keep(color, s); };
   const addToCart = () => {
-    if (!v) return toast(needSize ? "Bạn chưa chọn size" : "Sản phẩm tạm hết hàng");
+    if (!v) {
+      if (needSize) { setNeed(true); sizeBox.current?.scrollIntoView({ behavior: "smooth", block: "center" }); }
+      return toast(needSize ? "Bạn chưa chọn size" : "Sản phẩm tạm hết hàng");
+    }
     if (v.stock <= 0) return;
-    const label = [v.size && `Size ${v.size}`, p.colors.length > 1 && `${optLabel(p)} ${v.color}`].filter(Boolean).join(" · ");
+    const label = [v.size && `Size ${v.size}`, multi && `${lbl} ${v.color}`].filter(Boolean).join(" · ");
     add({ id: v.id, name: p.name, label, sku: v.sku, price: v.price, stock: v.stock });
   };
-  const status = !v ? (needSize ? `Tồn kho${p.colors.length > 1 ? ` ${optLabel(p).toLowerCase()} này` : ""}: ${colorStock(p, color)} sản phẩm. Chọn size để xem từng size.` : "Tạm hết hàng")
+  const status = !v ? (needSize ? `Tồn kho${multi ? ` ${lbl.toLowerCase()} này` : ""}: ${colorStock(p, color)} sản phẩm. Chọn size để xem từng size.` : "Tạm hết hàng")
     : v.stock <= 0 ? "Tạm hết hàng. Nhắn shop để hỏi khi nào có hàng." : `Còn ${v.stock} sản phẩm`;
-  const bad = (!!v && v.stock <= 0) || (!v && !needSize);
+  const bad = (!!v && v.stock <= 0) || (!v && !needSize) || (!v && colorStock(p, color) <= 0);
 
   return (
     <div className="wrap">
       {/* Đến từ danh sách thì quay lại đúng chỗ đang xem; mở thẳng link thì về danh sách sản phẩm */}
-      <Link className="back" id="bk" href="/#san-pham" onClick={(e) => { if (ret.current) { e.preventDefault(); router.back(); } }}>← Tất cả sản phẩm</Link>
+      <Link className="back" id="bk" href="/#san-pham" onClick={(e) => { if (ret.current) { e.preventDefault(); router.back(); } }}><Icon n="left" />Tất cả sản phẩm</Link>
       <div className="det">
-        <div className="gal">
-          <div className="main">{imgs.length ? <img src={imgs[i] ?? imgs[0]} alt={p.name} /> : <Placeholder p={p} />}</div>
-          {imgs.length > 1 && (
-            <div className="thumbs">
-              {imgs.map((u, k) => <button key={u} data-i={k} aria-pressed={k === i} aria-label={`Ảnh ${k + 1}`} onClick={() => setI(k)}><img src={u} alt="" /></button>)}
-            </div>
-          )}
-        </div>
-        <div>
-          <span className="pill">{p.cat}{p.brand && ` · ${p.brand}`}</span>
+        <Gallery p={p} color={color} />
+        <div className="pinfo">
+          <p className="crumb"><span className="pill">{p.cat}</span>{p.brand && <span>Hãng {p.brand}</span>}</p>
           <h1>{p.name}</h1>
           <div className="bigp">{v ? money(v.price) : priceText(p)}</div>
-          {p.colors.length > 1 ? (
-            <>
-              <div className="lab">{optLabel(p) === "Màu" ? "Màu sắc" : "Phân loại"}: <small>{color}</small></div>
+          {multi ? (
+            <div className="grp">
+              <div className="lab">{lbl === "Màu" ? "Màu sắc" : "Phân loại"}: <small>{color}</small></div>
               <div className="opts">{p.colors.map((c) => {
                 const n = colorStock(p, c);
-                return <button key={c} className="opt" data-col={c} aria-pressed={c === color} onClick={() => pickColor(c)}>{c}<small> {n ? `còn ${n}` : "hết"}</small></button>;
+                return <button key={c} type="button" className="opt" data-col={c} style={swatch(c)} aria-pressed={c === color} onClick={() => pickColor(c)}>{c}<small> {n ? `còn ${n}` : "hết"}</small></button>;
               })}</div>
-            </>
-          ) : p.colors[0] !== "Mặc định" && <div className="lab">{optLabel(p) === "Màu" ? "Màu sắc" : "Phân loại"}: <small>{p.colors[0]}</small></div>}
-          {Object.entries(groups).map(([g, list]) => (
-            <div key={g}>
-              <div className="lab">{g || "Chọn size"}</div>
-              <div className="opts">
-                {list.map((s) => {
-                  const x = p.variants.find((y) => y.color === color && y.size === s), o = !x || x.stock <= 0;
-                  return (
-                    <button key={s} className={"opt" + (o ? " out" : "")} data-sz={s} aria-pressed={size === s} title={o ? "Tạm hết hàng" : undefined} onClick={() => pickSize(s)}>
-                      {s}<small> {o ? "hết" : `còn ${x!.stock}`}</small>
-                    </button>
-                  );
-                })}
-              </div>
             </div>
-          ))}
-          {anyOut && <div className="legend">Size gạch chéo là tạm hết hàng. Bạn vẫn có thể nhắn shop để hỏi.</div>}
+          ) : p.colors[0] !== "Mặc định" && <div className="grp"><div className="lab">{lbl === "Màu" ? "Màu sắc" : "Phân loại"}: <small>{p.colors[0]}</small></div></div>}
+          {needSize && (
+            <div className={"grp" + (need ? " need" : "")} ref={sizeBox}>
+              {Object.entries(groups).map(([g, list]) => (
+                <div key={g} className="sg">
+                  <div className="lab">{g ? `Size ${g.toLowerCase()}` : "Chọn size"}</div>
+                  <div className="opts">
+                    {list.map((s) => {
+                      const x = p.variants.find((y) => y.color === color && y.size === s), o = !x || x.stock <= 0;
+                      return (
+                        <button key={s} type="button" className={"opt" + (o ? " out" : "")} data-sz={s} aria-pressed={size === s} title={o ? "Tạm hết hàng" : undefined} onClick={() => pickSize(s)}>
+                          {s}<small> {o ? "hết" : `còn ${x!.stock}`}</small>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+              {anyOut && <div className="legend">Size gạch chéo là tạm hết hàng. Bạn vẫn có thể nhắn shop để hỏi.</div>}
+            </div>
+          )}
           {!needSize && NEED_SIZE.includes(p.cat) && <div className="note">Chưa có thông tin size của sản phẩm này. Vui lòng nhắn shop để được tư vấn size.</div>}
-          <div className={"st" + (bad ? " out" : "")}>{status}{v && ` · Mã ${v.sku}`}</div>
-          {p.desc && <p className="desc" style={{ margin: "0 0 12px", color: "var(--ink)" }}>{p.desc}</p>}
-          <p className="desc" style={{ fontSize: 13 }}>{updated && `Tồn kho cập nhật ngày ${updated}. `}Shop xác nhận còn hàng khi chốt đơn.</p>
-          <button className="btn" id="ad" onClick={addToCart} disabled={!!v && v.stock <= 0}>+ Thêm vào giỏ hàng</button>
-          <a className="btn ghost" data-fb href={l.messenger} target="_blank" rel="noopener">Hỏi shop về sản phẩm này</a>
-          <div className="pick" style={{ marginTop: 14 }}>📍 Ghé shop nhận hàng: {site.address}<br />🕗 Mở cửa {HOURS.time}, {HOURS.days}</div>
+          <div className={"st" + (bad ? " out" : "")} role="status">{status}{v && ` · Mã ${v.sku}`}</div>
+          {/* Điện thoại: khối này thành thanh cố định ở đáy màn hình (Zalo, giỏ hàng, Thêm vào giỏ) */}
+          <div className="buy">
+            <a className="ib" data-zl href={l.zalo} target="_blank" rel="noopener" aria-label="Nhắn Zalo cho shop"><Icon n="chat" /></a>
+            <button className="ib" type="button" onClick={() => setOpen(true)} aria-label={cartLabel(count)}><Icon n="cart" /><b className="cnt" hidden={!count}>{count}</b></button>
+            <button className="btn" id="ad" type="button" onClick={addToCart} disabled={!!v && v.stock <= 0}><Icon n="cart" />{!!v && v.stock <= 0 ? "Tạm hết hàng" : "Thêm vào giỏ"}</button>
+          </div>
+          <a className="btn ghost ask" data-fb href={l.messenger} target="_blank" rel="noopener"><Icon n="messenger" />Hỏi shop về sản phẩm này</a>
+          {p.desc && <p className="desc">{p.desc}</p>}
+          <p className="upd">{updated && `Tồn kho cập nhật ngày ${updated}. `}Shop xác nhận còn hàng khi chốt đơn.</p>
+          <section className="visit2" aria-labelledby="gs-h">
+            <h2 id="gs-h"><Icon n="store" />Ghé shop nhận hàng</h2>
+            <ul className="info">
+              <li><Icon n="pin" /><span>{site.address}</span></li>
+              <li><Icon n="clock" /><span>Mở cửa {HOURS.time}, {HOURS.days}</span></li>
+              <li><Icon n="chat" /><span>Zalo {phone(site.zalo)}</span></li>
+            </ul>
+            <a className="btn ghost sm" data-map href={l.map} target="_blank" rel="noopener"><Icon n="map" />Chỉ đường Google Maps</a>
+          </section>
         </div>
       </div>
     </div>

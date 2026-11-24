@@ -1,19 +1,20 @@
 import raw from "../data/products.json";
 import rawImages from "../data/images.json";
 
-/** 9 danh mục của web. Thứ tự và màu ô danh mục sửa ở đây. Tên phải khớp với tên danh mục trong dữ liệu. */
-export const CATEGORIES = [
-  { name: "Cờ, Cúp, Huy Chương", emoji: "🏆", c1: "#7c5a10", c2: "#c99a2e" },
-  { name: "Giày bóng đá", emoji: "👟", c1: "#a3122a", c2: "#d63a50" },
-  { name: "Giày thể thao", emoji: "🏃", c1: "#44403c", c2: "#857467" },
-  { name: "Quần áo CLB/Đội tuyển", emoji: "⚽", c1: "#2b2b30", c2: "#55555e" },
-  { name: "Quần áo không logo", emoji: "👕", c1: "#8a0f23", c2: "#bd2a3f" },
-  { name: "Quần áo trẻ em", emoji: "🧒", c1: "#c2410c", c2: "#f0883e" },
-  { name: "Phụ kiện thể thao", emoji: "🎒", c1: "#3a3a40", c2: "#1d1d20" },
-  { name: "Vớ/tất ống đồng", emoji: "🧦", c1: "#b3202f", c2: "#e0566a" },
-  { name: "Cầu lông", emoji: "🏸", c1: "#0f6a45", c2: "#2faa6f" },
-] as const;
-export const EMO: Record<string, string> = Object.fromEntries(CATEGORIES.map((c) => [c.name, c.emoji]));
+/** 9 danh mục của web. Thứ tự và biểu tượng (SVG trong components/Icons.tsx) sửa ở đây. Tên phải khớp với tên danh mục trong dữ liệu. */
+export type CatIconName = "trophy" | "boot" | "sneaker" | "jersey" | "tee" | "kids" | "bag" | "sock" | "shuttle";
+export const CATEGORIES: readonly { name: string; icon: CatIconName }[] = [
+  { name: "Cờ, Cúp, Huy Chương", icon: "trophy" },
+  { name: "Giày bóng đá", icon: "boot" },
+  { name: "Giày thể thao", icon: "sneaker" },
+  { name: "Quần áo CLB/Đội tuyển", icon: "jersey" },
+  { name: "Quần áo không logo", icon: "tee" },
+  { name: "Quần áo trẻ em", icon: "kids" },
+  { name: "Phụ kiện thể thao", icon: "bag" },
+  { name: "Vớ/tất ống đồng", icon: "sock" },
+  { name: "Cầu lông", icon: "shuttle" },
+];
+export const ICON_OF: Record<string, CatIconName> = Object.fromEntries(CATEGORIES.map((c) => [c.name, c.icon]));
 /** Danh mục mà khách cần chọn size */
 export const NEED_SIZE = ["Giày bóng đá", "Giày thể thao", "Quần áo CLB/Đội tuyển", "Quần áo không logo", "Quần áo trẻ em"];
 
@@ -48,7 +49,7 @@ export const links = (s: Site) => ({
 
 export type Variant = { id: string; sku: string; size: string; color: string; price: number; stock: number };
 export type Product = {
-  id: string; name: string; cat: string; brand: string; desc: string; feat: boolean;
+  id: string; name: string; title: string; cat: string; brand: string; desc: string; feat: boolean;
   variants: Variant[]; colors: string[]; sizes: string[]; min: number; max: number; stock: number;
   images: Record<string, string[]>;
   /** chuỗi không dấu để tìm: tên, hãng, danh mục, mã, màu */
@@ -99,23 +100,44 @@ export async function getPublicCatalog(): Promise<ApiCatalog & { images: Record<
   };
 }
 
+type Base = Pick<Product, "id" | "name" | "title" | "cat" | "brand" | "desc" | "feat" | "variants" | "images">;
+/** Tính các trường suy ra (màu, size, giá thấp/cao, tồn, chuỗi tìm kiếm) – dùng chung cho máy chủ và trình duyệt */
+function build(b: Base): Product {
+  const prices = b.variants.map((v) => v.price), colors = uniq(b.variants.map((v) => v.color));
+  return {
+    ...b, key: fold([b.name, b.title, b.brand, b.cat, b.id, ...b.variants.map((v) => v.sku), ...colors].join(" ")),
+    colors, sizes: uniq(b.variants.map((v) => v.size)).sort((a, c) => sizeKey(a) - sizeKey(c)),
+    min: Math.min(...prices), max: Math.max(...prices), stock: b.variants.reduce((a, v) => a + v.stock, 0),
+  };
+}
+const imagesOf = (imgs: Record<string, string[]>, id: string) => Object.fromEntries(Object.entries(imgs).filter(([k]) => k === id || k.startsWith(id + ":")));
+
 export async function getCatalog(): Promise<{ products: Product[]; updated: string }> {
   const d = await getPublicCatalog();
-  const imgs = d.images;
-  const products = d.products.map((x): Product => {
-    const variants = x.variants.map((v) => ({ id: v.id, sku: v.sku || v.id, size: v.option1, color: v.option2, price: v.price, stock: Math.max(0, v.inventory_quantity) }));
-    const prices = variants.map((v) => v.price);
-    const name = x.display_title || x.title, cat = x.category && EMO[x.category] ? x.category : "Phụ kiện thể thao", colors = uniq(variants.map((v) => v.color));
-    return {
-      id: x.id, name, cat, key: fold([name, x.title, x.vendor, cat, x.id, ...variants.map((v) => v.sku), ...colors].join(" ")),
-      brand: x.vendor, desc: x.description ?? "", feat: !!x.featured,
-      variants, colors, sizes: uniq(variants.map((v) => v.size)).sort((a, b) => sizeKey(a) - sizeKey(b)),
-      min: Math.min(...prices), max: Math.max(...prices), stock: variants.reduce((a, v) => a + v.stock, 0),
-      images: Object.fromEntries(Object.entries(imgs).filter(([k]) => k === x.id || k.startsWith(x.id + ":"))),
-    };
-  });
+  const products = d.products.map((x) => build({
+    id: x.id, name: x.display_title || x.title, title: x.title, cat: x.category && ICON_OF[x.category] ? x.category : "Phụ kiện thể thao",
+    brand: x.vendor, desc: x.description ?? "", feat: !!x.featured,
+    variants: x.variants.map((v) => ({ id: v.id, sku: v.sku || v.id, size: v.option1, color: v.option2, price: v.price, stock: Math.max(0, v.inventory_quantity) })),
+    images: imagesOf(d.images, x.id),
+  }));
   return { products, updated: d.updated ?? "" };   // d.updated đã tính cả CAP_NHAT_NGAY
 }
+
+/** Dạng gọn để gửi danh sách sản phẩm xuống trình duyệt (trang chủ): nhỏ hơn khoảng 4 lần, trang tải và chạy nhanh hơn.
+ *  Mỗi SP: [mã, tên, tên Sapo ("" nếu giống tên), số thứ tự danh mục, hãng, nổi bật 0/1, các màu, các size,
+ *  các phiên bản [mã, số thứ tự màu, số thứ tự size, giá, tồn, (SKU nếu khác mã)]]. Không có mô tả (thẻ không dùng). */
+type PackedVariant = [string, number, number, number, number, string?];
+export type Packed = { p: [string, string, string, number, string, number, string[], string[], PackedVariant[]][]; i: Record<string, string[]> };
+export const pack = (ps: Product[]): Packed => ({
+  p: ps.map((p) => [p.id, p.name, p.title === p.name ? "" : p.title, CATEGORIES.findIndex((c) => c.name === p.cat), p.brand, p.feat ? 1 : 0, p.colors, p.sizes,
+    p.variants.map((v): PackedVariant => { const t: PackedVariant = [v.id, p.colors.indexOf(v.color), p.sizes.indexOf(v.size), v.price, v.stock]; if (v.sku !== v.id) t.push(v.sku); return t; })]),
+  i: Object.assign({}, ...ps.map((p) => p.images)),
+});
+export const unpack = (d: Packed): Product[] => d.p.map(([id, name, title, ci, brand, feat, colors, sizes, vs]) => build({
+  id, name, title: title || name, cat: CATEGORIES[ci]?.name ?? "Phụ kiện thể thao", brand, desc: "", feat: !!feat,
+  variants: vs.map(([vid, c, s, price, stock, sku]) => ({ id: vid, sku: sku ?? vid, size: sizes[s], color: colors[c], price, stock })),
+  images: imagesOf(d.i, id),
+}));
 
 /** Địa chỉ web thật (vd https://sport238.vn), dùng cho Open Graph, canonical, sitemap. Để trống thì bỏ các phần cần URL tuyệt đối. */
 export const SITE_URL = (process.env.SITE_URL ?? "").trim().replace(/\/+$/, "");
@@ -138,3 +160,25 @@ export const defaultColor = (p: Product) => p.colors.find((c) => colorStock(p, c
 /** Biến thể có phải là màu không; nếu là mẫu/loại thì gọi là "Loại" thay vì "Màu" */
 const COLOR_WORDS = /(trắng|đen|đỏ|xanh|vàng|cam|tím|hồng|xám|nâu|be|kem|navy|sen|bã trầu|cổ vịt|rêu|bích|ghi|bạc|chuối|lam|lục|ngọc|white|black|red|blue)/i;
 export const optLabel = (p: Product) => (p.colors.every((c) => COLOR_WORDS.test(c)) ? "Màu" : "Loại");
+
+/* ===== Màu sản phẩm → mã màu, để tô hình minh họa và chấm màu khi CHƯA có ảnh thật ===== */
+const HEX: Record<string, string> = {
+  "xanh đen": "#1f2a44", "xanh navy": "#1f2a5c", navy: "#1f2a5c", "xanh dương": "#1e5fc2", "xanh biển": "#1b6cc0", "xanh lam": "#2a63c9",
+  "xanh bích": "#2370d8", bích: "#2370d8", "xanh cổ vịt": "#0e7c86", "cổ vịt": "#0e7c86", "xanh ngọc": "#12a594", ngọc: "#12a594",
+  "xanh rêu": "#55652e", rêu: "#55652e", "xanh lá": "#2e9d4b", "thiên thanh": "#6cb4e4", "lông công": "#0f6b78", xanh: "#1e5fc2",
+  "đỏ đô": "#7f0d1f", đô: "#7f0d1f", đỏ: "#d0202e", trắng: "#f5f5f3", đen: "#1d1d1f", kem: "#efe5cc", be: "#d9c4a0", "bã trầu": "#7a3b22",
+  xám: "#8d8d92", ghi: "#8d8d92", bạc: "#c0c0c4", vàng: "#f2c230", cam: "#f07a1c", "tím nhạt": "#b39ddb", tím: "#6d3fa6",
+  hồng: "#ec7aa7", sen: "#e4609a", nâu: "#7b5235", white: "#f5f5f3", black: "#1d1d1f", red: "#d0202e", blue: "#1e5fc2",
+};
+const HEX_RE = new RegExp(String.raw`(?<![\p{L}\p{N}])(` + Object.keys(HEX).sort((a, b) => b.length - a.length).join("|") + String.raw`)(?![\p{L}\p{N}])`, "gu");
+/** Các mã màu nhận ra trong một chuỗi ("Trắng-Navy Sen" → trắng, navy, sen), theo thứ tự xuất hiện, không trùng */
+export function hexesIn(s: string): string[] {
+  const out: string[] = [];
+  for (const m of (s ?? "").normalize("NFC").toLowerCase().matchAll(HEX_RE)) { const h = HEX[m[1]]; if (!out.includes(h)) out.push(h); }
+  return out;
+}
+/** Màu để tô hình minh họa: theo tên màu/loại đang chọn, nếu không có thì theo tên sản phẩm */
+export const artColors = (p: Product, color: string): string[] => {
+  const a = hexesIn(color);
+  return a.length ? a : hexesIn(p.name);
+};

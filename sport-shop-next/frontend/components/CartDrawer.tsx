@@ -1,13 +1,14 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { HOURS, links, money, OVER } from "@/lib/shop";
+import { Icon } from "./Icons";
 import { useShop } from "./Providers";
 
 export default function CartDrawer() {
   const { site, items, total, change, clear, open, setOpen, orderText, toast } = useShop();
   const l = links(site);
   const taRef = useRef<HTMLTextAreaElement>(null);
-  const dr = useRef<HTMLElement>(null);
+  const dr = useRef<HTMLDivElement>(null);
   const opener = useRef<HTMLElement | null>(null);
   const [msg, setMsg] = useState<{ ok: boolean; where: string } | null>(null);
   const [ask, setAsk] = useState(false);
@@ -63,45 +64,62 @@ export default function CartDrawer() {
   return (
     <>
       <div className={"veil" + (open ? " on" : "")} id="veil" onClick={() => setOpen(false)} />
-      <aside className={"drawer" + (open ? " on" : "")} id="dr" ref={dr} role="dialog" aria-modal="true" aria-labelledby="drh">
-        <div className="dh"><h3 id="drh">Giỏ hàng của bạn</h3><button id="dx" type="button" onClick={() => setOpen(false)} aria-label="Đóng giỏ hàng">✕</button></div>
+      <div className={"drawer" + (open ? " on" : "")} id="dr" ref={dr} role="dialog" aria-modal="true" aria-labelledby="drh">
+        <div className="dh">
+          <h3 id="drh">Giỏ hàng {has && <small>({count} món)</small>}</h3>
+          <button className="ib" id="dx" type="button" onClick={() => setOpen(false)} aria-label="Đóng giỏ hàng"><Icon n="close" /></button>
+        </div>
         <div className="dl" id="dl">
-          {!has && <p className="empty" style={{ padding: "40px 0", textAlign: "center", color: "var(--muted)" }}>Giỏ hàng đang trống. Chọn vài món để bắt đầu nhé.</p>}
+          {!has && (
+            <div className="dempty">
+              <Icon n="cart" />
+              <p className="empty">Giỏ hàng đang trống. Chọn size, màu rồi bấm “Thêm vào giỏ” để bắt đầu.</p>
+            </div>
+          )}
           {items.map((i, k) => (
             <div className="ci" key={i.id}>
               <div>
-                <b>{i.name}</b><span>{money(i.price)}{i.lb && ` · ${i.lb}`}</span>
-                {i.qty > i.stock && <div className="ow">⚠ {OVER} (web ghi còn {i.stock}).</div>}
+                <b>{i.name}</b>
+                {i.lb && <span>{i.lb}</span>}
+                <span className="lp">{money(i.price)}</span>
+                {i.qty > i.stock && <div className="ow"><Icon n="warn" />{OVER} (web ghi còn {i.stock}).</div>}
               </div>
               <div className="qty">
-                <button type="button" data-q="-1" data-k={k} onClick={() => change(i.id, -1)} aria-label={`Giảm số lượng ${i.name}`}>−</button><span>{i.qty}</span><button type="button" data-q="1" data-k={k} onClick={() => change(i.id, 1)} aria-label={`Tăng số lượng ${i.name}`}>+</button>
+                <button type="button" data-q="-1" data-k={k} onClick={() => change(i.id, -1)} aria-label={`Giảm số lượng ${i.name}`}><Icon n="minus" /></button>
+                <span aria-label={`Số lượng ${i.qty}`}>{i.qty}</span>
+                <button type="button" data-q="1" data-k={k} onClick={() => change(i.id, 1)} aria-label={`Tăng số lượng ${i.name}`}><Icon n="plus" /></button>
               </div>
             </div>
           ))}
-        </div>
-        <div className="df">
-          <div className="sum"><span>Tạm tính</span><b id="dt">{money(total)}</b></div>
+          {has && (
+            <div className="dtools">
+              {/* Hỏi lại trước khi xóa giỏ */}
+              <button className="rm" id="cc" type="button" hidden={ask} onClick={() => { setAsk(true); setTimeout(() => document.getElementById("ccn")?.focus(), 0); }}>Xóa giỏ hàng</button>
+              <div className="ccq" id="ccq" role="group" aria-label="Xác nhận xóa giỏ hàng" hidden={!ask}>
+                <span id="ccm">Xóa hết {count} món trong giỏ hàng?</span>
+                <button type="button" id="ccn" onClick={() => { setAsk(false); setTimeout(() => document.getElementById("cc")?.focus(), 0); }}>Giữ lại</button>
+                <button type="button" className="yes" id="ccy" onClick={() => { clear(); setAsk(false); toast("Đã xóa giỏ hàng"); document.getElementById("dx")?.focus(); }}>Xóa hết</button>
+              </div>
+            </div>
+          )}
           <div className="ordbox" id="ordbox" hidden={!has}>
-            <div className="ordh"><b>Tin nhắn gửi cho shop</b><button type="button" className="cpb" id="cp" onClick={() => run("")}>📋 Sao chép đơn hàng</button></div>
-            <textarea ref={taRef} id="ordtxt" readOnly rows={6} value={text} aria-label="Nội dung đơn hàng" />
+            <div className="ordh"><b>Tin nhắn gửi shop</b><button type="button" className="cpb" id="cp" onClick={() => run("")} aria-label="Sao chép đơn hàng"><Icon n="copy" />Sao chép</button></div>
+            <textarea ref={taRef} id="ordtxt" readOnly rows={5} value={text} aria-label="Nội dung đơn hàng" />
             <div className={"cpok " + (msg ? (msg.ok ? "ok" : "bad") : "")} id="cpok" role="status" hidden={!msg}>
-              {msg && (msg.ok
-                ? `✓ Đã sao chép đơn hàng. ${msg.where ? `Trong ${msg.where}, bấm vào khung chat, dán (Ctrl+V hoặc bấm giữ rồi chọn Dán) và gửi cho shop.` : "Mở Zalo hoặc Messenger, dán vào khung chat rồi gửi cho shop."}`
-                : "Chưa sao chép được tự động. Hãy bấm vào khung tin nhắn ở trên, chọn hết (Ctrl+A), sao chép (Ctrl+C) rồi dán vào chat.")}
+              {msg && <Icon n={msg.ok ? "check" : "warn"} />}
+              <span>{msg && (msg.ok
+                ? `Đã sao chép đơn hàng. ${msg.where ? `Trong ${msg.where}, bấm vào khung chat, dán (Ctrl+V hoặc bấm giữ rồi chọn Dán) và gửi cho shop.` : "Mở Zalo hoặc Messenger, dán vào khung chat rồi gửi cho shop."}`
+                : "Chưa sao chép được tự động. Hãy bấm vào khung tin nhắn ở trên, chọn hết (Ctrl+A), sao chép (Ctrl+C) rồi dán vào chat.")}</span>
             </div>
           </div>
-          <div className="pick" id="dpick">📍 Ghé shop nhận hàng: {site.address}. Mở cửa {HOURS.time} hằng ngày. Shop sẽ nhắn xác nhận và giữ hàng cho bạn ❤️</div>
-          <a className="btn" id="zs" href={l.zalo} target="_blank" rel="noopener" onClick={() => { if (has) void run("Zalo"); }}>{has ? "📋 Sao chép đơn & mở Zalo" : "💬 Nhắn Zalo cho shop"}</a>
-          <a className="btn ghost" id="fs" href={l.messenger} target="_blank" rel="noopener" onClick={() => { if (has) void run("Messenger"); }}>{has ? "Sao chép đơn & mở Messenger" : "Nhắn Messenger"}</a>
-          {/* Hỏi lại trước khi xóa giỏ */}
-          <button className="rm" id="cc" type="button" hidden={!has || ask} onClick={() => { setAsk(true); setTimeout(() => document.getElementById("ccn")?.focus(), 0); }}>Xóa giỏ hàng</button>
-          <div className="ccq" id="ccq" role="group" aria-label="Xác nhận xóa giỏ hàng" hidden={!ask}>
-            <span id="ccm">Xóa hết {count} món trong giỏ hàng?</span>
-            <button type="button" className="yes" id="ccy" onClick={() => { clear(); setAsk(false); toast("Đã xóa giỏ hàng"); document.getElementById("dx")?.focus(); }}>Xóa hết</button>
-            <button type="button" id="ccn" onClick={() => { setAsk(false); setTimeout(() => document.getElementById("cc")?.focus(), 0); }}>Giữ lại</button>
-          </div>
+          <div className="pick" id="dpick"><Icon n="store" /><span>Ghé shop nhận hàng: {site.address}. Mở cửa {HOURS.time} hằng ngày. Shop sẽ nhắn xác nhận và giữ hàng cho bạn.</span></div>
         </div>
-      </aside>
+        <div className="df">
+          <div className="sum" hidden={!has}><span>Tạm tính</span><b id="dt">{money(total)}</b></div>
+          <a className="btn" id="zs" href={l.zalo} target="_blank" rel="noopener" onClick={() => { if (has) void run("Zalo"); }}><Icon n="chat" />{has ? "Sao chép đơn & mở Zalo" : "Nhắn Zalo cho shop"}</a>
+          <a className="btn ghost" id="fs" href={l.messenger} target="_blank" rel="noopener" onClick={() => { if (has) void run("Messenger"); }}><Icon n="messenger" />{has ? "Sao chép đơn & mở Messenger" : "Nhắn Messenger"}</a>
+        </div>
+      </div>
     </>
   );
 }
