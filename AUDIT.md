@@ -32,7 +32,7 @@ HTML = `sport-shop-app/tools/storefront.template.html` (dựng ra `public/index.
 | Bàn phím trong giỏ (vào giỏ, Tab quay vòng) | `drawer()` | `CartDrawer` | **test_mobile** |
 | Link Facebook/Zalo chuẩn hóa | `fbUser()`, `applyCfg()` | `lib/shop.ts` `fbUser`, `links` | test_all |
 | Máy chủ, API công khai, đăng nhập, đăng xuất | `src/server.js` | Spring Boot `PublicController`, `AdminController` | test_mobile (đăng xuất); Java: `mvn test` |
-| Trang quản trị: sửa SP, ảnh, danh mục, cài đặt | `public/admin.html` (bản sao ở `frontend/public/admin/index.html`) | dùng chung | **chưa có** |
+| Trang quản trị: sửa SP, ảnh, danh mục, cài đặt | `public/admin.html` (bản sao ở `frontend/public/admin/index.html`) | dùng chung | **chưa có** → nay có `tests/test_admin.py` (24/11) |
 | Tải ảnh lên (nhận dạng ảnh, thu nhỏ) | `server.js` `sniff()`, `admin.html` `shrinkImg()` | `ImageStorageService` | **chưa có** |
 | Đọc Excel Sapo, phân loại, gộp size | `tools/sapo_xlsx_to_json.py` | `SapoParser.java` | Java: `mvn test`; Python: **chưa có pytest** |
 | Cập nhật hằng ngày | `tools/daily_update.py`, `cap-nhat-web.bat` | – | **chưa có** |

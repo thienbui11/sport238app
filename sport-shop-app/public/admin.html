@@ -1,89 +1,185 @@
 <!DOCTYPE html>
 <html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Quản trị – SPORT 238</title>
+<meta name="robots" content="noindex,nofollow">
 <style>
-:root{--bg:#f6f2f2;--sf:#fff;--ink:#232326;--mu:#6b6264;--ln:#e6dcde;--ac:#a3122a;--rd:#c81e3a}
-@media(prefers-color-scheme:dark){:root{--bg:#151213;--sf:#1f1a1b;--ink:#f3eeee;--mu:#b3a8aa;--ln:#3a2b2e;--rd:#ff7a8a}}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,sans-serif}
-header{background:#232326;color:#fff;padding:12px 20px;display:flex;gap:12px;align-items:center}header b{font-size:18px;margin-right:auto}
-main{max-width:1060px;margin:0 auto;padding:20px}.card{background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:18px;margin-bottom:16px}
-button,input,select,textarea{font:inherit}button{cursor:pointer;border:1px solid var(--ln);background:var(--sf);color:var(--ink);border-radius:8px;padding:8px 14px}
-button.p{background:var(--ac);border-color:var(--ac);color:#fff;font-weight:600}button:disabled{opacity:.5;cursor:default}
-input[type=text],input[type=password],input[type=search],textarea,select{padding:9px 12px;border:1px solid var(--ln);border-radius:8px;background:var(--bg);color:var(--ink);width:100%}
-textarea{min-height:110px;resize:vertical}
-.tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}.tabs button[aria-pressed=true]{background:#232326;color:#fff}
-.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}.bar input{flex:1 1 220px;width:auto}.bar select{width:auto}
-.chips{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.chips button{border-radius:99px;padding:5px 14px}.chips button[aria-pressed=true]{background:#232326;color:#fff;border-color:#232326}
-table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:8px;border-bottom:1px solid var(--ln);vertical-align:middle}tr.r{cursor:pointer}tr.r:hover{background:var(--bg)}
-.mu{color:var(--mu);font-size:13px}.bad{color:var(--rd)}
-.tn{width:44px;height:44px;border-radius:8px;object-fit:cover;background:var(--bg);border:1px solid var(--ln);display:block}
-.bd{display:inline-block;font-size:12px;border-radius:99px;padding:1px 9px;margin:2px 4px 0 0;border:1px solid var(--ln)}.bd.w{border-color:var(--rd);color:var(--rd)}.bd.f{background:var(--ac);border-color:var(--ac);color:#fff}
-dialog{border:0;border-radius:14px;max-width:960px;width:96vw;background:var(--sf);color:var(--ink);padding:0}dialog::backdrop{background:rgba(5,15,28,.6)}
-.dh{padding:14px 20px;border-bottom:1px solid var(--ln);display:flex;gap:10px;align-items:center}.dh h3{margin:0;flex:1}
-.db{padding:16px 20px;display:grid;grid-template-columns:1fr 1.25fr;gap:22px;max-height:68vh;overflow:auto}@media(max-width:760px){.db{grid-template-columns:1fr}}
-.df{padding:12px 20px;border-top:1px solid var(--ln);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-label.l{display:block;margin:12px 0 4px;font-weight:600}label.ck{display:flex;gap:8px;align-items:center;margin:8px 0}
-.th{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0}.th>div{width:96px}.th img{width:96px;height:96px;object-fit:cover;border-radius:8px;border:1px solid var(--ln);display:block}
-.th .ct{display:flex;gap:2px;margin-top:4px}.th .ct button{flex:1;padding:2px 0}.th .main{font-size:11px;color:#fff;background:var(--ac);border-radius:99px;text-align:center;margin-top:4px}
-.dz{display:block;border:2px dashed var(--ln);border-radius:12px;padding:16px;text-align:center;color:var(--mu);cursor:pointer}.dz.on{border-color:var(--ac);background:var(--bg)}
-.row{display:flex;gap:8px;margin:8px 0}.vt{font-size:13px}.vt th,.vt td{padding:4px 6px}
+/* Trang quản trị SPORT 238 – cùng bộ màu với cửa hàng (đỏ đô + xám đen), có chế độ tối.
+   Bản sao giống hệt: sport-shop-next/frontend/public/admin/index.html (dùng chung cho máy chủ Node và Spring Boot). */
+:root{--bg:#f5f3f3;--sf:#fff;--sf2:#f0eded;--ink:#1c1b1d;--mu:#5e585a;--ln:#e5e0e1;--ln2:#c4bcbe;--ac:#a3122a;--ac2:#7f0d1f;--acs:#f9e8eb;--aci:#a3122a;--dark:#232326;
+ --ok:#17733f;--okb:#e2f4e9;--warn:#8a5300;--warnb:#fff2d9;--bad:#c0182f;--r:12px;--sh:0 1px 2px rgba(0,0,0,.06),0 4px 14px -6px rgba(0,0,0,.12);color-scheme:light}
+@media(prefers-color-scheme:dark){:root{--bg:#121113;--sf:#1b191b;--sf2:#252225;--ink:#f3eff0;--mu:#b4abad;--ln:#332e31;--ln2:#544c4f;--ac:#c4283f;--ac2:#a51d32;--acs:#3b1a21;--aci:#ff8a9a;--dark:#0d0c0e;
+ --ok:#5fd08f;--okb:#12301f;--warn:#f5c15c;--warnb:#33270f;--bad:#ff7b8d;--sh:0 1px 2px rgba(0,0,0,.4);color-scheme:dark}}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--aci);outline-offset:2px}
 [hidden]{display:none!important}
+.mu{color:var(--mu);font-size:13px}.bad{color:var(--bad);font-weight:700}
+/* đầu trang */
+.top{position:sticky;top:0;z-index:20;background:var(--dark);color:#fff}
+.top .in{max-width:1120px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:10px 16px}
+.top img{border-radius:50%;flex:none}.top b{font-size:17px;margin-right:auto;line-height:1.2}
+.top a{color:#ffb3bd;font-weight:600;white-space:nowrap}
+.top button{min-height:40px;padding:0 14px;border:1px solid rgba(255,255,255,.4);border-radius:999px;background:transparent;color:#fff;cursor:pointer;white-space:nowrap}
+main{max-width:1120px;margin:0 auto;padding:16px}
+/* nút, ô nhập */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:0 16px;border:1.5px solid var(--ln2);border-radius:10px;background:var(--sf);color:var(--ink);font-weight:600;cursor:pointer;text-decoration:none}
+.btn:hover{border-color:var(--aci)}.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.p{background:var(--ac);border-color:var(--ac);color:#fff}.btn.p:hover{background:var(--ac2);border-color:var(--ac2)}
+.btn.sm{min-height:36px;padding:0 12px;font-size:14px}
+input[type=text],input[type=password],input[type=search],textarea,select{width:100%;min-height:44px;padding:8px 12px;border:1.5px solid var(--ln2);border-radius:10px;background:var(--sf);color:var(--ink)}
+textarea{min-height:110px;resize:vertical}
+label.l{display:block;margin:14px 0 6px;font-weight:600}
+label.ck{display:flex;gap:10px;align-items:center;min-height:40px;font-weight:600;cursor:pointer}label.ck input{width:20px;height:20px;accent-color:var(--ac)}
+.card{background:var(--sf);border:1px solid var(--ln);border-radius:16px;padding:18px;margin-bottom:16px;box-shadow:var(--sh)}
+.login{max-width:400px;margin:48px auto}.login h2{margin:0 0 12px}
+/* thẻ chọn mục */
+.tabs{display:flex;gap:4px;padding:4px;margin-bottom:14px;background:var(--sf2);border-radius:12px;overflow-x:auto}
+.tabs button{flex:1 0 auto;min-height:40px;padding:0 14px;border:0;border-radius:9px;background:transparent;color:var(--mu);font-weight:600;cursor:pointer;white-space:nowrap}
+.tabs button[aria-pressed=true]{background:var(--sf);color:var(--ink);box-shadow:var(--sh)}
+/* danh sách sản phẩm */
+.bar{display:grid;grid-template-columns:minmax(0,1fr) minmax(150px,220px) minmax(150px,210px);gap:8px;margin-bottom:10px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 10px}
+.chips button{min-height:36px;padding:0 12px;border:1.5px solid var(--ln);border-radius:999px;background:var(--sf);font-size:14px;font-weight:600;cursor:pointer}
+.chips button[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:var(--sf)}
+.bulk{position:sticky;top:60px;z-index:10;display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:10px;margin:0 0 10px;border-radius:12px;background:var(--acs);border:1px solid var(--ac)}
+.bulk b{margin-right:6px}.bulk select{width:auto;min-height:36px;font-size:14px}
+.tw{border:1px solid var(--ln);border-radius:12px;overflow:visible;overflow:clip}
+table{width:100%;border-collapse:collapse}
+.pt th,.pt td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--ln);vertical-align:middle}
+.pt thead th{background:var(--sf2);font-size:13px;color:var(--mu);font-weight:600;position:sticky;top:60px;z-index:5}
+.pt tr.r{cursor:pointer}.pt tr.r:hover{background:var(--sf2)}.pt tr.r.on{background:var(--acs)}
+.pt td.c,.pt th.c{width:44px}.pt input[type=checkbox]{width:20px;height:20px;accent-color:var(--ac);cursor:pointer}
+.tn{width:48px;height:48px;border-radius:8px;object-fit:cover;background:var(--sf2);border:1px solid var(--ln);display:block}
+.lnk{display:block;padding:0;border:0;background:none;color:var(--ink);font-weight:600;text-align:left;cursor:pointer}
+.lnk:hover{color:var(--aci);text-decoration:underline}
+.bd{display:inline-block;font-size:12px;font-weight:600;border-radius:999px;padding:1px 9px;margin:2px 4px 2px 0;border:1px solid var(--ln2)}
+.bd.w{border-color:var(--warn);color:var(--warn);background:var(--warnb)}.bd.x{border-color:var(--bad);color:var(--bad)}.bd.f{background:var(--ac);border-color:var(--ac);color:#fff}
+/* hộp sửa sản phẩm */
+dialog{border:0;border-radius:16px;max-width:980px;width:96vw;background:var(--sf);color:var(--ink);padding:0;box-shadow:0 20px 60px -20px rgba(0,0,0,.5)}
+dialog::backdrop{background:rgba(10,8,10,.6)}
+.dh{padding:12px 16px;border-bottom:1px solid var(--ln);display:flex;gap:10px;align-items:center}.dh h3{margin:0;flex:1;font-size:18px}
+.db{padding:14px 16px;display:grid;grid-template-columns:1fr 1.2fr;gap:22px;max-height:70vh;overflow:auto}
+.df{padding:12px 16px;border-top:1px solid var(--ln);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.th{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0}.th>div{width:100px}
+.th img{width:100px;height:100px;object-fit:cover;border-radius:10px;border:1px solid var(--ln);display:block;cursor:zoom-in}
+.th .ct{display:flex;gap:2px;margin-top:4px}.th .ct button{flex:1;min-height:32px;padding:0;border:1px solid var(--ln);border-radius:8px;background:var(--sf);cursor:pointer}
+.th .main{font-size:11px;color:#fff;background:var(--ac);border-radius:999px;text-align:center;margin-top:4px}
+.dz{display:block;border:2px dashed var(--ln2);border-radius:12px;padding:16px;text-align:center;color:var(--mu);cursor:pointer}.dz.on{border-color:var(--aci);background:var(--acs)}
+.row{display:flex;gap:8px;margin:8px 0}
+.vt{font-size:13px}.vt th,.vt td{padding:5px 8px;border-bottom:1px solid var(--ln);text-align:left}
+.zoom{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:rgba(0,0,0,.8);padding:16px;cursor:zoom-out}.zoom img{max-width:100%;max-height:100%;border-radius:12px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.cr{display:flex;flex-wrap:wrap;align-items:center;gap:4px 16px;margin:0 0 8px}.cr p{margin:0}
+.hit{display:inline-grid;place-items:center;width:44px;height:44px;margin:-12px -10px;cursor:pointer}
+code{background:var(--sf2);padding:1px 5px;border-radius:5px}
+/* điện thoại: mỗi sản phẩm một thẻ gọn */
+@media(max-width:760px){
+ main{padding:12px}.bar{grid-template-columns:1fr 1fr}.bar #s{grid-column:1/-1}.top b{font-size:16px}
+}
+@media(max-width:420px){.top .w{display:none}}
+@media(max-width:760px){
+ .pt thead{display:none}.tw{border:0;overflow:visible}
+ .pt tbody{display:grid;gap:8px}
+ .pt tr.r{display:grid;grid-template-columns:32px 52px minmax(0,1fr) auto;grid-template-areas:"c t n n" "c t g g" "c t s b";column-gap:10px;padding:10px;border:1px solid var(--ln);border-radius:12px;background:var(--sf)}
+ .pt td{border:0;padding:0}
+ .pt td.c{grid-area:c;align-self:center}.pt td.t{grid-area:t;align-self:center}.pt td.n{grid-area:n}
+ .pt td.g{grid-area:g;font-size:13px;color:var(--mu)}.pt td.s{grid-area:s;font-size:13px}.pt td.s::before{content:"Tồn: ";color:var(--mu)}.pt td.b{grid-area:b;text-align:right}
+ .tabs button{flex:1 1 auto;padding:0 8px;font-size:14px}
+ .bulk{position:fixed;left:0;right:0;bottom:0;top:auto;z-index:30;margin:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-radius:16px 16px 0 0;border-width:1px 0 0;padding:10px 10px calc(10px + env(safe-area-inset-bottom,0px));box-shadow:0 -8px 24px -12px rgba(0,0,0,.45)}
+ .bulk b{grid-column:span 2;order:-2;margin:0;align-self:center}#bcl{order:-1}.bulk select{grid-column:span 2;width:100%}.bulk .btn{padding:0 6px}#bm{grid-column:1/-1}#bm:empty{display:none}
+ body.sel main{padding-bottom:190px}
+ .chips button,.btn.sm,.bulk select,.th .ct button{min-height:44px}.hit{margin:0}
+ dialog{width:100vw;max-width:100vw;height:100dvh;max-height:100dvh;border-radius:0;margin:0}
+ dialog[open]{display:flex;flex-direction:column}.db{grid-template-columns:1fr;max-height:none;flex:1;min-height:0}
+}
 </style></head><body>
-<header><img src="/logo.png" width="34" height="34" alt="" style="border-radius:50%"><b>Quản trị SPORT 238</b><a href="/" style="color:#ff9aa6">Xem web</a><button id="out" hidden>Đăng xuất</button></header>
+<header class="top"><div class="in"><img src="/logo.png" width="34" height="34" alt=""><b>Quản trị<span class="w"> SPORT 238</span></b><a href="/" target="_blank" rel="noopener">Xem web</a><button type="button" id="out" hidden>Đăng xuất</button></div></header>
 <main>
-<div class="card" id="login" hidden style="max-width:380px;margin:40px auto"><h2 style="margin-top:0">Đăng nhập</h2>
-<input type="password" id="pw" placeholder="Mật khẩu quản trị" autocomplete="current-password"><p class="bad" id="lm"></p><button class="p" id="lb">Đăng nhập</button></div>
+<div class="card login" id="login" hidden><h2>Đăng nhập</h2>
+<label class="l" for="pw">Mật khẩu quản trị</label><input type="password" id="pw" autocomplete="current-password"><p class="bad" id="lm" role="alert"></p><button type="button" class="btn p" id="lb">Đăng nhập</button></div>
 <div id="app" hidden>
-<div class="tabs"><button data-t="t1" aria-pressed="true">Sản phẩm &amp; ảnh</button><button data-t="t2" aria-pressed="false">Nhập từ Sapo</button><button data-t="t3" aria-pressed="false">Cài đặt shop</button></div>
-<section id="t1" class="card">
-<div class="bar"><input type="search" id="s" placeholder="Tìm theo tên hoặc mã sản phẩm…" aria-label="Tìm sản phẩm"><select id="ty" aria-label="Loại sản phẩm"></select></div>
-<div class="chips" id="chips"></div><p class="mu" id="cnt"></p>
-<div style="overflow-x:auto"><table><thead><tr><th></th><th>Sản phẩm</th><th>Loại</th><th>Tồn</th><th>Trạng thái</th></tr></thead><tbody id="tb"></tbody></table></div></section>
+<div class="tabs"><button type="button" data-t="t1" aria-pressed="true">Sản phẩm &amp; ảnh</button><button type="button" data-t="t2" aria-pressed="false">Nhập từ Sapo</button><button type="button" data-t="t3" aria-pressed="false">Cài đặt shop</button></div>
+<section id="t1">
+<div class="bar"><input type="search" id="s" placeholder="Tìm theo tên hoặc mã sản phẩm…" aria-label="Tìm sản phẩm"><select id="ty" aria-label="Lọc theo danh mục"></select><select id="so" aria-label="Sắp xếp"><option value="">Thứ tự như Sapo</option><option value="sd">Tồn nhiều trước</option><option value="sa">Tồn ít trước</option><option value="n">Tên A–Z</option></select></div>
+<div class="chips" id="chips" role="group" aria-label="Lọc nhanh"></div>
+<div class="bulk" id="bulk" role="region" aria-label="Sửa hàng loạt" hidden>
+ <b id="bn"></b>
+ <button type="button" class="btn sm" data-b="hide">Ẩn khỏi web</button><button type="button" class="btn sm" data-b="show">Hiện lại</button>
+ <button type="button" class="btn sm" data-b="feat">Bật nổi bật</button><button type="button" class="btn sm" data-b="unfeat">Tắt nổi bật</button>
+ <select id="bcat" aria-label="Đổi danh mục cho các sản phẩm đã chọn"></select>
+ <button type="button" class="btn sm" id="bcl">Bỏ chọn</button><span class="mu" id="bm" role="status"></span>
+</div>
+<div class="cr"><label class="ck"><input type="checkbox" id="all"> Chọn tất cả</label><p class="mu" id="cnt" aria-live="polite"></p></div>
+<div class="tw"><table class="pt"><thead><tr><th class="c"><span class="sr">Chọn</span></th><th><span class="sr">Ảnh</span></th><th>Sản phẩm</th><th>Danh mục</th><th>Tồn</th><th>Trạng thái</th></tr></thead><tbody id="tb"></tbody></table></div>
+</section>
 <section id="t2" class="card" hidden><h3 style="margin-top:0">Cập nhật hàng từ Sapo</h3>
-<p>1. Xuất danh sách sản phẩm từ Sapo (Excel).<br>2. Chạy: <code>python tools/sapo_xlsx_to_json.py file.xlsx san-pham.json</code><br>3. Chọn file <code>san-pham.json</code> bên dưới. <b>Nếu dùng backend Spring Boot: bỏ bước 2, chọn thẳng file Excel (.xlsx) từ Sapo.</b> Ảnh, tên hiển thị và mô tả bạn đã nhập được giữ nguyên; sản phẩm không còn trong file sẽ bị ẩn.</p>
-<input type="file" id="imp" accept=".json,.xlsx"><p id="im" class="mu"></p></section>
+<p><b>Cách nhanh nhất:</b> xuất Excel từ Sapo rồi bấm <code>cap-nhat-web.bat</code> (tự đọc Excel, nhập và xuất web).</p>
+<p class="mu">Cách tay: chạy <code>python tools/sapo_xlsx_to_json.py file.xlsx san-pham.json</code> rồi chọn file <code>san-pham.json</code> bên dưới. Nếu dùng backend Spring Boot: chọn thẳng file Excel (.xlsx). Ảnh, tên hiển thị và mô tả đã nhập được giữ nguyên; sản phẩm không còn trong file sẽ bị ẩn.</p>
+<input type="file" id="imp" accept=".json,.xlsx" aria-label="Chọn file nhập hàng"><p id="im" class="mu" role="status"></p></section>
 <section id="t3" class="card" hidden><h3 style="margin-top:0">Thông tin shop</h3>
-<label class="l">Tên shop</label><input type="text" id="c1"><label class="l">Tên trang Facebook (dán đường dẫn hoặc tên đều được, ví dụ Sport238)</label><input type="text" id="c2"><label class="l">Số Zalo (ví dụ 0962374770)</label><input type="text" id="c3">
-<p><button class="p" id="cs">Lưu</button> <span id="cm" class="mu"></span></p></section>
+<label class="l" for="c1">Tên shop</label><input type="text" id="c1"><label class="l" for="c2">Tên trang Facebook (dán đường dẫn hoặc tên đều được, ví dụ Sport238)</label><input type="text" id="c2"><label class="l" for="c3">Số Zalo (ví dụ 0962374770)</label><input type="text" id="c3">
+<p><button type="button" class="btn p" id="cs">Lưu</button> <span id="cm" class="mu" role="status"></span></p></section>
 </div></main>
-<dialog id="dg">
-<div class="dh"><h3 id="dt"></h3><button id="cl">Đóng</button></div>
+<dialog id="dg" aria-labelledby="dt">
+<div class="dh"><h3 id="dt"></h3><button type="button" class="btn sm" id="cl">Đóng</button></div>
 <div class="db"><div>
 <label class="l" for="f1">Tên hiển thị trên web</label><input type="text" id="f1"><div class="mu" id="f1h"></div>
 <label class="l" for="f2">Mô tả (hiện ở trang chi tiết)</label><textarea id="f2" placeholder="Chất liệu, form áo, lưu ý chọn size…"></textarea>
 <label class="l" for="f5">Danh mục trên web</label><select id="f5"></select><div class="mu">Chọn &quot;Tự động&quot; để web tự xếp theo tên sản phẩm.</div><label class="ck"><input type="checkbox" id="f3"> Ẩn khỏi web</label><label class="ck"><input type="checkbox" id="f4"> Sản phẩm nổi bật (xếp lên đầu)</label>
 <label class="l">Phiên bản (lấy từ Sapo, muốn sửa giá hoặc tồn thì sửa trong Sapo)</label><div style="overflow-x:auto"><table class="vt"><thead><tr><th>Size</th><th>Màu</th><th>Giá</th><th>Tồn</th><th>Mã</th></tr></thead><tbody id="vb"></tbody></table></div>
 </div><div id="imgs"></div></div>
-<div class="df"><button class="p" id="sv">Lưu</button><button id="sn">Lưu &amp; sản phẩm tiếp theo</button><span class="mu" id="dm"></span></div>
+<div class="df"><button type="button" class="btn p" id="sv">Lưu</button><button type="button" class="btn" id="sn">Lưu &amp; sản phẩm tiếp theo</button><span class="mu" id="dm" role="status"></span></div>
 </dialog>
 <script>
-var $=function(s){return document.querySelector(s)},esc=function(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})};
+var $=function(s){return document.querySelector(s)},all=function(s){return Array.prototype.slice.call(document.querySelectorAll(s))},esc=function(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})};
 var CATS=["Cờ, Cúp, Huy Chương","Giày bóng đá","Giày thể thao","Quần áo CLB/Đội tuyển","Quần áo không logo","Quần áo trẻ em","Phụ kiện thể thao","Vớ/tất ống đồng","Cầu lông"];
 function fbUser(v){v=String(v||"").trim();var m=v.match(/(?:facebook\.com|fb\.com|m\.me)\/(?:profile\.php\?id=)?([^\/?#&\s]+)/i);if(m)v=m[1];return v.replace(/^@/,"")}
-var data={products:[],images:{}},cur=null,edit={},flt={q:"",chip:"all",type:""},dirty=false,order=[];
+var data={products:[],images:{}},cur=null,edit={},flt={q:"",chip:"all",type:"",sort:""},dirty=false,order=[],sel={},busy=false;
 function nm(p){return p.display_title||p.title}
 function api(u,o){return fetch(u,o).then(function(r){if(r.status===401){$("#login").hidden=false;$("#app").hidden=true;$("#out").hidden=true;throw 0}return r.json().then(function(j){if(!r.ok)throw new Error(j.error||r.status);return j})})}
 function post(u,d){return api(u,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(d)})}
+function put(p,patch){var info={display_title:p.display_title||"",description:p.description||"",hidden:!!p.hidden,featured:!!p.featured,category:p.category_override||""};for(var k in patch)info[k]=patch[k];
+ return api("/api/admin/products/"+encodeURIComponent(p.id),{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(info)})}
 function load(){return api("/api/admin/products").then(function(d){data=d;$("#login").hidden=true;$("#app").hidden=false;$("#out").hidden=false;types();list()})}
 function colors(p){var u=[];p.variants.forEach(function(v){if(u.indexOf(v.option2)<0)u.push(v.option2)});return u}
 function keyOf(p,c){return c?p.id+":"+c:p.id}
 function imgCount(p){var n=0;Object.keys(data.images).forEach(function(k){if(k===p.id||k.indexOf(p.id+":")===0)n+=data.images[k].length});return n}
 function thumb(p){var cs=colors(p),a=data.images[p.id]||data.images[p.id+":"+cs[0]]||[];return a[0]}
-function stock(p){return p.variants.reduce(function(x,v){return x+v.inventory_quantity},0)}
+function stock(p){return p.variants.reduce(function(x,v){return x+Math.max(0,v.inventory_quantity)},0)}
 function types(){var t=[];data.products.forEach(function(p){if(p.category&&t.indexOf(p.category)<0)t.push(p.category)});
- $("#ty").innerHTML='<option value="">Tất cả loại</option>'+t.map(function(x){return '<option>'+esc(x)+'</option>'}).join("");$("#ty").value=flt.type}
+ $("#ty").innerHTML='<option value="">Mọi danh mục</option>'+t.map(function(x){return '<option>'+esc(x)+'</option>'}).join("");$("#ty").value=flt.type;
+ $("#bcat").innerHTML='<option value="">Đổi danh mục…</option><option value="__auto">Tự động (theo tên)</option>'+CATS.map(function(c){return '<option>'+esc(c)+'</option>'}).join("")}
+// Lọc nhanh: thêm "Hết hàng", "Chưa có mô tả"
+var CH=[["all","Tất cả"],["noimg","Chưa có ảnh"],["out","Hết hàng"],["nodesc","Chưa có mô tả"],["hidden","Đang ẩn"],["feat","Nổi bật"]];
+function match(p,c){return c==="all"||(c==="noimg"&&!imgCount(p))||(c==="out"&&stock(p)<=0)||(c==="nodesc"&&!(p.description||"").trim())||(c==="hidden"&&(p.hidden||!p.active))||(c==="feat"&&p.featured)}
 function list(){var q=flt.q.trim().toLowerCase(),P=data.products;
  var base=P.filter(function(p){return(!flt.type||p.category===flt.type)&&(nm(p).toLowerCase().indexOf(q)>-1||p.id.toLowerCase().indexOf(q)>-1)});
- var cnt={all:base.length,noimg:base.filter(function(p){return!imgCount(p)}).length,hidden:base.filter(function(p){return p.hidden||!p.active}).length,feat:base.filter(function(p){return p.featured}).length};
- var CH=[["all","Tất cả"],["noimg","Chưa có ảnh"],["hidden","Đang ẩn"],["feat","Nổi bật"]];
- $("#chips").innerHTML=CH.map(function(c){return '<button data-ch="'+c[0]+'" aria-pressed="'+(flt.chip===c[0])+'">'+c[1]+' ('+cnt[c[0]]+')</button>'}).join("");
- document.querySelectorAll("[data-ch]").forEach(function(b){b.onclick=function(){flt.chip=b.dataset.ch;list()}});
- var a=base.filter(function(p){return flt.chip==="all"||(flt.chip==="noimg"&&!imgCount(p))||(flt.chip==="hidden"&&(p.hidden||!p.active))||(flt.chip==="feat"&&p.featured)});
- order=a.map(function(p){return p.id});$("#cnt").textContent=a.length+" sản phẩm. Bấm vào một dòng để sửa thông tin và thêm ảnh.";
- $("#tb").innerHTML=a.map(function(p){var st=stock(p),t=thumb(p);
-  return '<tr class="r" data-id="'+esc(p.id)+'"><td>'+(t?'<img class="tn" src="'+esc(t)+'" alt="">':'<div class="tn"></div>')+'</td><td>'+esc(nm(p))+'<div class="mu">'+esc(p.id)+'</div></td><td>'+esc(p.category||'')+'</td><td'+(st?'':' class="bad"')+'>'+st+'</td><td>'+
-  (imgCount(p)?'':'<span class="bd w">Chưa ảnh</span>')+(p.hidden?'<span class="bd w">Ẩn</span>':'')+(!p.active?'<span class="bd w">Không còn trong Sapo</span>':'')+(p.featured?'<span class="bd f">Nổi bật</span>':'')+'</td></tr>'}).join("");
- document.querySelectorAll("tr.r").forEach(function(r){r.onclick=function(){openP(r.dataset.id)}})}
+ $("#chips").innerHTML=CH.map(function(c){return '<button type="button" data-ch="'+c[0]+'" aria-pressed="'+(flt.chip===c[0])+'">'+c[1]+' ('+base.filter(function(p){return match(p,c[0])}).length+')</button>'}).join("");
+ all("[data-ch]").forEach(function(b){b.onclick=function(){flt.chip=b.dataset.ch;list()}});
+ var a=base.filter(function(p){return match(p,flt.chip)});
+ // Sắp xếp theo tồn: ví dụ lọc "Chưa có ảnh" + "Tồn nhiều trước" để chụp ảnh hàng bán nhiều trước
+ if(flt.sort==="n")a.sort(function(x,y){return nm(x).localeCompare(nm(y),"vi")});else if(flt.sort)a.sort(function(x,y){return flt.sort==="sd"?stock(y)-stock(x):stock(x)-stock(y)});
+ order=a.map(function(p){return p.id});$("#cnt").textContent=a.length+" sản phẩm. Bấm vào tên sản phẩm để sửa thông tin và thêm ảnh; đánh dấu ô vuông để sửa hàng loạt.";
+ $("#tb").innerHTML=a.map(function(p){var st=stock(p),t=thumb(p),on=!!sel[p.id];
+  return '<tr class="r'+(on?' on':'')+'" data-id="'+esc(p.id)+'"><td class="c"><label class="hit"><input type="checkbox" class="sel" data-id="'+esc(p.id)+'"'+(on?' checked':'')+' aria-label="Chọn '+esc(nm(p))+'"></label></td><td class="t">'+(t?'<img class="tn" src="'+esc(t)+'" alt="" loading="lazy">':'<div class="tn"></div>')+'</td><td class="n"><button type="button" class="lnk" data-open="'+esc(p.id)+'">'+esc(nm(p))+'</button><div class="mu">'+esc(p.id)+'</div></td><td class="g">'+esc(p.category||'')+'</td><td class="s'+(st?'':' bad')+'">'+st+'</td><td class="b">'+
+  (imgCount(p)?'':'<span class="bd w">Chưa ảnh</span>')+(st?'':'<span class="bd x">Hết hàng</span>')+(p.hidden?'<span class="bd w">Ẩn</span>':'')+(!p.active?'<span class="bd w">Không còn trong Sapo</span>':'')+(p.featured?'<span class="bd f">Nổi bật</span>':'')+'</td></tr>'}).join("");
+ all("tr.r").forEach(function(r){r.onclick=function(e){if(e.target.closest("label,input"))return;openP(r.dataset.id)}});
+ all("input.sel").forEach(function(c){c.onchange=function(){if(c.checked)sel[c.dataset.id]=1;else delete sel[c.dataset.id];c.closest("tr").classList.toggle("on",c.checked);bulkbar()}});
+ bulkbar()}
+// Sửa hàng loạt: gọi lần lượt API lưu từng sản phẩm (chạy được với cả máy chủ Node và Spring Boot), giữ nguyên các trường khác
+function picked(){return Object.keys(sel)}
+function bulkbar(){var n=picked().length,shown=order.filter(function(id){return sel[id]}).length;$("#bulk").hidden=!n;document.body.classList.toggle("sel",n>0);$("#bn").textContent="Đã chọn "+n+" sản phẩm";
+ var a=$("#all");a.checked=!!order.length&&shown===order.length;a.indeterminate=shown>0&&shown<order.length}
+$("#all").onchange=function(e){order.forEach(function(id){if(e.target.checked)sel[id]=1;else delete sel[id]});list()};
+$("#bcl").onclick=function(){sel={};list()};
+function bulk(patch,what){if(busy)return;var ids=picked(),i=0,fail=0;if(!ids.length)return;busy=true;all("#bulk button,#bulk select").forEach(function(b){b.disabled=true});
+ (function next(){if(i>=ids.length){busy=false;all("#bulk button,#bulk select").forEach(function(b){b.disabled=false});sel={};
+   return load().then(function(){$("#bm").textContent="";$("#cnt").textContent="Đã "+what+" "+(ids.length-fail)+" sản phẩm"+(fail?" ("+fail+" lỗi)":"")+". "+$("#cnt").textContent})}
+  var p=data.products.find(function(x){return x.id===ids[i]});$("#bm").textContent="Đang lưu "+(i+1)+"/"+ids.length+"…";i++;
+  (p?put(p,patch):Promise.reject()).catch(function(){fail++}).then(next)})()}
+all("[data-b]").forEach(function(b){b.onclick=function(){var k=b.dataset.b;bulk(k==="hide"?{hidden:true}:k==="show"?{hidden:false}:k==="feat"?{featured:true}:{featured:false},k==="hide"?"ẩn":k==="show"?"hiện lại":k==="feat"?"bật nổi bật cho":"tắt nổi bật cho")}});
+$("#bcat").onchange=function(e){var v=e.target.value;if(!v)return;bulk({category:v==="__auto"?"":v},"đổi danh mục cho");e.target.value=""};
 function openP(id){cur=data.products.find(function(p){return p.id===id});if(!cur)return;var cs=colors(cur),multi=cs.length>1;edit={};
  (multi?cs:[""]).forEach(function(c){edit[c]=(data.images[keyOf(cur,multi?c:"")]||[]).slice()});
  $("#dt").textContent=cur.title;$("#f1").value=cur.display_title||"";$("#f1h").textContent="Để trống thì dùng tên trong Sapo: "+cur.title;
@@ -91,18 +187,20 @@ function openP(id){cur=data.products.find(function(p){return p.id===id});if(!cur
  $("#vb").innerHTML=cur.variants.map(function(v){return '<tr><td>'+esc(v.option1||"–")+'</td><td>'+esc(v.option2)+'</td><td>'+v.price.toLocaleString("vi-VN")+'đ</td><td'+(v.inventory_quantity>0?'':' class="bad"')+'>'+v.inventory_quantity+'</td><td class="mu">'+esc(v.sku)+'</td></tr>'}).join("");
  var i=order.indexOf(id);$("#sn").disabled=i<0||i>=order.length-1;dirty=false;$("#dm").textContent="";draw();if(!$("#dg").open)$("#dg").showModal()}
 function draw(){$("#imgs").innerHTML=Object.keys(edit).map(function(c){var a=edit[c];
- return '<label class="l">'+(c?'Ảnh màu '+esc(c):'Ảnh sản phẩm')+' <span class="mu">(ảnh đầu tiên là ảnh đại diện)</span></label><div class="th">'+a.map(function(u,i){
-  return '<div><img src="'+esc(u)+'" alt="">'+(i===0?'<div class="main">Ảnh đại diện</div>':'')+'<div class="ct"><button data-m="-1" data-c="'+esc(c)+'" data-i="'+i+'" aria-label="Chuyển trước"'+(i===0?' disabled':'')+'>◀</button><button data-m="1" data-c="'+esc(c)+'" data-i="'+i+'" aria-label="Chuyển sau"'+(i===a.length-1?' disabled':'')+'>▶</button><button data-x="1" data-c="'+esc(c)+'" data-i="'+i+'" aria-label="Xóa ảnh">✕</button></div></div>'}).join("")+'</div>'+
+ return '<label class="l">'+(c?'Ảnh màu '+esc(c):'Ảnh sản phẩm')+' <span class="mu">(ảnh đầu tiên là ảnh đại diện; bấm ảnh để xem to)</span></label><div class="th">'+a.map(function(u,i){
+  return '<div><img src="'+esc(u)+'" alt="Ảnh '+(i+1)+'" data-zoom="'+esc(u)+'">'+(i===0?'<div class="main">Ảnh đại diện</div>':'')+'<div class="ct"><button type="button" data-m="-1" data-c="'+esc(c)+'" data-i="'+i+'" aria-label="Chuyển ảnh '+(i+1)+' lên trước"'+(i===0?' disabled':'')+'>◀</button><button type="button" data-m="1" data-c="'+esc(c)+'" data-i="'+i+'" aria-label="Chuyển ảnh '+(i+1)+' ra sau"'+(i===a.length-1?' disabled':'')+'>▶</button><button type="button" data-x="1" data-c="'+esc(c)+'" data-i="'+i+'" aria-label="Xóa ảnh '+(i+1)+'">✕</button></div></div>'}).join("")+'</div>'+
   '<label class="dz" data-dz="'+esc(c)+'">Kéo thả ảnh vào đây hoặc bấm để chọn (chọn được nhiều ảnh)<input type="file" accept="image/*" multiple hidden data-up="'+esc(c)+'"></label>'+
-  '<div class="row"><input type="text" placeholder="hoặc dán link ảnh https://…" data-url="'+esc(c)+'"><button data-add="'+esc(c)+'">Thêm</button></div>'}).join("");
- document.querySelectorAll("[data-m]").forEach(function(b){b.onclick=function(){var a=edit[b.dataset.c],i=+b.dataset.i,j=i+ +b.dataset.m,t=a[i];a[i]=a[j];a[j]=t;dirty=true;draw()}});
- document.querySelectorAll("[data-x]").forEach(function(b){b.onclick=function(){edit[b.dataset.c].splice(+b.dataset.i,1);dirty=true;draw()}});
- document.querySelectorAll("[data-add]").forEach(function(b){b.onclick=function(){var i=document.querySelector('[data-url="'+b.dataset.add+'"]'),v=i.value.trim();if(/^https?:\/\//.test(v)){edit[b.dataset.add].push(v);dirty=true;draw()}}});
- document.querySelectorAll("[data-up]").forEach(function(i){i.onchange=function(){up(i.dataset.up,i.files)}});
- document.querySelectorAll("[data-dz]").forEach(function(z){z.ondragover=function(e){e.preventDefault();z.classList.add("on")};z.ondragleave=function(){z.classList.remove("on")};z.ondrop=function(e){e.preventDefault();z.classList.remove("on");up(z.dataset.dz,e.dataTransfer.files)}})}
-// Thu nhỏ ảnh lớn (tối đa 1400px, JPEG) trước khi tải lên để web nhẹ, khách xem nhanh trên điện thoại
-function shrinkImg(f){return new Promise(function(ok){if(f.type==="image/gif"||f.size<400000)return ok(f);var im=new Image(),u=URL.createObjectURL(f);
- im.onload=function(){URL.revokeObjectURL(u);var s=Math.min(1,1400/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);var x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);c.toBlob(function(b){ok(b&&b.size<f.size?b:f)},"image/jpeg",.85)};
+  '<div class="row"><input type="text" placeholder="hoặc dán link ảnh https://…" aria-label="Link ảnh" data-url="'+esc(c)+'"><button type="button" class="btn" data-add="'+esc(c)+'">Thêm</button></div>'}).join("");
+ all("[data-m]").forEach(function(b){b.onclick=function(){var a=edit[b.dataset.c],i=+b.dataset.i,j=i+ +b.dataset.m,t=a[i];a[i]=a[j];a[j]=t;dirty=true;draw()}});
+ all("[data-x]").forEach(function(b){b.onclick=function(){edit[b.dataset.c].splice(+b.dataset.i,1);dirty=true;draw()}});
+ all("[data-add]").forEach(function(b){b.onclick=function(){var i=document.querySelector('[data-url="'+b.dataset.add+'"]'),v=i.value.trim();if(/^https?:\/\//.test(v)){edit[b.dataset.add].push(v);dirty=true;draw()}}});
+ all("[data-up]").forEach(function(i){i.onchange=function(){up(i.dataset.up,i.files)}});
+ all("[data-zoom]").forEach(function(im){im.onclick=function(){var z=document.createElement("div");z.className="zoom";z.innerHTML='<img src="'+esc(im.dataset.zoom)+'" alt="">';z.onclick=function(){z.remove()};$("#dg").appendChild(z)}});
+ all("[data-dz]").forEach(function(z){z.ondragover=function(e){e.preventDefault();z.classList.add("on")};z.ondragleave=function(){z.classList.remove("on")};z.ondrop=function(e){e.preventDefault();z.classList.remove("on");up(z.dataset.dz,e.dataTransfer.files)}})}
+// Thu nhỏ ảnh (cạnh dài tối đa 1400px) và đổi sang WebP trước khi tải lên (máy không hỗ trợ WebP thì dùng JPEG) để web nhẹ, khách xem nhanh
+function shrinkImg(f){return new Promise(function(ok){if(f.type==="image/gif"||(f.size<300000&&f.type==="image/webp"))return ok(f);var im=new Image(),u=URL.createObjectURL(f);
+ im.onload=function(){URL.revokeObjectURL(u);var s=Math.min(1,1400/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);var x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);
+  c.toBlob(function(b){if(b&&b.type==="image/webp")return ok(b.size<f.size||f.type!=="image/webp"?b:f);c.toBlob(function(j){ok(j&&j.size<f.size?j:f)},"image/jpeg",.85)},"image/webp",.82)};
  im.onerror=function(){ok(f)};im.src=u})}
 function up(c,files){var fs=Array.prototype.slice.call(files).filter(function(f){return/^image\//.test(f.type)});if(!fs.length){$("#dm").textContent="Chỉ nhận tệp ảnh";return}
  $("#dm").textContent="Đang tải "+fs.length+" ảnh lên…";
@@ -117,11 +215,11 @@ function closeDlg(){if(dirty&&!confirm("Bỏ các thay đổi chưa lưu?"))retu
 $("#sv").onclick=function(){save(false)};$("#sn").onclick=function(){save(true)};$("#cl").onclick=closeDlg;
 $("#dg").addEventListener("cancel",function(e){if(dirty&&!confirm("Bỏ các thay đổi chưa lưu?"))e.preventDefault()});
 ["#f1","#f2","#f3","#f4"].forEach(function(s){$(s).oninput=function(){dirty=true}});$("#f5").onchange=function(){dirty=true};
-$("#s").oninput=function(e){flt.q=e.target.value;list()};$("#ty").onchange=function(e){flt.type=e.target.value;list()};
+$("#s").oninput=function(e){flt.q=e.target.value;list()};$("#ty").onchange=function(e){flt.type=e.target.value;list()};$("#so").onchange=function(e){flt.sort=e.target.value;list()};
 $("#lb").onclick=function(){post("/api/admin/login",{password:$("#pw").value}).then(function(){$("#lm").textContent="";return load()}).then(cfg).catch(function(){$("#lm").textContent="Sai mật khẩu hoặc bị khóa tạm thời"})};
 $("#pw").onkeydown=function(e){if(e.key==="Enter")$("#lb").click()};
 $("#out").onclick=function(){fetch("/api/admin/logout",{method:"POST"}).catch(function(){}).then(function(){location.reload()})};
-document.querySelectorAll(".tabs button").forEach(function(b){b.onclick=function(){document.querySelectorAll(".tabs button").forEach(function(x){x.setAttribute("aria-pressed",x===b);$("#"+x.dataset.t).hidden=x!==b})}});
+all(".tabs button").forEach(function(b){b.onclick=function(){all(".tabs button").forEach(function(x){x.setAttribute("aria-pressed",x===b);$("#"+x.dataset.t).hidden=x!==b})}});
 $("#imp").onchange=function(e){var f=e.target.files[0];if(!f)return;$("#im").textContent="Đang nhập…";(/\.xlsx$/i.test(f.name)?(function(){var fd=new FormData();fd.append("file",f);return api("/api/admin/import",{method:"POST",body:fd})})():f.text().then(function(t){return post("/api/admin/import",JSON.parse(t))})).then(function(r){$("#im").textContent="Xong: "+r.products+" sản phẩm, "+r.variants+" phiên bản.";return load()}).catch(function(e){$("#im").textContent=e&&e.message==="xlsx_not_supported"?"Bản trang quản trị này chưa đọc trực tiếp file Excel. Hãy chép file Excel vào thư mục inbox rồi bấm cap-nhat-web.bat (tự đọc Excel và nhập), hoặc chọn file .json đã chuyển sẵn.":"File không hợp lệ hoặc nhập thất bại."})};
 function cfg(){return fetch("/api/config").then(function(r){return r.json()}).then(function(c){$("#c1").value=c.shopName;$("#c2").value=c.messengerUser;$("#c3").value=c.zaloPhone})}
 $("#cs").onclick=function(){post("/api/admin/config",{shopName:$("#c1").value,messengerUser:fbUser($("#c2").value),zaloPhone:$("#c3").value}).then(function(){$("#cm").textContent="Đã lưu"})};

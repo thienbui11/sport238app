@@ -10,7 +10,7 @@ Xếp theo lợi ích ÷ công sức (cao trước). Độ khó: S < nửa ngày
 | K2 | Tìm ý tưởng từ các shop thể thao, trang bán hàng tốt | Chọn đúng việc đáng làm | S | Có danh sách ý tưởng kèm nguồn, đã đưa vào backlog | ⬜ |
 | P1 | Danh mục "Giày thể thao" (Python + Java), pytest cho bộ đọc Excel, đối chiếu Python–Java trên file thật | Khách tìm giày đúng chỗ; nhập hàng an toàn | M | pytest đạt; Python = Java trên file 14/11 (175 SP, 953 phiên bản, 632 dòng, bỏ 68); 9 danh mục ở cả hai giao diện và trang quản trị | ✅ |
 | F1 | Nạp ảnh hàng loạt theo mã SKU (thu nhỏ, WebP, theo màu, báo cáo HTML) | Có ảnh thật nhanh | M | Lệnh chạy với thư mục mẫu: ảnh đúng SP/màu, giữ ảnh cũ, báo tệp sai mã, báo SP thiếu ảnh; có kiểm thử | ✅ |
-| F2 | Trang quản trị: lọc hết hàng / chưa mô tả / chưa ảnh, sửa hàng loạt (ẩn, nổi bật, danh mục), ảnh tải lên đổi WebP | Chủ shop đỡ tốn thời gian | M | Playwright cho từng thao tác; hai bản sao admin giống nhau | ⬜ |
+| F2 | Trang quản trị: lọc hết hàng / chưa mô tả / chưa ảnh, sửa hàng loạt (ẩn, nổi bật, danh mục), ảnh tải lên đổi WebP | Chủ shop đỡ tốn thời gian | M | Playwright cho từng thao tác; hai bản sao admin giống nhau | ✅ `tests/test_admin.py` |
 | G1 | Nhập hàng mỗi ngày: nhận file mới trong Tải về (chép, không xóa), kiểm tra file (thiếu cột, số SP giảm bất thường → dừng), sao lưu trước khi nhập, quay lại bản trước, báo cáo thay đổi HTML, một nút làm hết, hướng dẫn Task Scheduler, tìm hiểu API Sapo | Cập nhật hằng ngày an toàn, ít thao tác | M–L | pytest cho kiểm tra file, báo cáo, sao lưu/khôi phục; chạy thật với file 14/11 trên dữ liệu thử | ⬜ |
 | H1 | Next.js xuất web tĩnh: mỗi SP một trang (tiêu đề, mô tả, Open Graph, dữ liệu cấu trúc), sitemap, robots, tự chép ảnh, font chạy không cần mạng; không đưa trang quản trị ra ngoài | Một bản giao diện; Google và Zalo thấy từng SP | M–L | 4 bài kiểm thử cũ đạt trên thư mục xuất; có kiểm thử trang SP, meta, sitemap | ✅ |
 | S1 | Chép bảng size từ ảnh chủ shop gửi (2 người chép độc lập, đối chiếu) | Dữ liệu cho bảng size, gợi ý size | S | Tệp dữ liệu bảng size khớp ảnh 100%; hãng thiếu ghi rõ | ⬜ |
@@ -45,8 +45,8 @@ Các mục đã xong trước đó: xem PROGRESS.md.
 - Việc mới:
   | Mã | Việc | Lợi ích | Độ khó | Xong khi… | TT |
   |---|---|---|---|---|---|
-  | N1 | Sao chép đơn và mở Zalo/Messenger **kèm hình sản phẩm**. Trên điện thoại dùng nút "Chia sẻ" của máy (gửi được cả ảnh lẫn chữ sang Zalo/Messenger); máy không hỗ trợ thì tin nhắn kèm link ảnh từng món. Cần có ảnh thật (A1) | Shop nhìn ảnh là biết đúng món | M | Kiểm thử trên điện thoại giả lập: chia sẻ có ảnh + chữ; dự phòng có link ảnh | ⬜ |
-  | N2 | Làm lại giao diện trang quản trị cho dễ nhìn (theo hệ thống thiết kế D1, hai bản sao giống nhau) | Chủ shop thao tác nhanh, ít nhầm | M | Ảnh trước–sau; Playwright quản trị đạt ở máy tính, điện thoại, sáng, tối | ⬜ |
+  | N1 | Sao chép đơn và mở Zalo/Messenger **kèm hình sản phẩm**. Trên điện thoại dùng nút "Chia sẻ" của máy (gửi được cả ảnh lẫn chữ sang Zalo/Messenger); máy không hỗ trợ thì tin nhắn kèm link ảnh từng món. Cần có ảnh thật (A1) | Shop nhìn ảnh là biết đúng món | M | Kiểm thử trên điện thoại giả lập: chia sẻ có ảnh + chữ; dự phòng có link ảnh | ✅ `tests/test_pwa_anh.py` |
+  | N2 | Làm lại giao diện trang quản trị cho dễ nhìn (theo hệ thống thiết kế D1, hai bản sao giống nhau) | Chủ shop thao tác nhanh, ít nhầm | M | Ảnh trước–sau; Playwright quản trị đạt ở máy tính, điện thoại, sáng, tối | ✅ |
 
 ## Ghi chú vận hành
 - Lần chạy đợt 1 bằng agent song song (24/11) **không ra kết quả**: tạo worktree bị lỗi đọc cấu hình git, rồi chạm giới hạn 5 giờ. Không có thay đổi nào trong mã. Lần sau chạy từng việc tuần tự, không dùng worktree.

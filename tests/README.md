@@ -46,6 +46,14 @@ Cài một lần: `cd tests && npm install` (axe-core 4.14.0, lighthouse 13.6.0;
     py tests/test_a11y.py http://localhost:3602     # axe: 5 màn hình × máy tính/điện thoại × sáng/tối; đạt khi 0 lỗi critical/serious
     py tests/lighthouse.py http://localhost:3602    # điện thoại giả lập; trang chủ + 1 trang SP; đạt khi cả 4 mục ≥ 90; báo cáo tests/out/lighthouse/
 
+## Trang quản trị (B6 + N2)
+
+    py tests/test_admin.py     # tự bật máy chủ Node riêng với dữ liệu mẫu trong thư mục tạm (không cần máy chủ đang chạy)
+
+Kiểm tra: hai bản sao admin giống hệt; số trên các nút lọc (Chưa có ảnh, Hết hàng, Chưa có mô tả, Đang ẩn, Nổi bật) đúng với API; sắp xếp theo tồn;
+sửa hàng loạt Ẩn/Hiện, Bật/Tắt nổi bật, Đổi danh mục/Tự động (đối chiếu `/api/admin/products`, giữ nguyên tên riêng, mô tả, danh mục đặt tay);
+sửa 1 SP + tải ảnh (đổi WebP ≤ 1400 px); điện thoại 390/320 px sáng/tối (thẻ không bị cắt, nút ≥ 40 px, thanh sửa hàng loạt ở đáy); axe; đăng xuất.
+
 ## Giao diện mới (D1–D4) và ảnh chụp (D7)
 
     py tests/test_giao_dien.py http://localhost:3602     # chống tái phát giao diện mới (chỉ bản Next.js; bản HTML dự phòng vẫn dùng emoji); in "KẾT QUẢ: 0 lỗi"

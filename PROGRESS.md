@@ -20,7 +20,8 @@ Chủ shop đã duyệt PROPOSALS: **A1–A7, B1–B6, C1, C3, D1–D7, E2**; vi
 - ✅ **A6 + C1 (24/11 tối):** lọc "Size … còn hàng" (chỉ gợi ý size đang còn trong danh mục), 5 khoảng giá (`PRICE_RANGES` trong `lib/shop.ts`), hãng (kèm số SP), "Xóa lọc"; điện thoại gom vào nút "Lọc thêm" có số lọc đang bật; Yêu thích: trái tim trên thẻ và trang SP, lọc "Yêu thích (n)", lưu `localStorage` `yeuthich`. Kiểm thử `tests/test_loc.py` 0 lỗi; mọi bài khác 0 lỗi.
 - ✅ **B2 đặt đồng phục đội (24/11 tối):** trang `/dat-doi/` (`components/TeamOrder.tsx`): chọn mẫu (áo không logo, CLB/đội tuyển, trẻ em), màu, số lượng theo size (hiện tồn, vượt tồn chỉ cảnh báo), danh sách in tên (≤ 15 ký tự, viết hoa) + số (2 chữ số, báo trùng), logo đội (shop báo giá), tạm tính tiền áo + in theo `PRINT_PRICES` (≥10 bộ 10.000đ, ≥5 bộ 15.000đ, dưới 5 bộ shop báo giá – Q6), tin nhắn đầy đủ sao chép & mở Zalo/Messenger. Link ở khối Đồng phục trang chủ, menu điện thoại, chân trang, sitemap. Kiểm thử `tests/test_dat_doi.py` 0 lỗi; mọi bài khác 0 lỗi.
 - ✅ **C3 + N1 (24/11 tối):** cài web như ứng dụng (`app/manifest.ts`, biểu tượng 192/512/maskable từ logo, apple-touch-icon, favicon.ico); giỏ hàng: món có ảnh thì tin nhắn kèm "Ảnh: <link>", điện thoại chia sẻ được tệp thì hiện nút "Gửi đơn kèm ảnh (n ảnh)" (chép chữ trước rồi chia sẻ ảnh + chữ). Hiện 0/175 SP có ảnh nên nút chưa hiện thật — sẽ hiện khi nạp ảnh (A1). Kiểm thử `tests/test_pwa_anh.py` 0 lỗi. Lighthouse: trang chủ 99/100/100/100, trang SP 100/100/100/100.
-- ⏭ **Tiếp theo theo thứ tự:** B6 + N2 (trang quản trị) → G (nhập hàng an toàn, BACKLOG) → T (axe, Lighthouse, CI) → J (hướng dẫn đưa lên mạng).
+- ✅ **B6 + N2 trang quản trị (24/11 tối):** giao diện mới cùng màu cửa hàng (đỏ đô + xám đen), có chế độ tối; điện thoại mỗi SP là một thẻ gọn (trước đây bảng bị cắt cột trạng thái), hộp sửa SP chiếm cả màn hình; lọc nhanh thêm **Hết hàng**, **Chưa có mô tả**; **sắp xếp theo tồn** (Chưa có ảnh + Tồn nhiều trước → biết chụp ảnh SP nào trước); **sửa hàng loạt** (chọn từng SP hoặc Chọn tất cả theo bộ lọc → Ẩn/Hiện, Bật/Tắt nổi bật, Đổi danh mục/Tự động; gọi lần lượt API lưu từng SP nên chạy được với cả máy chủ Node lẫn Spring Boot, giữ nguyên tên riêng, mô tả, ảnh); ảnh tải lên tự đổi **WebP** ≤ 1400 px; nút ≥ 44 px trên điện thoại. Hai bản sao giống hệt. Kiểm thử mới `tests/test_admin.py` (tự bật máy chủ với dữ liệu tạm; đối chiếu API) 0 lỗi, axe 0 lỗi nặng (sáng/tối, máy tính/điện thoại); test_mobile (Node) 0 lỗi; pytest 28 đạt. Ảnh trước–sau trong `screenshots/so-sanh.html` (mục Trang quản trị).
+- ⏭ **Tiếp theo theo thứ tự:** G (nhập hàng an toàn, BACKLOG) → T (axe, Lighthouse, CI) → J (hướng dẫn đưa lên mạng).
 - Kiểm thử sau D1–D4 (web tĩnh Next 3702): test_all, test_feat, test_cards, test_mobile, test_giao_dien, test_a11y, test_seo đều 0 lỗi; pytest 28 đạt. Trước đó: pytest 28 bài đạt; test_seo 0 lỗi; 4 bài Playwright 0 lỗi trên web tĩnh Next (export_next + http.server 3602); trước đó: pytest 25 bài đạt (`py -m pytest`); `mvn test` 5 bài đạt (JDK/Maven di động ở `scratchpad/java`, có thể bị xóa — tải lại theo tests/README.md); 4 bài Playwright 0 lỗi trên Node 3000 và Next.js 3100.
 
 ## CHẾ ĐỘ TỰ CHỦ (từ 24/11/2026)
@@ -71,7 +72,7 @@ Bỏ dải "Mới cập nhật – Hàng đang có sẵn" (trùng với danh sá
 - L15 "Hỏi shop về sản phẩm này" chưa kèm tên sản phẩm.
 - L16 link sản phẩm chia sẻ không hiện đúng sản phẩm; Google không đọc được từng sản phẩm.
 - L17 trang quản trị bản Node nhận `.xlsx` nhưng báo lỗi chung chung.
-- Chưa có pytest cho bộ đọc Excel Python; chưa có kiểm thử trang quản trị (ngoài đăng xuất).
+- Chưa có pytest cho bộ đọc Excel Python; chưa có kiểm thử trang quản trị (ngoài đăng xuất). → Đã có: `tests/py/test_sapo_parser.py`, `tests/test_admin.py`.
 
 ## Lệnh tự kiểm tra
 ```
