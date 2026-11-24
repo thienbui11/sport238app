@@ -39,3 +39,9 @@ Cần JDK 21 và Maven (bản zip di động trong thư mục tạm là đủ; �
 
 `export_next.py` xóa và build lại `sport-shop-next/frontend/.next`: **tắt máy chủ `next start` trước** (và kiểm tra cổng 3100 đã trống: tắt tác vụ nền chưa chắc tắt tiến trình node con).
 - `tests/py/test_xuat_web.py`: nút cập nhật xuất bằng Next.js; lỗi thì tự dùng bản HTML; `XUAT_WEB=html` luôn dùng HTML.
+
+## Truy cập (axe) và Lighthouse
+Cài một lần: `cd tests && npm install` (axe-core 4.14.0, lighthouse 13.6.0; tests/node_modules không commit).
+
+    py tests/test_a11y.py http://localhost:3602     # axe: 5 màn hình × máy tính/điện thoại × sáng/tối; đạt khi 0 lỗi critical/serious
+    py tests/lighthouse.py http://localhost:3602    # điện thoại giả lập; trang chủ + 1 trang SP; đạt khi cả 4 mục ≥ 90; báo cáo tests/out/lighthouse/
