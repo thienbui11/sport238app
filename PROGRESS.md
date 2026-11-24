@@ -12,6 +12,7 @@ Chủ shop đã duyệt PROPOSALS: **A1–A7, B1–B6, C1, C3, D1–D7, E2**; vi
 - ✅ **A7** lỗi L14, L17 (pytest `tests/py/test_server.py`).
 - ✅ **A2** danh mục "Giày thể thao" (Python 2 bản + Java; `ParityWithPythonTest` Python = Java trên file thật; dữ liệu mẫu cập nhật).
 - ✅ **E2** Next.js xuất web tĩnh là bản chính (`tools/export_next.py`, `daily_update.xuat_web` tự dùng HTML khi lỗi; `tests/test_seo.py`). Nhãn `on-dinh-2026-11-24-e2-next-tinh`. **Từ nay chức năng và giao diện mới chỉ làm trên Next.js** (xem CLAUDE.md).
+- ✅ **T (một phần)** `tests/test_a11y.py` (axe) + `tests/lighthouse.py`; cài: `cd tests && npm install`. ✅ **D5** axe 0 lỗi serious trên cả hai bản. Lighthouse: trang SP 98/100/100/100; trang chủ hiệu năng ~70 (xem phân tích trong BACKLOG: phần lớn do chi phí phông chữ của máy đo Windows).
 - ⏭ **Tiếp theo theo thứ tự:** D1–D7 (hệ thống thiết kế, làm lại giao diện trên bản Next) → A3 bảng size (dữ liệu từ `tai-lieu/bang-size-goc/`, Q3/Q4) + B1 gợi ý size → A4, A5, A6, B2–B5, C1, C3, N1 → B6 + N2 (trang quản trị) → G (nhập hàng an toàn, BACKLOG) → T (axe, Lighthouse, CI) → J (hướng dẫn đưa lên mạng).
 - Kiểm thử hiện tại: pytest 28 bài đạt; test_seo 0 lỗi; 4 bài Playwright 0 lỗi trên web tĩnh Next (export_next + http.server 3602); trước đó: pytest 25 bài đạt (`py -m pytest`); `mvn test` 5 bài đạt (JDK/Maven di động ở `scratchpad/java`, có thể bị xóa — tải lại theo tests/README.md); 4 bài Playwright 0 lỗi trên Node 3000 và Next.js 3100.
 
