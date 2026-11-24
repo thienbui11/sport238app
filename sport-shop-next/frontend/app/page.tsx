@@ -1,5 +1,6 @@
 import { Icon } from "@/components/Icons";
 import Storefront from "@/components/Shop";
+import { MapEmbed, RecentlyViewed } from "@/components/Extras";
 import { abs, CATEGORIES, getCatalog, getSite, HOURS, links, pack, phone, SITE_URL } from "@/lib/shop";
 
 export const revalidate = 60;
@@ -58,6 +59,7 @@ export default async function Home() {
       </div>
 
       <Storefront data={pack(products)} updated={updated} />
+      <div className="wrap"><RecentlyViewed /></div>
 
       <section id="ve-shop" className="sec wrap" aria-labelledby="vs-h">
         <div className="sh"><div><h2 id="vs-h">Về {site.name}</h2></div></div>
@@ -76,6 +78,7 @@ export default async function Home() {
               <a className="btn ghost sm" data-fp href={l.page} target="_blank" rel="noopener"><Icon n="facebook" />Facebook</a>
               <a className="btn sm" data-zl href={l.zalo} target="_blank" rel="noopener"><Icon n="chat" />Zalo {phone(site.zalo)}</a>
             </div>
+            <MapEmbed address={site.address} />
           </div>
         </div>
       </section>

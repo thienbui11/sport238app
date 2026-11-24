@@ -361,7 +361,7 @@ footer .fnote{grid-column:1/-1;padding-top:var(--sp-4);border-top:1px solid rgba
 .buy{display:flex;gap:var(--sp-2);margin-top:var(--sp-3)}
 .buy .ib{display:none}
 .buy #ad{flex:1}
-.ask{margin-top:var(--sp-2);width:100%}
+.ask{margin-top:var(--sp-2);display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-2)}.ask .btn{width:100%;padding:0 var(--sp-2)}
 .desc{margin-top:var(--sp-5);white-space:pre-line}
 .upd{margin-top:var(--sp-3);font-size:var(--fs-sm);color:var(--muted)}
 .visit2{margin-top:var(--sp-5);padding:var(--sp-4);border:1px solid var(--line);border-radius:var(--r-lg);background:var(--surface)}
@@ -539,3 +539,24 @@ footer .fnote{grid-column:1/-1;padding-top:var(--sp-4);border-top:1px solid rgba
 .brandnav{margin:var(--sp-2) 0 var(--sp-3)}.brandnav .chip{display:inline-flex;align-items:center;flex:none;min-height:44px;text-decoration:none}
 .brandsec{scroll-margin-top:calc(var(--nav-h) + 16px);padding-top:var(--sp-4)}.brandsec h2{font-size:var(--fs-xl);margin:0 0 var(--sp-3)}
 .flinks a{color:inherit}
+
+/* ===== Trang sản phẩm: chia sẻ, hỏi shop, bản đồ, sản phẩm cùng loại, đã xem gần đây (A4, A5, B4, B5) ===== */
+.ttl{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--sp-2)}
+.ttl .share{flex:none;margin-top:-4px}
+.visit2 .row{display:flex;flex-wrap:wrap;gap:var(--sp-2)}
+.map{margin-top:var(--sp-3);border-radius:var(--r);overflow:hidden;border:1px solid var(--line);aspect-ratio:4/3;background:var(--surface-2)}
+.map iframe{display:block;width:100%;height:100%;border:0}
+.minis{margin-top:var(--sp-6)}.minis h2{font-size:var(--fs-xl);margin:0 0 var(--sp-3)}
+.mrow{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:var(--sp-3)}
+.mini{display:flex;flex-direction:column;gap:4px;padding:var(--sp-2);border:1px solid var(--line);border-radius:var(--r-lg);background:var(--surface);color:var(--ink);text-decoration:none}
+.mini:hover{border-color:var(--line-strong);box-shadow:var(--sh-1)}
+.mini .mt{display:block;aspect-ratio:1;border-radius:var(--r);overflow:hidden;background:var(--surface-2)}
+.mini .mt img,.mini .mt .ph{display:block;width:100%;height:100%;object-fit:cover}
+.mini .mn{font-size:var(--fs-md);font-weight:600;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.mini .mp{font-size:var(--fs-md);font-weight:800;color:var(--brand-ink)}
+@media(max-width:600px){
+ .mrow{display:flex;overflow-x:auto;scroll-snap-type:x proximity;padding-bottom:var(--sp-2);scrollbar-width:none}
+ .mini{flex:0 0 42%;scroll-snap-align:start}
+}
+.visit2 .row .map,.about .map{flex-basis:100%;width:100%}
+@media(max-width:600px){.ask{grid-template-columns:1fr}}

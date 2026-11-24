@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import ProductDetail from "@/components/ProductDetail";
-import { abs, defaultColor, getCatalog, imgsFor, money, SITE_URL, type Product } from "@/lib/shop";
+import { abs, defaultColor, getCatalog, imgsFor, money, priceText, SITE_URL, type Product } from "@/lib/shop";
 
 export const revalidate = 60;
 
@@ -15,9 +15,13 @@ type Props = { params: Promise<{ id: string }> };
 async function find(id: string) {
   const { products, updated } = await getCatalog();
   const p = products.find((x) => x.id === decodeURIComponent(id));
+  // B4: sản phẩm cùng loại (cùng danh mục; ưu tiên cùng hãng, còn hàng), tính sẵn lúc xuất web
+  const related = !p ? [] : products.filter((x) => x.id !== p.id && x.cat === p.cat)
+    .sort((a, b) => Number(b.stock > 0) - Number(a.stock > 0) || Number(!!p.brand && b.brand === p.brand) - Number(!!p.brand && a.brand === p.brand))
+    .slice(0, 8).map((x) => ({ id: x.id, name: x.name, cat: x.cat, price: priceText(x), color: defaultColor(x), img: imgsFor(x, defaultColor(x))[0] }));
   // Sapo có vài sản phẩm trùng tên: thêm mã để mỗi trang có tiêu đề riêng (chủ shop nên đặt "Tên hiển thị" khác nhau)
   const dup = !!p && products.some((x) => x !== p && x.name === p.name);
-  return { p, updated, label: p ? (dup ? `${p.name} (mã ${p.id})` : p.name) : "" };
+  return { p, updated, related, label: p ? (dup ? `${p.name} (mã ${p.id})` : p.name) : "" };
 }
 
 const priceRange = (p: Product) => (p.min === p.max ? money(p.min) : `${money(p.min)} – ${money(p.max)}`);
@@ -51,7 +55,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function Page({ params }: Props) {
   const { id } = await params;
-  const { p, updated } = await find(id);
+  const { p, updated, related } = await find(id);
   if (!p) notFound();
   const img = firstImage(p);
   // Dữ liệu cấu trúc cho Google: chỉ giá, tình trạng, hãng thật — không ghi đánh giá, bảo hành, "chính hãng"
@@ -69,7 +73,7 @@ export default async function Page({ params }: Props) {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld).replace(/</g, "\\u003c") }} />
-      <ProductDetail key={p.id} p={p} updated={updated} />
+      <ProductDetail key={p.id} p={p} updated={updated} related={related} />
     </>
   );
 }

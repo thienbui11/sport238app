@@ -60,3 +60,4 @@ tương phản chữ các thành phần mới ở sáng/tối; khung ảnh vuôn
 ## Bảng size và gợi ý size (chỉ bản Next.js)
 
     py tests/test_bang_size.py http://localhost:3602   # 15 bảng khớp từng ô với data/bang-size.json; gợi ý size đúng như tra tay; nút Bảng size ở trang SP; axe; sáng/tối
+    py tests/test_trang_sp.py http://localhost:3602    # hỏi shop (sao chép câu hỏi), chia sẻ, bản đồ tải khi bấm, SP cùng loại, đã xem gần đây

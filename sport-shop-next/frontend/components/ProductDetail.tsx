@@ -1,13 +1,14 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { scrollMode, colorStock, defaultColor, HOURS, imgsFor, links, money, NEED_SIZE, optLabel, phone, priceText, sizeGroup, type Product } from "@/lib/shop";
 import { cartLabel } from "./Header";
 import { Icon } from "./Icons";
 import { useShop } from "./Providers";
 import { Placeholder, swatch } from "./Shop";
 import { SizeHelp } from "./SizeGuide";
+import { AskShop, MapEmbed, MiniRow, RecentlyViewed, ShareButton, useRecordView, type Mini } from "./Extras";
 
 /** Thư viện ảnh: vuốt ngang (scroll-snap) + ảnh nhỏ bên dưới. Chưa có ảnh thì hiện hình minh họa. */
 function Gallery({ p, color }: { p: Product; color: string }) {
@@ -38,7 +39,7 @@ function Gallery({ p, color }: { p: Product; color: string }) {
   );
 }
 
-export default function ProductDetail({ p, updated }: { p: Product; updated: string }) {
+export default function ProductDetail({ p, updated, related = [] }: { p: Product; updated: string; related?: Mini[] }) {
   const { site, add, toast, picks, setPick, ret, count, setOpen } = useShop();
   const router = useRouter();
   const l = links(site);
@@ -76,6 +77,15 @@ export default function ProductDetail({ p, updated }: { p: Product; updated: str
   };
   const status = !v ? (needSize ? `Tồn kho${multi ? ` ${lbl.toLowerCase()} này` : ""}: ${colorStock(p, color)} sản phẩm. Chọn size để xem từng size.` : "Tạm hết hàng")
     : v.stock <= 0 ? "Tạm hết hàng. Nhắn shop để hỏi khi nào có hàng." : `Còn ${v.stock} sản phẩm`;
+  // B4: ghi lại "đã xem gần đây" (lưu trên máy khách)
+  const mini = useMemo<Mini>(() => ({ id: p.id, name: p.name, cat: p.cat, price: priceText(p), color: defaultColor(p), img: imgsFor(p, defaultColor(p))[0] }), [p]);
+  useRecordView(mini);
+  // A4: câu hỏi sao chép sẵn cho shop
+  const question = () => [
+    `Chào shop, mình muốn hỏi về sản phẩm: ${p.name}`,
+    [v ? `Mã ${v.sku}` : `Mã ${p.id}`, size ? `size ${size}` : "", multi ? `${lbl.toLowerCase()} ${color}` : ""].filter(Boolean).join(", "),
+    location.href.split("#")[0],
+  ].join(String.fromCharCode(10));
   const bad = (!!v && v.stock <= 0) || (!v && !needSize) || (!v && colorStock(p, color) <= 0);
 
   return (
@@ -85,7 +95,10 @@ export default function ProductDetail({ p, updated }: { p: Product; updated: str
       <div className="det">
         <Gallery p={p} color={color} />
         <div className="pinfo">
-          <p className="crumb"><span className="pill">{p.cat}</span>{p.brand && <span>Hãng {p.brand}</span>}</p>
+          <div className="ttl">
+            <p className="crumb"><span className="pill">{p.cat}</span>{p.brand && <span>Hãng {p.brand}</span>}</p>
+            <ShareButton title={`${p.name} | SPORT 238`} text={`${p.name} – ${priceText(p)} tại SPORT 238`} />
+          </div>
           <h1>{p.name}</h1>
           <div className="bigp">{v ? money(v.price) : priceText(p)}</div>
           {multi ? (
@@ -126,7 +139,7 @@ export default function ProductDetail({ p, updated }: { p: Product; updated: str
             <button className="ib" type="button" onClick={() => setOpen(true)} aria-label={cartLabel(count)}><Icon n="cart" /><b className="cnt" hidden={!count}>{count}</b></button>
             <button className="btn" id="ad" type="button" onClick={addToCart} disabled={!!v && v.stock <= 0}><Icon n="cart" />{!!v && v.stock <= 0 ? "Tạm hết hàng" : "Thêm vào giỏ"}</button>
           </div>
-          <a className="btn ghost ask" data-fb href={l.messenger} target="_blank" rel="noopener"><Icon n="messenger" />Hỏi shop về sản phẩm này</a>
+          <AskShop question={question} />
           {p.desc && <p className="desc">{p.desc}</p>}
           <p className="upd">{updated && `Tồn kho cập nhật ngày ${updated}. `}Shop xác nhận còn hàng khi chốt đơn.</p>
           <section className="visit2" aria-labelledby="gs-h">
@@ -136,10 +149,15 @@ export default function ProductDetail({ p, updated }: { p: Product; updated: str
               <li><Icon n="clock" /><span>Mở cửa {HOURS.time}, {HOURS.days}</span></li>
               <li><Icon n="chat" /><span>Zalo {phone(site.zalo)}</span></li>
             </ul>
-            <a className="btn ghost sm" data-map href={l.map} target="_blank" rel="noopener"><Icon n="map" />Chỉ đường Google Maps</a>
+            <div className="row">
+              <a className="btn ghost sm" data-map href={l.map} target="_blank" rel="noopener"><Icon n="map" />Chỉ đường Google Maps</a>
+              <MapEmbed address={site.address} />
+            </div>
           </section>
         </div>
       </div>
+      <MiniRow id="lienquan" title="Sản phẩm cùng loại" items={related} />
+      <RecentlyViewed exclude={p.id} />
     </div>
   );
 }
