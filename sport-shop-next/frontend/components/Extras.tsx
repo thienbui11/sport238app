@@ -40,6 +40,14 @@ export function AskShop({ question }: { question: () => string }) {
   );
 }
 
+/** M8: gửi link (giỏ hàng, đơn đội): điện thoại mở bảng Chia sẻ của máy; máy tính sao chép link */
+export async function shareLink(url: string, title: string, toast: (t: string) => void) {
+  if (typeof navigator.share === "function" && matchMedia("(pointer: coarse)").matches) {
+    try { await navigator.share({ title, text: title, url }); return; } catch (e) { if ((e as Error)?.name === "AbortError") return; }
+  }
+  toast((await copyText(url)) ? "Đã sao chép link. Dán vào Zalo hoặc Messenger để gửi." : "Chưa sao chép được link.");
+}
+
 /** B5: chia sẻ sản phẩm — nút chia sẻ của điện thoại; máy không hỗ trợ thì sao chép link */
 export function ShareButton({ title, text }: { title: string; text: string }) {
   const { toast } = useShop();

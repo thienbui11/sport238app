@@ -2,10 +2,11 @@
 import { useEffect, useRef, useState } from "react";
 import { HOURS, links, money, mText, OVER } from "@/lib/shop";
 import { Icon } from "./Icons";
+import { shareLink } from "./Extras";
 import { useShop } from "./Providers";
 
 export default function CartDrawer() {
-  const { site, items, total, change, clear, open, setOpen, orderText, toast } = useShop();
+  const { site, items, total, change, clear, open, setOpen, orderText, toast, cartLink, incoming, takeIncoming } = useShop();
   const l = links(site);
   const taRef = useRef<HTMLTextAreaElement>(null);
   const dr = useRef<HTMLDivElement>(null);
@@ -93,6 +94,19 @@ export default function CartDrawer() {
           <button className="ib" id="dx" type="button" onClick={() => setOpen(false)} aria-label="Đóng giỏ hàng"><Icon n="close" /></button>
         </div>
         <div className="dl" id="dl">
+          {incoming && (
+            <div className="inc" id="inc" role="group" aria-labelledby="inch">
+              <b id="inch"><Icon n="share" />Giỏ hàng được chia sẻ cho bạn</b>
+              <ul>{incoming.items.map((i) => <li key={i.id}>{i.name}{i.lb ? ` – ${i.lb}` : ""} × {i.qty}</li>)}</ul>
+              {incoming.missing > 0 && <p className="muted small">{incoming.missing} món trong link không còn bán trên web.</p>}
+              <p className="small">Giỏ của bạn đang có {count} món. Bạn muốn:</p>
+              <div className="incb">
+                <button type="button" className="btn" id="incr" onClick={() => takeIncoming("replace")}>Thay giỏ của tôi</button>
+                <button type="button" className="btn ghost" id="incm" onClick={() => takeIncoming("merge")}>Gộp vào giỏ</button>
+                <button type="button" className="rm" id="incx" onClick={() => takeIncoming("skip")}>Bỏ qua</button>
+              </div>
+            </div>
+          )}
           {!has && (
             <div className="dempty">
               <Icon n="cart" />
@@ -117,6 +131,8 @@ export default function CartDrawer() {
           ))}
           {has && (
             <div className="dtools">
+              {/* M8: gửi link giỏ hàng cho bạn bè, đồng đội hoặc shop (mở link là thấy đúng giỏ) */}
+              <button type="button" className="rm lk" id="sharecart" hidden={ask} onClick={() => void shareLink(cartLink(), "Giỏ hàng SPORT 238 của mình", toast)}><Icon n="share" />Gửi link giỏ hàng</button>
               {/* Hỏi lại trước khi xóa giỏ */}
               <button className="rm" id="cc" type="button" hidden={ask} onClick={() => { setAsk(true); setTimeout(() => document.getElementById("ccn")?.focus(), 0); }}>Xóa giỏ hàng</button>
               <div className="ccq" id="ccq" role="group" aria-label="Xác nhận xóa giỏ hàng" hidden={!ask}>

@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
-import { money, OVER, PAGE, type Site } from "@/lib/shop";
+import { dropParam, itemLabel, money, OVER, packCart, PAGE, unpackCart, type Site } from "@/lib/shop";
 
 /** Giỏ lưu giống hệt bản HTML thuần: localStorage "cart5" = [{id, lb, qty}]. Tên, mã, giá, tồn lấy từ danh mục (VM). */
 type Saved = { id: string; lb: string; qty: number };
@@ -21,6 +21,10 @@ type Ctx = {
   list: ListState; setList: (f: (s: ListState) => ListState) => void;
   /** C1: sản phẩm yêu thích (lưu trên máy khách, localStorage "yeuthich") */
   favs: string[]; toggleFav: (id: string, name: string) => void;
+  /** M8: link giỏ hàng để gửi người khác; giỏ nhận từ link (khi giỏ của khách đang có hàng thì hỏi thay/gộp) */
+  cartLink: () => string;
+  incoming: { items: (Saved & { name: string })[]; missing: number } | null;
+  takeIncoming: (mode: "replace" | "merge" | "skip") => void;
   /** vị trí cuộn của trang danh sách trước khi mở trang chi tiết (để quay lại đúng chỗ) */
   ret: React.MutableRefObject<{ y: number; url: string } | null>;
 };
@@ -32,12 +36,16 @@ export const useShop = () => {
 };
 const KEY = "cart5", FAV = "yeuthich";
 
-type ApiCatalog = { products: { id: string; title: string; display_title?: string; variants: { id: string; sku?: string; option2?: string; price: number; inventory_quantity: number }[] }[]; images?: Record<string, string[]> };
+type ApiCatalog = { products: { id: string; title: string; display_title?: string; variants: { id: string; sku?: string; option1?: string; option2?: string; price: number; inventory_quantity: number }[] }[]; images?: Record<string, string[]> };
+/** lb: nhãn size/màu (dùng khi nhận giỏ từ link) */
 const toVM = (d: ApiCatalog) => {
-  const vm: Record<string, Info> = {}, im = d.images ?? {};
-  for (const p of d.products) for (const v of p.variants) {
-    const img = (im[`${p.id}:${v.option2}`] ?? im[p.id] ?? [])[0];
-    vm[v.id] = { name: p.display_title || p.title, sku: v.sku || v.id, price: v.price, stock: Math.max(0, v.inventory_quantity), ...(img ? { img } : {}) };
+  const vm: Record<string, Info & { lb: string }> = {}, im = d.images ?? {};
+  for (const p of d.products) {
+    const colors = [...new Set(p.variants.map((v) => v.option2 ?? ""))];
+    for (const v of p.variants) {
+      const img = (im[`${p.id}:${v.option2}`] ?? im[p.id] ?? [])[0];
+      vm[v.id] = { name: p.display_title || p.title, sku: v.sku || v.id, price: v.price, stock: Math.max(0, v.inventory_quantity), lb: itemLabel(v.option1 ?? "", v.option2 ?? "", colors), ...(img ? { img } : {}) };
+    }
   }
   return vm;
 };
@@ -55,23 +63,38 @@ export default function Providers({ site, children }: { site: Site; children: Re
   const [picks, setPicks] = useState<Record<string, Pick>>({});
   const [list, setListState] = useState<ListState>({ cat: "Tất cả", q: "", st: "", sort: "", limit: PAGE, size: "", price: "", brand: "", fav: false });
   const [favs, setFavs] = useState<string[]>([]);
+  const [incoming, setIncoming] = useState<{ items: (Saved & { name: string })[]; missing: number } | null>(null);
   const ret = useRef<{ y: number; url: string } | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   // Đọc giỏ đã lưu, rồi lấy danh mục mới nhất để có giá, tồn kho; bỏ các món không còn bán.
   // Giỏ trống thì không tải danh mục (đỡ ~130 KB cho lần ghé đầu tiên): món thêm vào giỏ đã mang sẵn giá, tồn kho.
+  // M8: link có ?gio=… (giỏ được chia sẻ) → đọc giỏ đó; giỏ của khách trống thì dùng luôn, có hàng thì hỏi thay/gộp.
   useEffect(() => {
     let saved: Saved[] = [];
     try { saved = JSON.parse(localStorage.getItem(KEY) ?? "[]"); } catch {}
     if (!Array.isArray(saved)) saved = [];
+    const shared = unpackCart(new URLSearchParams(location.search).get("gio") ?? "");
+    if (new URLSearchParams(location.search).has("gio")) dropParam("gio");
     setCart(saved);
     setLoaded(true);
-    if (!saved.length) { setVm((old) => old ?? {}); return; }
+    if (!saved.length && !shared.length) { setVm((old) => old ?? {}); return; }
     fetch("/products.json").then((r) => (r.ok ? r.json() : Promise.reject())).then((d: ApiCatalog) => {
       const m = toVM(d);
       setVm((old) => ({ ...m, ...Object.fromEntries(Object.entries(old ?? {}).filter(([k]) => !m[k])) }));
       setCart((c) => c.filter((i) => m[i.id]));
+      if (shared.length) {
+        const ok = [...new Map(shared.filter((i) => m[i.id]).map((i) => [i.id, { id: i.id, lb: m[i.id].lb, qty: i.qty, name: m[i.id].name }])).values()];
+        const missing = shared.length - ok.length;
+        if (!ok.length) { toast("Các món trong link giỏ hàng không còn bán trên web."); return; }
+        if (!saved.filter((i) => m[i.id]).length) {
+          setCart(ok.map(({ id, lb, qty }) => ({ id, lb, qty })));
+          toast(`Đã mở giỏ hàng được chia sẻ (${ok.length} món${missing ? `, ${missing} món không còn bán` : ""})`);
+        } else setIncoming({ items: ok, missing });
+        setOpen(true);
+      }
     }).catch(() => setVm((old) => old ?? {}));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
     if (loaded) try { localStorage.setItem(KEY, JSON.stringify(cart)); } catch {}
@@ -121,6 +144,20 @@ export default function Providers({ site, children }: { site: Site; children: Re
     const lines = items.map((i, n) => `${n + 1}. ${i.name}${i.lb ? " – " + i.lb : ""} [${i.sku}] x${i.qty} = ${money(i.price * i.qty)}${i.qty > i.stock ? ` (vượt tồn kho trên web, web ghi còn ${i.stock})` : ""}${i.img ? `\n   Ảnh: ${absUrl(i.img)}` : ""}`);
     return `Chào shop, mình muốn đặt:\n${lines.join("\n")}${over ? "\nLưu ý: có món số lượng vượt tồn kho trên web, nhờ shop kiểm tra lại khi chốt đơn." : ""}\nTổng: ${money(total)}\nMình sẽ ghé shop nhận hàng. Shop giữ hàng giúp mình nhé!`;
   };
+  const cartLink = () => `${location.origin}/?gio=${packCart(cart)}`;
+  const takeIncoming = (mode: "replace" | "merge" | "skip") => {
+    const inc = incoming;
+    setIncoming(null);
+    if (!inc || mode === "skip") return;
+    const got = inc.items.map(({ id, lb, qty }) => ({ id, lb, qty }));
+    if (mode === "replace") setCart(got);
+    else setCart((c) => {
+      const out = c.map((x) => ({ ...x }));
+      for (const i of got) { const o = out.find((x) => x.id === i.id); if (o) o.qty += i.qty; else out.push(i); }
+      return out;
+    });
+    toast(mode === "replace" ? "Đã thay bằng giỏ hàng được chia sẻ" : "Đã gộp giỏ hàng được chia sẻ vào giỏ của bạn");
+  };
   const setPick = useCallback((id: string, p: Pick) => setPicks((o) => ({ ...o, [id]: p })), []);
   const setList = useCallback((f: (s: ListState) => ListState) => setListState(f), []);
   const toggleFav = (id: string, name: string) => {
@@ -131,7 +168,7 @@ export default function Providers({ site, children }: { site: Site; children: Re
   };
 
   return (
-    <C.Provider value={{ site, items, count: cart.reduce((a, i) => a + i.qty, 0), total, add, change, clear: () => setCart([]), open, setOpen, toast, orderText, picks, setPick, list, setList, ret, favs, toggleFav }}>
+    <C.Provider value={{ site, items, count: cart.reduce((a, i) => a + i.qty, 0), total, add, change, clear: () => setCart([]), open, setOpen, toast, orderText, picks, setPick, list, setList, ret, favs, toggleFav, cartLink, incoming, takeIncoming }}>
       {children}
       <div className={"toast" + (on ? " on" : "")} id="toast" role="status">{msg}</div>
     </C.Provider>

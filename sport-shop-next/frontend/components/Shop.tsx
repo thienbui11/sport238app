@@ -1,7 +1,8 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
-import { artColors, CATEGORIES, scrollMode, PRICE_RANGES, sizeKey, colorStock, defaultColor, fold, hexesIn, ICON_OF, imgsFor, links, money, optLabel, PAGE, stockStatus, unpack, type Packed, type Product } from "@/lib/shop";
+import { clubsOf, parseClubQuery, suggestClubs } from "@/lib/clubs";
+import { artColors, CATEGORIES, scrollMode, PRICE_RANGES, sizeKey, colorStock, defaultColor, hexesIn, ICON_OF, imgsFor, links, money, optLabel, PAGE, stockStatus, unpack, type Packed, type Product } from "@/lib/shop";
 import { focusSearch, searchIntent } from "./Header";
 import { Art, CatIcon, Icon } from "./Icons";
 import { useShop } from "./Providers";
@@ -118,15 +119,25 @@ export default function Storefront({ data, updated }: { data: Packed; updated: s
   const sizeOpts = useMemo(() => [...new Set(inCat.flatMap((p) => p.variants.filter((v) => v.size && v.stock > 0).map((v) => v.size)))].sort((a, b) => sizeKey(a) - sizeKey(b) || a.localeCompare(b)), [inCat]);
   const brandOpts = useMemo(() => Object.entries(inCat.reduce<Record<string, number>>((a, p) => { if (p.brand) a[p.brand] = (a[p.brand] ?? 0) + 1; return a; }, {})).sort((a, b) => b[1] - a[1]), [inCat]);
   const nFilter = [S.size, S.brand, S.fav].filter(Boolean).length;   // giá nằm ngoài "Lọc thêm" nên không đếm
+  // M7: tên CLB/đội tuyển quen gọi ("mu", "man u", "barcelona"…) → đúng áo của đội đó; phần chữ còn lại tìm như thường
+  const clubIx = useMemo(() => new Map(products.map((p) => [p.id, clubsOf(p.title, p.name)])), [products]);
   const found = useMemo(() => {
-    const words = fold(S.q).split(/\s+/).filter(Boolean);
+    const { clubs, rest } = parseClubQuery(S.q);
+    const words = rest.split(/\s+/).filter(Boolean);
     return products
       .filter((p) => (S.cat === "Tất cả" || p.cat === S.cat) && (!S.st || (S.st === "in") === p.stock > 0) && words.every((w) => p.key.includes(w))
+        && (!clubs.length || clubIx.get(p.id)!.some((c) => clubs.includes(c)))
         && (!S.size || p.variants.some((v) => v.size === S.size && v.stock > 0))
         && (!range || p.variants.some((v) => v.price >= range.lo && v.price <= range.hi))
         && (!S.brand || p.brand === S.brand) && (!S.fav || favs.includes(p.id)))
       .sort((a, b) => (S.sort === "asc" ? a.min - b.min : S.sort === "desc" ? b.min - a.min : Number(b.feat) - Number(a.feat) || Number(b.stock > 0) - Number(a.stock > 0)));
-  }, [products, S.cat, S.q, S.st, S.sort, S.size, S.brand, S.fav, range, favs]);
+  }, [products, clubIx, S.cat, S.q, S.st, S.sort, S.size, S.brand, S.fav, range, favs]);
+  // Gợi ý đội khi đang gõ (chỉ đội đang có hàng trên web); câu tìm đã là tên đội thì thôi gợi ý
+  const sugg = useMemo(() => {
+    const q = S.q.trim(), pq = parseClubQuery(q);
+    if (q.length < 2 || (pq.clubs.length && !pq.rest)) return [];
+    return suggestClubs(q).map((c) => [c, products.filter((p) => clubIx.get(p.id)!.includes(c)).length] as const).filter(([, n]) => n > 0).slice(0, 6);
+  }, [S.q, products, clubIx]);
   const shown = found.slice(0, S.limit), rest = found.length - shown.length, q = S.q.trim();
   const perCat = useMemo(() => Object.fromEntries(CATEGORIES.map((c) => [c.name, products.filter((p) => p.cat === c.name).length])), [products]);
 
@@ -185,6 +196,12 @@ export default function Storefront({ data, updated }: { data: Packed; updated: s
             <option value="">Sắp xếp</option><option value="asc">Giá thấp → cao</option><option value="desc">Giá cao → thấp</option>
           </select>
         </div>
+        {sugg.length > 0 && (
+          <div className="sugg" id="sugg" role="group" aria-label="Gợi ý tìm theo đội bóng">
+            <span>Gợi ý:</span>
+            {sugg.map(([c, n]) => <button key={c.name} type="button" className="chip" data-sg={c.q} onClick={() => set({ q: c.q })}>{c.name} ({n})</button>)}
+          </div>
+        )}
         <div className="filters">
           <button type="button" className="fbtn" id="flt" aria-expanded={fopen} aria-controls="fpanel" onClick={() => setFopen(!fopen)}>
             <Icon n="filter" />Lọc thêm{nFilter > 0 && <b className="cnt">{nFilter}</b>}

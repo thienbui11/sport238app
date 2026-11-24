@@ -180,7 +180,40 @@ export const colorStock = (p: Product, c: string) => p.variants.filter((v) => v.
 export const defaultColor = (p: Product) => p.colors.find((c) => colorStock(p, c) > 0) ?? p.colors[0];
 /** Biến thể có phải là màu không; nếu là mẫu/loại thì gọi là "Loại" thay vì "Màu" */
 const COLOR_WORDS = /(trắng|đen|đỏ|xanh|vàng|cam|tím|hồng|xám|nâu|be|kem|navy|sen|bã trầu|cổ vịt|rêu|bích|ghi|bạc|chuối|lam|lục|ngọc|white|black|red|blue)/i;
-export const optLabel = (p: Product) => (p.colors.every((c) => COLOR_WORDS.test(c)) ? "Màu" : "Loại");
+export const optLabelOf = (colors: string[]) => (colors.every((c) => COLOR_WORDS.test(c)) ? "Màu" : "Loại");
+export const optLabel = (p: Product) => optLabelOf(p.colors);
+/** Nhãn của món trong giỏ: "Size M · Màu Đỏ" (giống lúc khách bấm Thêm vào giỏ) */
+export const itemLabel = (size: string, color: string, colors: string[]) =>
+  [size && `Size ${size}`, colors.length > 1 && `${optLabelOf(colors)} ${color}`].filter(Boolean).join(" · ");
+
+/* ===== M8: gửi link giỏ hàng / đơn đội ===== */
+/** Giỏ → chữ ngắn cho link: "PVN3939:1,PVN3944:2" */
+export const packCart = (c: { id: string; qty: number }[]) => c.map((i) => `${encodeURIComponent(i.id)}:${i.qty}`).join(",");
+/** Đọc giỏ từ link; bỏ dòng sai, số lượng 1–99, tối đa 50 món */
+export const unpackCart = (s: string) => s.split(",").slice(0, 50).flatMap((x) => {
+  const m = x.match(/^(.+):(\d{1,2})$/);
+  if (!m) return [];
+  let id: string;
+  try { id = decodeURIComponent(m[1]); } catch { return []; }
+  const qty = Number(m[2]);
+  return id && qty >= 1 ? [{ id, qty }] : [];
+});
+/** Đối tượng → chữ base64 an toàn cho link (có tiếng Việt) và ngược lại */
+export const toLink = (o: unknown) => {
+  let s = "";
+  new TextEncoder().encode(JSON.stringify(o)).forEach((b) => { s += String.fromCharCode(b); });
+  return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+};
+export const fromLink = <T,>(s: string): T | null => {
+  try { return JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(s.replace(/-/g, "+").replace(/_/g, "/")), (c) => c.charCodeAt(0)))) as T; } catch { return null; }
+};
+/** Bỏ một tham số khỏi thanh địa chỉ (sau khi đã đọc link được chia sẻ), không tải lại trang */
+export const dropParam = (k: string) => {
+  const u = new URL(location.href);
+  if (!u.searchParams.has(k)) return;
+  u.searchParams.delete(k);
+  history.replaceState(history.state, "", u.pathname + (u.search || "") + u.hash);
+};
 
 /* ===== Màu sản phẩm → mã màu, để tô hình minh họa và chấm màu khi CHƯA có ảnh thật ===== */
 const HEX: Record<string, string> = {
