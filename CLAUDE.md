@@ -15,15 +15,17 @@
 - Giao diện: tiếng Việt, màu theo logo (đỏ đô + xám đen), dùng được trên điện thoại, có chế độ tối, bàn phím và trình đọc màn hình dùng được.
 
 ## Cấu trúc
-- `sport-shop-app/` – **bản đang dùng để bán**: máy chủ Node không cần thư viện (Node ≥ 22.9, SQLite có sẵn) gồm trang quản trị `/admin` và API; cửa hàng là một tệp `public/index.html`. Có công cụ xuất **web tĩnh** (`dist/`) để đưa lên hosting. Hướng dẫn vận hành: `sport-shop-app/HUONG-DAN-DUA-LEN-MANG.md`.
-- `sport-shop-next/` – bản nâng cấp sau: `frontend/` (Next.js 16, TypeScript) và `backend/` (Spring Boot 3.5, Java 21, PostgreSQL, Flyway). **Cùng giao diện, cùng API, cùng quy tắc.**
-- `tests/` – kiểm thử bằng Chromium thật (Playwright). Xem `tests/README.md`.
+- `sport-shop-app/` – **trang quản trị + API** chạy trên máy shop: máy chủ Node không cần thư viện (Node ≥ 22.9, SQLite có sẵn), `/admin`. Là nguồn dữ liệu khi xuất web. Công cụ: nhập Excel Sapo, nạp ảnh, cập nhật hằng ngày, xuất web tĩnh (`dist/`). Hướng dẫn vận hành: `sport-shop-app/HUONG-DAN-DUA-LEN-MANG.md`.
+- `sport-shop-next/frontend/` – **giao diện cửa hàng CHÍNH** (Next.js 16, TypeScript). Xuất web tĩnh bằng `py sport-shop-app/tools/export_next.py` (biến `XUAT_TINH=1`): mỗi sản phẩm một trang `/san-pham/<MÃ>/` có tiêu đề, mô tả, Open Graph, JSON-LD; sitemap khi có `SITE_URL`.
+- `sport-shop-next/backend/` – Spring Boot 3.5, Java 21, PostgreSQL (chưa dùng để bán). Bộ đọc Excel Java phải giống bản Python.
+- `tests/` – kiểm thử bằng Chromium thật (Playwright) và pytest (`tests/py`). Xem `tests/README.md`.
 
-## Hai bản giao diện phải luôn đồng bộ
-Giao diện cửa hàng có **hai bản cài đặt**: HTML thuần (`sport-shop-app`) và React (`sport-shop-next/frontend`). Sửa bên nào thì sửa bên kia.
-- CSS **dùng chung**: `sport-shop-next/frontend/app/globals.css`.
-- Bản HTML thuần được dựng từ `sport-shop-app/tools/storefront.template.html` + CSS trên + logo bằng `python sport-shop-app/tools/build_storefront.py`. **Không sửa tay `public/index.html`** (sẽ bị ghi đè); sửa mẫu rồi dựng lại.
-- Trang quản trị: `sport-shop-app/public/admin.html`, bản sao nằm ở `sport-shop-next/frontend/public/admin/index.html` (giữ giống nhau).
+## Hai bản giao diện: Next.js là bản chính, HTML là bản dự phòng (chủ shop duyệt E2, 24/11/2026)
+- **Chức năng mới, giao diện mới: chỉ làm trên bản Next.js** (`sport-shop-next/frontend`). Nút cập nhật hằng ngày xuất bằng Next.js; build lỗi (ví dụ mất mạng khi tải phông chữ) hoặc chưa `npm install` thì tự dùng bản HTML (`XUAT_WEB=html` trong `.env` để luôn dùng HTML).
+- **Bản HTML** (`sport-shop-app/tools/storefront.template.html` → `public/index.html` bằng `build_storefront.py`, không sửa tay `public/index.html`) giữ nguyên làm dự phòng: chỉ sửa lỗi; vẫn phải đạt 4 bài kiểm thử cơ bản. **Chưa xóa** – xóa hẳn phải hỏi chủ shop.
+- Hai bản giữ chung các mã kiểm thử (`#grid .card`, `.szb`, `.clb`, `[data-quick]`, `#cb`, `#dr`, `#ordtxt`, `#more`, khóa giỏ `cart5`…) để 4 bài kiểm thử cơ bản chạy được trên cả hai.
+- CSS dùng chung: `sport-shop-next/frontend/app/globals.css` (bản HTML dựng kèm CSS này). Đổi CSS thì chạy kiểm thử trên cả hai bản.
+- Trang quản trị: `sport-shop-app/public/admin.html`, bản sao `sport-shop-next/frontend/public/admin/index.html` (giữ giống hệt; không có trong web xuất tĩnh).
 - API công khai: `GET /api/products` (`products`, `images`, `updated`), `GET /api/config`. Trường: `id, title, display_title, description, category, vendor, featured, variants[{id,sku,option1(size),option2(màu/loại),price,inventory_quantity}]`.
 
 ## Phân loại và đọc Excel Sapo (có hai bản, phải giống hệt)

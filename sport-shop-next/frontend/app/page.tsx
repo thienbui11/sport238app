@@ -1,5 +1,5 @@
 import Storefront from "@/components/Shop";
-import { CATEGORIES, getCatalog, getSite, HOURS, links, phone } from "@/lib/shop";
+import { abs, CATEGORIES, getCatalog, getSite, HOURS, links, phone, SITE_URL } from "@/lib/shop";
 
 export const revalidate = 60;
 
@@ -9,8 +9,17 @@ const SERVICES = ["Áo bóng đá CLB và đội tuyển", "Áo bóng đá khôn
 export default async function Home() {
   const [{ products, updated }, site] = await Promise.all([getCatalog(), getSite()]);
   const l = links(site);
+  // Thông tin cửa hàng cho Google (địa chỉ, giờ mở cửa). Không ghi số điện thoại khi chủ shop chưa xác nhận số gọi được.
+  const ld = {
+    "@context": "https://schema.org", "@type": "SportingGoodsStore", name: site.name,
+    address: { "@type": "PostalAddress", streetAddress: "238 ấp Thuận Điền (Ngã 3 KCN An Hiệp)", addressLocality: "xã Phú Túc", addressRegion: "Vĩnh Long", addressCountry: "VN" },
+    openingHoursSpecification: [{ "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], opens: "08:00", closes: "21:00" }],
+    sameAs: [l.page],
+    ...(SITE_URL ? { url: abs("/"), image: abs("/logo.png") } : {}),
+  };
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld).replace(/</g, "\\u003c") }} />
       <div className="herobg">
         <div className="wrap">
           <section id="top" className="hero">

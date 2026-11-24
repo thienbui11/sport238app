@@ -30,3 +30,12 @@ Cần JDK 21 và Maven (bản zip di động trong thư mục tạm là đủ; �
     py sport-shop-app/tools/sapo_xlsx_to_json.py <file.xlsx> py.json
     cd sport-shop-next/backend
     SAPO_XLSX=<file.xlsx> PY_JSON=<đường dẫn py.json> mvn -B test     # ParityWithPythonTest in "Python = Java: 175 sản phẩm…"
+
+## Web tĩnh bản Next.js (bản chính) + kiểm tra SEO
+
+    py sport-shop-app/tools/export_next.py --server http://localhost:3000 --out <thư mục tạm> --site-url https://vidu.vn --updated 24/11/2026
+    py -m http.server 3602 --directory <thư mục tạm>       # rồi chạy 4 bài Playwright với http://localhost:3602
+    py tests/test_seo.py <thư mục tạm> https://vidu.vn     # title/description/og/canonical/JSON-LD từng trang, sitemap, robots, không có admin, không lộ giá nhập
+
+`export_next.py` xóa và build lại `sport-shop-next/frontend/.next`: **tắt máy chủ `next start` trước** (và kiểm tra cổng 3100 đã trống: tắt tác vụ nền chưa chắc tắt tiến trình node con).
+- `tests/py/test_xuat_web.py`: nút cập nhật xuất bằng Next.js; lỗi thì tự dùng bản HTML; `XUAT_WEB=html` luôn dùng HTML.

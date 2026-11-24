@@ -43,6 +43,24 @@ def login(server, password):
         return r.headers.get("Set-Cookie", "").split(";")[0]
 
 
+def xuat_web(env, server, updated, out="dist"):
+    """Xuất web tĩnh. Bản chính: Next.js (mỗi sản phẩm một trang riêng cho Google, Zalo, Facebook).
+    Máy chưa cài thư viện Next.js, hoặc build lỗi (ví dụ mất mạng khi tải phông chữ) → tự dùng bản HTML dự phòng.
+    Đặt XUAT_WEB=html trong .env để luôn dùng bản HTML."""
+    import export_static
+    site = env.get("SITE_URL", "")
+    if env.get("XUAT_WEB", "").strip().lower() != "html":
+        import export_next
+        if export_next.available():
+            try:
+                return export_next.export(server, out, site, updated, quiet=True), "Next.js"
+            except SystemExit as e:
+                log(f"Xuất bằng Next.js lỗi, dùng bản HTML dự phòng. Chi tiết: {str(e)[-600:]}")
+        else:
+            log("Chưa cài thư viện Next.js (sport-shop-next/frontend: npm install), dùng bản HTML.")
+    return export_static.export(server, out, site, updated, quiet=True), "HTML"
+
+
 def main():
     env = load_env()
     export_only = "--export-only" in sys.argv
@@ -79,11 +97,10 @@ def main():
         for f in files:
             shutil.move(str(f), str(done / f"{stamp}_{f.name}"))
 
-    import export_static
     # ngày ghi trên web = ngày nhập Excel gần nhất (không phải ngày hôm nay nếu hôm nay chưa nhập)
     updated = STATE.read_text(encoding="utf-8").strip() if STATE.exists() else datetime.date.today().strftime("%d/%m/%Y")
-    out = export_static.export(server, "dist", env.get("SITE_URL", ""), updated, quiet=True)
-    log(f"Đã xuất web tĩnh vào {out} (tồn kho ngày {updated}).")
+    out, kind = xuat_web(env, server, updated)
+    log(f"Đã xuất web tĩnh ({kind}) vào {out} (tồn kho ngày {updated}).")
     cmd = env.get("DEPLOY_CMD", "").strip()
     if cmd:
         log(f"Đưa lên hosting: {cmd}")

@@ -3,12 +3,14 @@ import { Be_Vietnam_Pro } from "next/font/google";
 import CartDrawer from "@/components/CartDrawer";
 import Header, { BottomBar } from "@/components/Header";
 import Providers from "@/components/Providers";
-import { getSite, HOURS, links, phone } from "@/lib/shop";
+import { getSite, HOURS, links, phone, SITE_URL } from "@/lib/shop";
 import "./globals.css";
 
 const font = Be_Vietnam_Pro({ subsets: ["latin", "vietnamese"], weight: ["400", "500", "600", "700", "800"], variable: "--font" });
 
 export const metadata: Metadata = {
+  ...(SITE_URL ? { metadataBase: new URL(SITE_URL), alternates: { canonical: "/" } } : {}),
+  openGraph: { type: "website", locale: "vi_VN", siteName: "SPORT 238", title: "SPORT 238 – Đồ bóng đá, giày, phụ kiện", description: "Chọn size, thêm vào giỏ rồi nhắn shop qua Zalo hoặc Messenger. Ghé shop nhận hàng tại KCN An Hiệp, Vĩnh Long.", ...(SITE_URL ? { url: "/", images: [{ url: "/logo.png", alt: "SPORT 238" }] } : {}) },
   title: "SPORT 238 – Đồ bóng đá, giày, phụ kiện | KCN An Hiệp",
   description: "SPORT 238 – KCN An Hiệp, Vĩnh Long: áo bóng đá, giày bóng đá, quần áo thể thao, đồng phục đội nhóm, phụ kiện bóng đá. Mở cửa 8:00–21:00 hằng ngày.",
 };

@@ -95,7 +95,7 @@ export async function getPublicCatalog(): Promise<ApiCatalog & { images: Record<
       variants: x.variants.map((v) => ({ id: v.id, sku: v.sku, option1: v.option1, option2: v.option2, price: v.price, inventory_quantity: v.inventory_quantity })),
     })),
     images: { ...(rawImages as Record<string, string[]>), ...(d.images ?? {}) },
-    updated: d.updated ?? "",
+    updated: process.env.CAP_NHAT_NGAY || d.updated || "",
   };
 }
 
@@ -114,8 +114,12 @@ export async function getCatalog(): Promise<{ products: Product[]; updated: stri
       images: Object.fromEntries(Object.entries(imgs).filter(([k]) => k === x.id || k.startsWith(x.id + ":"))),
     };
   });
-  return { products, updated: d.updated ?? "" };
+  return { products, updated: d.updated ?? "" };   // d.updated đã tính cả CAP_NHAT_NGAY
 }
+
+/** Địa chỉ web thật (vd https://sport238.vn), dùng cho Open Graph, canonical, sitemap. Để trống thì bỏ các phần cần URL tuyệt đối. */
+export const SITE_URL = (process.env.SITE_URL ?? "").trim().replace(/\/+$/, "");
+export const abs = (path: string) => (SITE_URL ? SITE_URL + path : "");
 
 export const money = (n: number) => n.toLocaleString("vi-VN") + "đ";
 export const phone = (z: string) => z.replace(/^(\d{4})(\d{3})(\d{3,4})$/, "$1 $2 $3");
