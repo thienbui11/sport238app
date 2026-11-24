@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Đọc file Excel xuất từ Sapo POS, phân loại sản phẩm vào 8 danh mục và ghi ra JSON cho web.
+"""Đọc file Excel xuất từ Sapo POS, phân loại sản phẩm vào 9 danh mục và ghi ra JSON cho web.
 Cách dùng:  python tools/sapo_xlsx_to_json.py danh_sach_san_pham.xlsx [frontend/data/products.json]
 Cần:        pip install pandas openpyxl
 Chỉ đọc giá bán lẻ và tồn kho. Giá nhập, giá vốn, giá buôn KHÔNG được đọc nên không thể lên web."""
@@ -8,9 +8,9 @@ import pandas as pd
 
 DEFAULT_DEST = "frontend/data/products.json"
 
-CATS = ["Cờ, Cúp, Huy Chương", "Giày bóng đá", "Quần áo CLB/Đội tuyển", "Quần áo không logo",
+CATS = ["Cờ, Cúp, Huy Chương", "Giày bóng đá", "Giày thể thao", "Quần áo CLB/Đội tuyển", "Quần áo không logo",
         "Quần áo trẻ em", "Phụ kiện thể thao", "Vớ/tất ống đồng", "Cầu lông"]
-CUP, SHOE, CLUB, PLAIN, KIDS, ACC, SOCK, BAD = CATS
+CUP, SHOE, SPORT_SHOE, CLUB, PLAIN, KIDS, ACC, SOCK, BAD = CATS
 
 # Loại sản phẩm trong Sapo được đưa lên web. Shop còn bán đồ mẹ và bé nên các loại khác bị bỏ qua.
 WEB_TYPES = {"Quần áo bóng đá", "Giày bóng đá", "Phụ kiện thể thao"}
@@ -24,6 +24,8 @@ TEAM_RE = re.compile(r"(?:^|[\s\-(])(?:" + "|".join(_TEAMS) + r")(?=$|[\s\-)\d])
 CUP_RE = re.compile(r"huy chương|cúp|(?:^|\s)cờ(?:\s|$)|kỷ niệm chương")
 BAD_RE = re.compile(r"cầu lông|vợt|bông cầu|shuttle")
 SOCK_RE = re.compile(r"ống đồng|(?:^|\s)(?:vớ|tất)(?:\s|$)")
+# Giày không phải giày đá bóng (chủ shop duyệt 24/11/2026). Chỉ nhận tên ghi rõ; tên mơ hồ để ở Giày bóng đá, chủ shop chỉnh tay trong trang quản trị.
+SPORT_SHOE_RE = re.compile(r"^(?:giày|giầy)\s+(?:thể thao|thể dục|vải|chạy bộ|sneaker)")
 KIDS_RE = re.compile(r"trẻ em|kids|\bqa trẻ")
 
 
@@ -37,7 +39,7 @@ def classify(name, ptype, sizes=()):
     if BAD_RE.search(n): return BAD
     if SOCK_RE.search(n): return SOCK
     if ptype == "Phụ kiện thể thao" or n.startswith("dây giày"): return ACC
-    if re.match(r"(giày|giầy)", n): return SHOE
+    if re.match(r"(giày|giầy)", n): return SPORT_SHOE if SPORT_SHOE_RE.match(n) else SHOE
     real = [s for s in sizes if s]
     if KIDS_RE.search(n) or (real and all(s.isdigit() for s in real)): return KIDS
     if TEAM_RE.search(n): return CLUB
@@ -146,9 +148,9 @@ def build_catalog(xlsx):
         cat = classify(title, ptype, [v["option1"] for v in variants])
         if cat is None: continue
         merged = False
-        if len(variants) == 1 and not variants[0]["option1"] and cat in (SHOE, CLUB, PLAIN, KIDS, BAD):
+        if len(variants) == 1 and not variants[0]["option1"] and cat in (SHOE, SPORT_SHOE, CLUB, PLAIN, KIDS, BAD):
             sp = split_size(title)
-            if sp and (sp[1].isdigit() == (cat == SHOE)):      # giày dùng size số, quần áo dùng size chữ
+            if sp and (sp[1].isdigit() == (cat in (SHOE, SPORT_SHOE))):      # giày dùng size số, quần áo dùng size chữ
                 title, variants[0]["option1"] = sp[0], sp[1]
                 cat = classify(title, ptype, [sp[1]]) or cat
                 merged = True

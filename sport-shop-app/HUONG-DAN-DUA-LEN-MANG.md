@@ -1,69 +1,94 @@
-# Đưa web SPORT 238 lên mạng và cập nhật hằng ngày
+# Đưa web SPORT 238 lên mạng
+
+Dành cho chủ shop. Các việc có đăng ký tài khoản, mua tên miền, đưa web lên mạng là **anh/chị tự làm** (hoặc nhờ người tin cậy); công cụ trong máy chỉ chuẩn bị sẵn.
+Thông tin về Cloudflare dưới đây tra ngày 24/11/2026; điều khoản có thể đổi, nên xem lại trang gốc (link ở mỗi mục) trước khi dùng.
 
 ## 1. Cách hoạt động
 
-- **Web công khai (khách xem)** là một thư mục tĩnh `dist/` (chỉ có chữ, ảnh, `products.json`). Không có máy chủ, không có cơ sở dữ liệu, nên rẻ, nhanh và rất ít chuyện hỏng. Khách chọn size, thêm giỏ, rồi bấm sao chép đơn và mở Zalo hoặc Messenger để nhắn shop.
-- **Trang quản trị (chỉ bạn dùng)** chạy ngay trên máy tính ở shop (`chay-quan-tri.bat`). Ở đây bạn nhập hàng từ Sapo, thêm ảnh, sửa tên, mô tả, danh mục, ẩn hoặc đánh dấu nổi bật. Quản trị **không đưa lên mạng**, nên không ai tấn công được.
-- Mỗi khi cần, bạn bấm **xuất web**: chương trình tạo ra `dist/` mới rồi đưa lên hosting.
+- **Web khách xem** là một thư mục tĩnh `dist/` (trang HTML, ảnh, `products.json`). Mỗi sản phẩm có một trang riêng `/san-pham/<MÃ>/` để Google, Zalo, Facebook hiện đúng tên, ảnh, giá. Không có máy chủ, không có cơ sở dữ liệu trên mạng: rẻ, nhanh, ít hỏng.
+- **Trang quản trị** chạy trên máy tính ở shop (`chay-quan-tri.bat`, địa chỉ http://localhost:3000/admin). **Không đưa trang quản trị lên mạng.** Khi xuất web, trang quản trị tự bị loại khỏi `dist/`.
+- Mỗi ngày bấm `cap-nhat-web.bat`: nhập file Excel Sapo, xuất `dist/` mới, và (nếu đã cài ở mục 5) tự đưa lên mạng. Xem `HUONG-DAN-CAP-NHAT-HANG-NGAY.md`.
 
-Bản bán ngay hôm nay: giải nén `sport238-website.zip` (đã có 175 sản phẩm theo file Excel ngày 14/11/2026) và tải lên hosting theo mục 3. Chưa có ảnh sản phẩm, web sẽ hiện biểu tượng thay thế cho đến khi bạn thêm ảnh.
-
-## 2. Cài trang quản trị trên máy shop (làm một lần)
+## 2. Cài trên máy shop (một lần)
 
 1. Cài **Node.js 22.9 trở lên** (nodejs.org) và **Python 3.10 trở lên** (python.org, nhớ tích "Add to PATH").
-2. Mở dòng lệnh, chạy: `pip install pandas openpyxl`
-3. Giải nén `sport-shop-app.zip` vào một thư mục cố định, ví dụ `D:\sport238`.
-4. Chép `.env.example` thành `.env` rồi sửa:
-   - `ADMIN_PASSWORD` mật khẩu mạnh của bạn
-   - `ZALO_PHONE=0962374770`, `MESSENGER_USER=Sport238`, `SHOP_NAME=SPORT 238`
-   - `SITE_URL` địa chỉ web thật (điền sau khi có tên miền)
-   - `DEPLOY_CMD` lệnh tự đưa lên hosting (xem mục 4, có thể để trống lúc đầu)
-5. Bấm đúp `chay-quan-tri.bat`, giữ cửa sổ đó mở. Mở trình duyệt vào http://localhost:3000/admin.
+2. Mở dòng lệnh trong thư mục dự án, chạy:
+   - `pip install pandas openpyxl pillow`
+   - `cd sport-shop-next\frontend` rồi `npm install` (để xuất web bản chính; chưa cài thì công cụ tự dùng bản HTML dự phòng).
+3. Trong thư mục `sport-shop-app`, chép `.env.example` thành **`.env`** rồi sửa:
+   - `ADMIN_PASSWORD=` mật khẩu mạnh (không dùng `admin123`). Tệp `.env` không được đưa lên git hay lên mạng.
+   - `SITE_URL=` địa chỉ web thật (điền sau khi có, ví dụ `https://sport238.vn`).
+4. Bấm đúp `chay-quan-tri.bat`, mở http://localhost:3000/admin để kiểm tra.
 
-## 3. Đưa web lên hosting (tên miền và HTTPS)
+## 3. Chọn nơi đặt web: Cloudflare Pages (gói miễn phí)
 
-**Chọn nơi đặt web.** Web tĩnh đặt được hầu như ở đâu. Điều cần cẩn thận là điều khoản dùng cho mục đích bán hàng:
-- **Vercel gói miễn phí (Hobby)**: điều khoản (cập nhật 1/6/2026) chỉ cho dùng cá nhân hoặc phi thương mại, và Vercel định nghĩa "thương mại" là bất kỳ bản triển khai nào phục vụ lợi ích tài chính của bất kỳ ai liên quan. Web giới thiệu hàng để khách mua hàng của shop thuộc trường hợp này, kể cả khi thanh toán không diễn ra trên web. Muốn dùng Vercel thì phải dùng gói Pro (trên trang Hobby của Vercel ghi mỗi người dùng 20 USD/tháng). Muốn chắc chắn hơn, hỏi thẳng bộ phận hỗ trợ của Vercel bằng văn bản.
-- **GitHub Pages**: theo một bài so sánh hosting mình đọc, điều khoản không cho chạy web kinh doanh, bán hàng. Không nên dùng.
-- **Cloudflare Pages (gói miễn phí)**: theo các bài so sánh, cho dùng thương mại với web tĩnh; trang giới hạn của Cloudflare ghi mỗi tệp tối đa 25 MiB. Đây là lựa chọn mình đề xuất. Bạn tự xem lại điều khoản và giới hạn mới nhất trên trang của Cloudflare trước khi dùng, vì chúng có thể thay đổi.
-- Hoặc thuê **VPS** rồi dùng Nginx hay Caddy phục vụ thư mục `dist/`.
+| Mục | Gói miễn phí | Web SPORT 238 hiện tại |
+|---|---|---|
+| Số tệp mỗi web | 20.000 | ~935 tệp (chưa có ảnh); mỗi ảnh thêm 1 tệp |
+| Dung lượng mỗi tệp | 25 MiB | ảnh đã thu nhỏ còn vài trăm KB |
+| Tên miền riêng | 100 mỗi dự án | 1 |
+| Băng thông trang tĩnh | trang giới hạn không ghi giới hạn | — |
 
-**Các bước với Cloudflare Pages (giao diện có thể khác đôi chút theo thời gian):**
-1. Tạo tài khoản Cloudflare. Vào Workers & Pages, chọn tạo Pages và chọn tải tệp lên trực tiếp (Direct Upload).
-2. Đặt tên dự án (ví dụ `sport238`), kéo thả thư mục `dist` (hoặc nội dung giải nén từ `sport238-website.zip`), bấm Deploy.
-3. Web chạy ngay ở địa chỉ `sport238.pages.dev`. Hãy thử trên điện thoại.
-4. **Tên miền:** mua tên miền ở nhà đăng ký bất kỳ (`.com`, `.vn`...). Trong dự án Pages, chọn Custom domains rồi làm theo hướng dẫn (thường là thêm bản ghi CNAME trỏ về `sport238.pages.dev`). HTTPS được cấp tự động.
-5. Điền địa chỉ thật vào `SITE_URL` trong `.env` để khi chia sẻ link lên Facebook hoặc Zalo hiện đúng logo.
+Nguồn: [Cloudflare Pages – Limits](https://developers.cloudflare.com/pages/platform/limits/).
 
-## 4. Quy trình hằng ngày
+- Điều khoản dịch vụ cho nền tảng (Workers/Pages) mình đọc **không có câu cấm dùng thương mại ở gói miễn phí**; có ghi Cloudflare có thể tạm giới hạn lưu trữ/lượt truy cập nếu gây quá tải, và có thể đổi tên miền phụ `*.pages.dev` (thường báo trước ít nhất một tuần; không áp dụng cho tên miền riêng). Nguồn: [Cloudflare Service-Specific Terms – Developer Platform](https://www.cloudflare.com/service-specific-terms-developer-platform/). Vì vậy **nên dùng tên miền riêng**.
+- **Không dùng Vercel gói miễn phí (Hobby)**: điều khoản chỉ cho dùng cá nhân, phi thương mại; web giới thiệu hàng để bán thuộc diện thương mại (phải dùng gói Pro, có phí).
+- **Không dùng GitHub Pages** cho web bán hàng.
 
-1. Trên Sapo, xuất danh sách sản phẩm ra Excel (nút Xuất file).
-2. Lưu file vào thư mục `inbox` (không cần đổi tên).
-3. Bấm đúp `cap-nhat-web.bat`. Chương trình sẽ: đọc file Excel, nhập vào trang quản trị (ảnh, tên, mô tả, danh mục bạn đã sửa được giữ nguyên), xuất `dist/` mới, và nếu có `DEPLOY_CMD` thì tự đưa lên hosting.
-4. Không có Excel mới mà chỉ vừa thêm ảnh hoặc sửa mô tả: vẫn bấm `cap-nhat-web.bat`, chương trình chỉ xuất lại web.
+## 4. Đưa lên lần đầu (làm một lần, khoảng 15 phút)
 
-**Đưa lên hosting tự động:** với Cloudflare, cài công cụ `wrangler` (`npm i -g wrangler`), đăng nhập một lần bằng `wrangler login`, rồi đặt trong `.env`:
-`DEPLOY_CMD=npx wrangler pages deploy dist --project-name=sport238`
-(Lệnh này mình viết theo hiểu biết, chưa chạy thử với tài khoản của bạn; nếu lỗi, xem hướng dẫn `wrangler pages deploy` của Cloudflare.)
+> Kéo thả thư mục trên trang Cloudflare chỉ nhận tối đa **1.000 tệp**, web đã ~935 tệp và sẽ tăng khi thêm ảnh. Vì vậy dùng lệnh `wrangler` (tối đa 20.000 tệp). Nguồn: [Direct Upload](https://developers.cloudflare.com/pages/get-started/direct-upload/).
 
-**Chạy theo lịch:** dùng Task Scheduler của Windows, tạo tác vụ chạy hằng ngày (ví dụ 20:00) với lệnh `python D:\sport238\tools\daily_update.py` (không dùng `cap-nhat-web.bat` vì tệp đó có lệnh dừng chờ phím). Máy phải bật và `chay-quan-tri.bat` phải đang chạy.
+1. Tạo tài khoản Cloudflare (miễn phí) tại cloudflare.com.
+2. Bấm `cap-nhat-web.bat` để có thư mục `sport-shop-app\dist` mới nhất.
+3. Mở dòng lệnh trong thư mục `sport-shop-app`, chạy lần lượt:
+   ```
+   npx wrangler login
+   npx wrangler pages project create sport238 --production-branch=main
+   npx wrangler pages deploy dist --project-name=sport238 --branch=main
+   ```
+   - `wrangler login` mở trình duyệt để anh/chị đăng nhập Cloudflare và bấm cho phép (chỉ một lần trên máy này).
+   - Tên dự án `sport238` đã có người dùng thì đổi tên khác, và dùng đúng tên đó ở các lệnh sau.
+   - Luôn ghi `--branch=main` (trùng nhánh chính đã tạo). Thiếu nó, máy đang dùng git ở nhánh khác thì web chỉ lên **bản xem thử**, không phải web chính.
+4. Mở địa chỉ `https://sport238.pages.dev` (hoặc tên dự án của anh/chị) trên **điện thoại thật**: chọn size, thêm giỏ, sao chép đơn, mở Zalo, mở Messenger.
 
-## 5. Có tự động hóa được việc lấy dữ liệu từ Sapo không?
+## 5. Tự đưa lên mỗi lần cập nhật
 
-- Mình **không tìm thấy** tính năng của Sapo POS cho phép tự xuất file Excel theo lịch. Vì vậy bước xuất Excel (khoảng một phút) vẫn do bạn bấm, phần còn lại tự động như trên.
-- Để tự động hoàn toàn cần API của Sapo. Bạn nên hỏi Sapo (trong mục Trợ giúp) xem gói và sản phẩm của bạn có hỗ trợ lấy sản phẩm và tồn kho qua API không. Có API thì mình viết lại bước nhập để chạy không cần bạn xuất file.
-- Tồn kho trên web là ảnh chụp tại lần nhập gần nhất. Web ghi "Tồn kho cập nhật ngày ..." và "Shop xác nhận còn hàng khi chốt đơn". Nên cập nhật ít nhất mỗi cuối ngày.
+Thêm vào tệp `.env`:
+```
+DEPLOY_CMD=npx wrangler pages deploy dist --project-name=sport238 --branch=main
+```
+Từ đó mỗi lần bấm `cap-nhat-web.bat` (hoặc máy tự chạy theo lịch `dat-lich.ps1`), web mới tự lên mạng. Kết quả ghi trong `daily_update.log` ("Đưa lên hosting thành công" / "THẤT BẠI").
 
-## 6. Kiểm tra trước khi mở bán
+Không muốn dùng `wrangler login` (ví dụ máy chạy theo lịch không đăng nhập được): tạo **API token** trong Cloudflare (Custom Token, quyền *Account → Cloudflare Pages → Edit*), lấy **Account ID** (trang tổng quan, mục API bên phải), rồi điền vào `.env`:
+```
+CLOUDFLARE_API_TOKEN=...
+CLOUDFLARE_ACCOUNT_ID=...
+```
+Nguồn: [Use Direct Upload with continuous integration](https://developers.cloudflare.com/pages/how-to/use-direct-upload-with-continuous-integration/). Khóa này như mật khẩu: chỉ để trong `.env`, không gửi cho ai.
 
-- [ ] Đổi `ADMIN_PASSWORD`, không dùng `admin123`.
-- [ ] Dùng điện thoại thật: chọn size, thêm giỏ, sao chép đơn, mở Zalo, mở Messenger.
-- [ ] Bấm thử link Messenger `m.me/Sport238`: cần chắc trang Facebook đã bật nhận tin nhắn.
-- [ ] Thêm ảnh cho các sản phẩm chính (trang quản trị lọc sẵn "Chưa có ảnh"). Ảnh tải lên được tự thu nhỏ.
-- [ ] Soát danh mục các nhóm Cầu lông, Phụ kiện thể thao. Sản phẩm xếp sai thì chọn lại trong quản trị.
-- [ ] Hỏi Sở Công Thương địa phương hoặc Cục Thương mại điện tử và Kinh tế số xem web này có phải thông báo hoặc đăng ký không. Luật Thương mại điện tử 2025 và Nghị định 248/2026/NĐ-CP có hiệu lực từ 1/7/2026 và thay đổi quy định cũ; các nguồn mình đọc chủ yếu nói về sàn và nền tảng, chưa xác nhận được trường hợp web giới thiệu sản phẩm rồi gửi đơn qua chat. Không nên tự kết luận web "không phải thương mại điện tử".
-- [ ] Sao lưu thư mục `data` (có `shop.db` và `uploads`) và thư mục `inbox/da-xu-ly` định kỳ ra ổ khác hoặc đám mây.
+## 6. Tên miền riêng và HTTPS
 
-## 7. Khi nào cần nâng cấp
+1. Mua tên miền ở nhà đăng ký bất kỳ (`.vn`, `.com.vn`, `.com`…).
+2. Trong Cloudflare: Workers & Pages → dự án `sport238` → **Custom domains** → thêm tên miền, làm theo hướng dẫn (thường là thêm bản ghi CNAME trỏ về `sport238.pages.dev`, hoặc chuyển tên miền sang Cloudflare quản lý). **HTTPS được cấp tự động.**
+3. Điền `SITE_URL=https://ten-mien-cua-shop` vào `.env`, bấm lại `cap-nhat-web.bat`: sơ đồ web (`sitemap.xml`), ảnh chia sẻ Zalo/Facebook, dữ liệu cho Google sẽ dùng đúng địa chỉ.
+4. Khai báo với Google: vào Google Search Console, thêm tên miền, gửi `https://ten-mien-cua-shop/sitemap.xml`.
 
-Web tĩnh hiện tại chỉ có một trang chính (sản phẩm mở bằng `#`), nên Google khó tìm từng sản phẩm. Khi muốn mỗi sản phẩm có địa chỉ riêng để lên Google, hoặc cần đơn hàng, tài khoản khách, tồn kho tức thì, hãy chuyển sang gói `sport-shop-next` (Next.js và Spring Boot) đã chuẩn bị sẵn.
+## 7. Xem số người ghé web (không cookie)
+
+Cloudflare **Web Analytics** miễn phí, không dùng cookie hay localStorage để đếm. Nguồn: [Cloudflare Web Analytics](https://www.cloudflare.com/web-analytics/).
+Bật: Workers & Pages → dự án → **Metrics** → Web Analytics → **Enable**, rồi đưa web lên lại một lần (bấm `cap-nhat-web.bat`). Nguồn: [Get started](https://developers.cloudflare.com/web-analytics/get-started/).
+
+## 8. Kiểm tra trước khi mở bán
+
+- [ ] `.env` có `ADMIN_PASSWORD` mạnh; trang quản trị **không** mở ra mạng (chỉ dùng ở máy shop).
+- [ ] Điện thoại thật: chọn size, thêm giỏ, sao chép đơn, mở Zalo, mở Messenger, "Gửi đơn kèm ảnh" (khi đã có ảnh).
+- [ ] Bấm thử link Messenger `m.me/Sport238`: trang Facebook đã bật nhận tin nhắn.
+- [ ] Thêm ảnh cho các sản phẩm chính (`nap-anh.bat`; trang quản trị lọc "Chưa có ảnh" + "Tồn nhiều trước").
+- [ ] Soát danh mục; sản phẩm xếp sai thì chọn lại trong trang quản trị (sửa hàng loạt được).
+- [ ] **Hỏi Sở Công Thương** (hoặc Cục Thương mại điện tử và Kinh tế số) xem web này có phải **thông báo/đăng ký** không. Luật Thương mại điện tử 2025 và Nghị định 248/2026/NĐ-CP có hiệu lực từ 1/7/2026; các nguồn mình đọc chủ yếu nói về sàn và nền tảng, chưa xác nhận được trường hợp web giới thiệu sản phẩm rồi gửi đơn qua chat. Không tự kết luận web "không phải thương mại điện tử".
+- [ ] Sao lưu định kỳ ra ổ khác hoặc đám mây: thư mục `sport-shop-app\data` (có `shop.db`, `uploads`, `sao-luu`) và thư mục ảnh gốc.
+
+## 9. Khi cần thêm
+
+Cần đơn hàng, tài khoản khách, tồn kho tức thời (không qua Excel) thì dùng backend `sport-shop-next/backend` (Spring Boot + PostgreSQL) đã chuẩn bị sẵn nhưng **chưa chạy thật**; khi đó cần máy chủ có phí và API của Sapo (xem `HUONG-DAN-CAP-NHAT-HANG-NGAY.md`).

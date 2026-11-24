@@ -12,15 +12,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Chuyển các dòng của file Excel xuất từ Sapo POS thành sản phẩm web: phân loại 8 danh mục, tách size khỏi tên
+ * Chuyển các dòng của file Excel xuất từ Sapo POS thành sản phẩm web: phân loại 9 danh mục, tách size khỏi tên
  * rồi gộp các sản phẩm "mỗi size một sản phẩm" thành một sản phẩm nhiều size.
  * Java thuần (không phụ thuộc Spring hay POI) nên kiểm thử dễ. Logic giống hệt tools/sapo_xlsx_to_json.py.
  * Chỉ đọc giá bán lẻ và tồn kho. Giá nhập, giá vốn, giá buôn KHÔNG được đọc nên không thể lên web.
  */
 public final class SapoParser {
-    public static final String CUP = "Cờ, Cúp, Huy Chương", SHOE = "Giày bóng đá", CLUB = "Quần áo CLB/Đội tuyển", PLAIN = "Quần áo không logo",
+    public static final String CUP = "Cờ, Cúp, Huy Chương", SHOE = "Giày bóng đá", SPORT_SHOE = "Giày thể thao", CLUB = "Quần áo CLB/Đội tuyển", PLAIN = "Quần áo không logo",
             KIDS = "Quần áo trẻ em", ACC = "Phụ kiện thể thao", SOCK = "Vớ/tất ống đồng", BAD = "Cầu lông";
-    public static final List<String> CATEGORIES = List.of(CUP, SHOE, CLUB, PLAIN, KIDS, ACC, SOCK, BAD);
+    public static final List<String> CATEGORIES = List.of(CUP, SHOE, SPORT_SHOE, CLUB, PLAIN, KIDS, ACC, SOCK, BAD);
 
     public record Variant(String id, String sku, String option1, String option2, long price, int stock) {}
     public record Product(String id, String title, String productType, String vendor, String category, List<Variant> variants) {}
@@ -40,6 +40,8 @@ public final class SapoParser {
     private static final Pattern SOCK_RE = Pattern.compile("ống đồng|(?:^|\\s)(?:vớ|tất)(?:\\s|$)", F);
     private static final Pattern KIDS_RE = Pattern.compile("trẻ em|kids|\\bqa trẻ", F);
     private static final Pattern SHOE_START = Pattern.compile("^(giày|giầy)", F);
+    /** Giày không phải giày đá bóng (chủ shop duyệt 24/11/2026); giống SPORT_SHOE_RE bản Python. */
+    private static final Pattern SPORT_SHOE_START = Pattern.compile("^(?:giày|giầy)\\s+(?:thể thao|thể dục|vải|chạy bộ|sneaker)", F);
 
     // Nhiều sản phẩm trong Sapo mỗi size là một sản phẩm riêng, size nằm trong tên ("Giày X - Size 42", "Quần áo Y- XL")
     private static final String NB = "(?<![A-Za-z0-9])";
@@ -151,9 +153,9 @@ public final class SapoParser {
             if (cat == null) continue;
 
             boolean merged = false;
-            if (variants.size() == 1 && variants.get(0).option1().isEmpty() && (cat.equals(SHOE) || cat.equals(CLUB) || cat.equals(PLAIN) || cat.equals(KIDS) || cat.equals(BAD))) {
+            if (variants.size() == 1 && variants.get(0).option1().isEmpty() && (cat.equals(SHOE) || cat.equals(SPORT_SHOE) || cat.equals(CLUB) || cat.equals(PLAIN) || cat.equals(KIDS) || cat.equals(BAD))) {
                 String[] sp = splitSize(title);
-                if (sp != null && (isDigits(sp[1]) == cat.equals(SHOE))) {      // giày dùng size số, quần áo dùng size chữ
+                if (sp != null && (isDigits(sp[1]) == (cat.equals(SHOE) || cat.equals(SPORT_SHOE)))) {      // giày dùng size số, quần áo dùng size chữ
                     title = sp[0];
                     Variant v = variants.get(0);
                     variants.set(0, new Variant(v.id(), v.sku(), sp[1], v.option2(), v.price(), v.stock()));
@@ -192,7 +194,7 @@ public final class SapoParser {
         if (BAD_RE.matcher(n).find()) return BAD;
         if (SOCK_RE.matcher(n).find()) return SOCK;
         if (ptype.equals("Phụ kiện thể thao") || n.startsWith("dây giày")) return ACC;
-        if (SHOE_START.matcher(n).find()) return SHOE;
+        if (SHOE_START.matcher(n).find()) return SPORT_SHOE_START.matcher(n).find() ? SPORT_SHOE : SHOE;
         boolean anySize = false, allDigits = true;
         for (String s : sizes) if (!s.isEmpty()) { anySize = true; if (!isDigits(s)) allDigits = false; }
         if (KIDS_RE.matcher(n).find() || (anySize && allDigits)) return KIDS;

@@ -1,6 +1,6 @@
 # SPORT 238 – Next.js + Spring Boot + PostgreSQL
 
-Trạng thái: **frontend (Next.js) và backend (Spring Boot) đã viết xong, chưa được cài và chạy thử bằng npm/Maven** (môi trường soạn mã không có internet).
+Trạng thái (24/11/2026): **frontend đã `npm run build` và đạt ba bài kiểm thử Playwright; backend đã biên dịch và `mvn test` đạt.** Backend chưa chạy thật với PostgreSQL.
 Đã kiểm tra: cú pháp toàn bộ tệp TypeScript, logic xử lý dữ liệu (`lib/shop.ts`), và bộ đọc file Sapo (`SapoParser`) với file Excel thật (632 sản phẩm trong file, 175 lên web, 932 phiên bản).
 
 > **Muốn bán ngay, chưa cần backend?** Dùng gói `sport-shop-app` (web tĩnh + trang quản trị chạy trên máy shop). Xem `HUONG-DAN-DUA-LEN-MANG.md` trong gói đó. Gói `sport-shop-next` này dành cho giai đoạn sau (mỗi sản phẩm có địa chỉ riêng cho Google, đơn hàng, tồn kho tức thì).
@@ -15,7 +15,7 @@ API tại http://localhost:8080 . Muốn chạy không dùng Docker: cần JDK 2
 (biến môi trường: DB_URL, DB_USER, DB_PASSWORD, ADMIN_PASSWORD...). Chạy kiểm thử: `mvn test`.
 
 ## Chạy frontend (Next.js)
-Cần Node.js 20 trở lên.
+Cần Node.js 20.9 trở lên (Next.js 16).
 
     cd frontend
     cp .env.example .env

@@ -6,6 +6,9 @@ B=sys.argv[1] if len(sys.argv)>1 else "http://localhost:3000"
 try: api=json.load(urllib.request.urlopen(B+"/api/products"))
 except Exception: api=json.load(urllib.request.urlopen(B+"/products.json"))
 prods=api["products"];fails=[];errs=[]
+def show_all(pg):
+    # danh sách hiện 20 sản phẩm mỗi lần; bấm "Xem thêm" cho tới hết
+    while pg.locator("#more").is_visible(): pg.click("#more button"); pg.wait_for_timeout(40)
 def ok(c,m):
     print(("  ✓ " if c else "  ✗ ")+m)
     if not c:fails.append(m)
@@ -28,7 +31,7 @@ def run(label,vp,touch=False):
     print("\n=====",label,"=====")
     with sync_playwright() as pw:
         b=pw.chromium.launch();ctx=b.new_context(viewport=vp,has_touch=touch);pg=ctx.new_page();pg.on("pageerror",lambda e:errs.append(str(e)))
-        pg.goto(B+"/");pg.wait_for_selector("#grid .card")
+        pg.goto(B+"/");pg.wait_for_selector("#grid .card");show_all(pg)
         # --- A. mọi thẻ đều có dòng tồn kho đúng số liệu ---
         rows=pg.evaluate("[...document.querySelectorAll('#grid .card')].map(c=>[c.dataset.pid,(c.querySelector('.stk')||{}).textContent||'',(c.querySelector('.stk b')||{}).textContent||''])")
         byid={p["id"]:p for p in prods};bad=[]
@@ -64,7 +67,7 @@ def run(label,vp,touch=False):
             cd=pg.locator(f"#grid .card[data-pid='{q['id']}']");cd.locator(".clb",has_text=cc).first.click();pg.wait_for_timeout(120)
             cd=pg.locator(f"#grid .card[data-pid='{q['id']}']");cd.locator("[data-quick]").click();pg.wait_for_timeout(120)
             pg.click("#cb");pg.wait_for_timeout(250);ok((f"Màu {cc}" in pg.locator(".ci").last.inner_text() or f"Loại {cc}" in pg.locator(".ci").last.inner_text()),f"'{q['title']}' không có size: chọn màu {cc} rồi thêm giỏ");pg.click("#dx")
-        # --- D. không vượt quá tồn kho ---
+        # --- D. vượt tồn kho: vẫn cho thêm nhưng cảnh báo rõ (tồn kho trên web có thể chưa kịp cập nhật) ---
         pg.evaluate("localStorage.removeItem('cart5')");pg.reload();pg.wait_for_selector("#grid .card")
         pg.fill("#q",one_left["title"][:24]);pg.wait_for_timeout(200)
         def add_once():
@@ -72,7 +75,7 @@ def run(label,vp,touch=False):
             if len(colors(one_left))>=1 and v1["option1"]:cd.locator(f".szb[data-sz='{v1['option1']}']").click();cd=pg.locator(f"#grid .card[data-pid='{one_left['id']}']")
             cd.locator("[data-quick]").click();pg.wait_for_timeout(120)
         add_once();add_once()
-        ok(pg.inner_text("#cn")=="1" and "Chỉ còn 1" in pg.inner_text("#toast"),"chỉ còn 1: thêm lần 2 bị chặn và báo '"+pg.inner_text("#toast")[:45]+"'")
+        ok(pg.inner_text("#cn")=="2" and "vượt tồn kho" in pg.inner_text("#toast"),"chỉ còn 1: thêm lần 2 vẫn được, có cảnh báo '"+pg.inner_text("#toast")[:60]+"'")
         # --- E. hết hàng ---
         pg.fill("#q",oos["title"][:24]);pg.wait_for_timeout(200)
         cd=pg.locator(f"#grid .card[data-pid='{oos['id']}']");lk=cd.locator("a.btn")
@@ -80,7 +83,7 @@ def run(label,vp,touch=False):
         lk.click();pg.wait_for_selector(".det h1");ok(oos["title"][:10] in pg.inner_text(".det h1"),"bấm Xem chi tiết → mở trang sản phẩm")
         # --- F. trang chi tiết hiện số lượng ---
         pg.goto(B+"/#p-"+p["id"]);pg.wait_for_selector(".det h1")
-        small=pg.eval_on_selector_all(".opt[data-sz] small","e=>e.map(x=>x.textContent)");ok(len(small)>0 and all(re.fullmatch(r"còn \d+|hết",s) for s in small),f"mỗi size hiện số lượng còn: {small[:5]}")
+        small=pg.eval_on_selector_all(".opt[data-sz] small","e=>e.map(x=>x.textContent.trim())");ok(len(small)>0 and all(re.fullmatch(r"còn \d+|hết",s) for s in small),f"mỗi size hiện số lượng còn: {small[:5]}")
         pg.click(f".opt[data-col='{c2}']");pg.click(f".opt[data-sz='{v['option1']}']");pg.wait_for_timeout(100)
         ok(f"Còn {v['inventory_quantity']} sản phẩm" in pg.inner_text(".st"),"trạng thái ghi đúng số lượng: "+pg.inner_text(".st"))
         ok(not pg.evaluate("document.documentElement.scrollWidth>document.documentElement.clientWidth"),"không tràn ngang")

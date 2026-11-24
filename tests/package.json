@@ -1,0 +1,9 @@
+{
+  "name": "sport238-kiem-thu",
+  "private": true,
+  "description": "Công cụ đo chất lượng cho kiểm thử: axe-core (truy cập), Lighthouse (tốc độ, truy cập, SEO, thực hành tốt)",
+  "devDependencies": {
+    "axe-core": "4.14.0",
+    "lighthouse": "13.6.0"
+  }
+}
