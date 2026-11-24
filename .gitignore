@@ -37,3 +37,5 @@ replay_pid*
 
 # Maven build output
 **/backend/target/
+**/data/anh-da-nap.json
+**/bao-cao/

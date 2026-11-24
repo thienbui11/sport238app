@@ -14,3 +14,10 @@ và chạy ba lệnh trên với `http://localhost:8099`.
 
 Các bài kiểm thử dựa vào dữ liệu mẫu (175 sản phẩm). Ảnh chụp màn hình ra thư mục `tests/out/`.
 Mỗi bài in "KẾT QUẢ: 0 lỗi" khi đạt.
+
+## pytest (công cụ Python)
+
+    py -m pytest          # chạy mọi bài trong tests/py (pytest.ini đã chỉ đúng thư mục)
+
+Mỗi bài tự bật máy chủ quản trị Node riêng với dữ liệu mẫu trong thư mục tạm (không đụng dữ liệu thật).
+- `tests/py/test_nap_anh.py`: nạp ảnh hàng loạt theo mã SKU (đúng SP/màu, WebP ≤ 1400 px, xoay đúng chiều, giữ ảnh cũ, không nạp trùng, báo cáo).
