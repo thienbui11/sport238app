@@ -581,3 +581,30 @@ footer .fnote{grid-column:1/-1;padding-top:var(--sp-4);border-top:1px solid rgba
  .fpanel[data-open="false"]{display:none}
  .fpanel .sel{flex-basis:100%}
 }
+
+/* ===== Đặt đồng phục đội (B2) ===== */
+.hbtns2{display:flex;flex-wrap:wrap;gap:var(--sp-2)}
+.steps2{list-style:none;margin:0;padding:0;display:grid;gap:var(--sp-4)}
+.steps2>li{padding:var(--sp-4);border:1px solid var(--line);border-radius:var(--r-lg);background:var(--surface)}
+.steps2 h2{font-size:var(--fs-lg);margin:0 0 var(--sp-3)}
+.team .fld{margin-bottom:var(--sp-3)}
+.team .sel{width:100%}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:var(--sp-3)}
+.qcell{display:flex;flex-direction:column;gap:4px;font-weight:600;color:var(--ink)}
+.qcell small{font-weight:400;color:var(--muted)}
+.qcell .inp{width:100%}
+.plist{display:grid;gap:var(--sp-2);margin-bottom:var(--sp-3)}
+.prow{display:grid;grid-template-columns:minmax(0,1fr) 72px 88px 44px;gap:var(--sp-2);align-items:end}
+.prow .fld{margin:0}.prow .rmi{margin-bottom:2px}
+.ck{display:flex;align-items:center;gap:10px;min-height:44px;color:var(--ink);font-weight:600;cursor:pointer}
+.ck input{width:22px;height:22px;accent-color:var(--brand)}
+.ta{width:100%;min-height:auto;padding:10px 14px;resize:vertical;font-size:var(--fs-md);line-height:1.5}
+.tsum{margin:var(--sp-3) 0;padding:var(--sp-3) var(--sp-4);border-radius:var(--r);background:var(--surface-2)}
+.tsum p{display:flex;justify-content:space-between;gap:var(--sp-3);margin:4px 0;color:var(--ink)}
+.tsum p span{color:var(--muted)}.tsum .tt b{font-size:var(--fs-xl);color:var(--brand-ink)}
+.tact{display:grid;gap:var(--sp-2);margin-top:var(--sp-3)}
+.tact .btn{width:100%}
+.prow .sel,.prow .inp{width:100%;min-width:0}
+@media(max-width:600px){.prow{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 44px}.prow .fld:first-child{grid-column:1/-1}}
+.tsum p span{white-space:nowrap}.tsum p b{text-align:right}
+#tm-gia-in{margin:0 0 var(--sp-3)}

@@ -79,6 +79,7 @@ export default function Header() {
         <nav className="mnav" id="mnav" aria-label="Menu" hidden={!menu}>
           {MENU.map(([id, t]) => <Link key={id} href={`/#${id}`} onClick={() => setMenu(false)}>{t}<Icon n="right" /></Link>)}
           <Link href="/bang-size/" onClick={() => setMenu(false)}>Bảng size<Icon n="right" /></Link>
+          <Link href="/dat-doi/" onClick={() => setMenu(false)}>Đặt đồng phục đội<Icon n="right" /></Link>
           <a className="mz" data-zl href={l.zalo} target="_blank" rel="noopener" onClick={() => setMenu(false)}><Icon n="chat" /><span>Nhắn Zalo {phone(site.zalo)}</span></a>
           <p id="mhr"><Icon n="pin" /><span>{site.address}<br />Mở cửa {HOURS.time}, {HOURS.days}</span></p>
         </nav>

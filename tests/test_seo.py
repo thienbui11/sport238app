@@ -70,7 +70,8 @@ ok("Disallow: /admin" in robots, "robots.txt chặn /admin")
 if SITE:
     sm = (OUT / "sitemap.xml").read_text(encoding="utf-8")
     locs = re.findall(r"<loc>([^<]+)</loc>", sm)
-    ok(len(locs) == len(prods) + 2 and f"{SITE}/bang-size/" in locs and all(l.startswith(SITE + "/") for l in locs), f"sitemap.xml có {len(locs)} địa chỉ (trang chủ + bảng size + {len(prods)} SP)")
+    need = {f"{SITE}/", f"{SITE}/bang-size/", f"{SITE}/dat-doi/"} | {f"{SITE}/san-pham/{p['id']}/" for p in prods}
+    ok(set(locs) == need and len(locs) == len(need), f"sitemap.xml có đúng {len(need)} địa chỉ: trang chủ, bảng size, đặt đội, {len(prods)} SP (thiếu: {sorted(need - set(locs))[:3]}; thừa: {sorted(set(locs) - need)[:3]})")
     ok(f"Sitemap: {SITE}/sitemap.xml" in robots, "robots.txt trỏ tới sitemap")
 hdr = (OUT / "_headers").read_text(encoding="utf-8")
 ok("X-Content-Type-Options: nosniff" in hdr and "/_next/static/*" in hdr, "_headers có bảo mật và cache cho tệp tĩnh")

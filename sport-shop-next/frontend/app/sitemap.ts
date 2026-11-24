@@ -7,6 +7,6 @@ export const dynamic = "force-static";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   if (!SITE_URL) return [];
   const { products } = await getCatalog();
-  return [{ url: abs("/"), changeFrequency: "daily", priority: 1 }, { url: abs("/bang-size/"), changeFrequency: "monthly", priority: 0.5 },
+  return [{ url: abs("/"), changeFrequency: "daily", priority: 1 }, { url: abs("/bang-size/"), changeFrequency: "monthly", priority: 0.5 }, { url: abs("/dat-doi/"), changeFrequency: "monthly", priority: 0.5 },
     ...products.map((p) => ({ url: abs(`/san-pham/${encodeURIComponent(p.id)}/`), changeFrequency: "daily" as const, priority: 0.7 }))];
 }

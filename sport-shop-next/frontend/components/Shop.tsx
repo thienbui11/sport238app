@@ -219,8 +219,11 @@ export default function Storefront({ data, updated }: { data: Packed; updated: s
         <div className="promo">
           <div>
             <h2 id="dp-h">Đồng phục đội nhóm, công ty</h2>
-            <p>Nhắn shop để được tư vấn mẫu áo, in tên số và báo giá theo số lượng.</p>
-            <a className="btn" data-zl href={l.zalo} target="_blank" rel="noopener"><Icon n="chat" />Nhắn Zalo tư vấn</a>
+            <p>Chọn mẫu, số lượng theo size, danh sách in tên số rồi gửi đơn cho shop. In tên + số từ 5 bộ 15.000đ/bộ, từ 10 bộ 10.000đ/bộ.</p>
+            <div className="hbtns2">
+              <Link className="btn" href="/dat-doi/" id="go-dat-doi"><Icon n="tag" />Đặt đồng phục đội</Link>
+              <a className="btn ghost light" data-zl href={l.zalo} target="_blank" rel="noopener"><Icon n="chat" />Nhắn Zalo tư vấn</a>
+            </div>
           </div>
           <div className="kit" aria-hidden="true"><Art kind="tee" c1="#c4283f" c2="#f2f0ee" /><Art kind="tee" c1="#f5f5f3" c2="#a3122a" /></div>
         </div>

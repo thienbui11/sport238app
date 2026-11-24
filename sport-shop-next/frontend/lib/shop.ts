@@ -36,6 +36,8 @@ export type Site = typeof DEFAULT_SITE;
 export const HOURS = { time: "8:00–21:00", days: "tất cả các ngày trong tuần" };
 /** Số sản phẩm hiện mỗi lần; bấm "Xem thêm" để hiện tiếp */
 export const PAGE = 20;
+/** B2: giá in tên + số áo đội mỗi bộ (chủ shop xác nhận 24/11/2026); dưới 5 bộ: shop báo giá. Xếp từ mốc cao xuống. */
+export const PRINT_PRICES = [{ min: 10, price: 10_000 }, { min: 5, price: 15_000 }];
 /** A6: khoảng giá để lọc (chọn theo dữ liệu thật: giá thấp nhất mỗi SP, trung vị khoảng 120.000đ) */
 export const PRICE_RANGES = [
   { id: "duoi-100", label: "Dưới 100.000đ", lo: 0, hi: 99_999 },
