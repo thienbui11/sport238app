@@ -204,6 +204,42 @@ with sync_playwright() as pw:
         a = pg.evaluate("[document.activeElement.id,Math.round(document.getElementById('q').getBoundingClientRect().top)]")
         ok(a[0] == "q" and 0 <= a[1] < 400, f"{w} px, trang chi tiết: bấm nút tìm → về danh sách, con trỏ vào ô tìm ({a})")
         ctx.close()
+
+    print("\n===== 8. Sửa sau rà soát (24/11/2026) =====")
+    # 8a. "Giảm chuyển động": cuộn tức thì, không cuộn mượt (lệnh cuộn trong mã không được ép "smooth")
+    ctx = b.new_context(viewport={"width": 390, "height": 844}, is_mobile=True, has_touch=True, reduced_motion="reduce"); pg = ctx.new_page(); pg.on("pageerror", lambda e: errs.append(str(e)))
+    home(pg); pg.locator(".cat[data-go]").first.click(); pg.wait_for_timeout(60)
+    y1 = pg.evaluate("scrollY"); pg.wait_for_timeout(1200); y2 = pg.evaluate("scrollY")
+    ok(y1 > 300 and abs(y2 - y1) < 5, f"giảm chuyển động: bấm danh mục → tới danh sách ngay, không cuộn mượt ({y1} → {y2})")
+    # 8b. vào trang chủ bình thường: không tự đưa con trỏ vào ô tìm
+    home(pg); pg.wait_for_timeout(300)
+    ok(pg.evaluate("document.activeElement.id") != "q", "vào trang chủ bình thường: con trỏ không tự nhảy vào ô tìm")
+    # 8c. hình minh họa không in số (dễ tưởng áo thật có số); nút Zalo ở phần mở đầu ẩn trên điện thoại (thanh dưới đã có)
+    ok(pg.evaluate("document.querySelectorAll('svg text').length") == 0, "hình minh họa không in chữ/số lên áo")
+    ok(not pg.locator(".hbtns [data-zl]").first.is_visible(), "điện thoại: phần mở đầu không lặp nút Zalo (thanh dưới đã có)")
+    # 8d. dòng nhỏ trên tên: SP có hãng chỉ hiện hãng, không bị cắt
+    bad = pg.evaluate("""()=>[...document.querySelectorAll('#grid .cinfo small')].filter(s=>s.scrollWidth>s.clientWidth+1).map(s=>s.innerText)""")
+    hb = pg.evaluate("""()=>[...document.querySelectorAll('#grid .cinfo small.hb')].map(s=>s.innerText.trim())""")
+    ok(not bad and hb and all("·" not in t for t in hb), f"điện thoại: dòng hãng/danh mục trên thẻ không bị cắt (bị cắt: {bad[:2]}; mẫu: {hb[:3]})")
+    # 8e. size hết hàng trên thẻ: viền nét đứt, chữ không mờ
+    st = pg.evaluate("(()=>{const e=document.querySelector('#grid .szb:disabled');if(!e)return null;const s=getComputedStyle(e);return [s.borderTopStyle,s.opacity]})()")
+    ok(st is not None and st[0] == "dashed" and float(st[1]) == 1, f"size hết hàng trên thẻ: viền nét đứt, không làm mờ ({st})")
+    # 8f. giỏ hàng: nút bỏ từng món (≥ 44 px, có nhãn đọc màn hình)
+    two = [v["id"] for p in prods for v in p["variants"] if v["inventory_quantity"] > 0][:2]
+    pg.evaluate("ids=>localStorage.setItem('cart5',JSON.stringify(ids.map(id=>({id,lb:'',qty:2}))))", two)
+    pg.reload(); pg.wait_for_selector("#grid .card"); pg.click("#bc" if pg.locator("#bc").is_visible() else "#cb"); pg.wait_for_timeout(400)
+    rm = pg.locator(".ci .rmi")
+    lab = rm.first.get_attribute("aria-label") or ""
+    box = rm.first.bounding_box()
+    ok(rm.count() == 2 and lab.startswith("Bỏ ") and box and box["width"] >= 43.5 and box["height"] >= 43.5, f"giỏ: mỗi món có nút bỏ khỏi giỏ ≥ 44 px ('{lab}')")
+    rm.first.click(); pg.wait_for_timeout(200)
+    ok(pg.locator(".ci").count() == 1 and pg.inner_text("#cn").strip() == "2", "bấm nút bỏ → món đó ra khỏi giỏ (cả số lượng), món kia còn nguyên")
+    ctx.close()
+    # 8g. máy tính: thẻ "Ghé shop" không lặp ý với dải lợi ích
+    ctx = b.new_context(viewport={"width": 1366, "height": 860}); pg = ctx.new_page(); home(pg)
+    ok("giữ đúng size" not in pg.inner_text(".visit"), "máy tính: thẻ Ghé shop chỉ có địa chỉ, giờ, nút (không lặp ý)")
+    ok(pg.locator(".hbtns [data-zl]").first.is_visible(), "máy tính: phần mở đầu vẫn có nút Nhắn Zalo")
+    ctx.close()
     b.close()
 
 print("\nLỖI JS:", errs[:3]); print("KẾT QUẢ:", len(fails) + len(errs), "lỗi"); print(fails)

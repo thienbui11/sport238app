@@ -89,6 +89,7 @@ export default function CartDrawer() {
                 <span aria-label={`Số lượng ${i.qty}`}>{i.qty}</span>
                 <button type="button" data-q="1" data-k={k} onClick={() => change(i.id, 1)} aria-label={`Tăng số lượng ${i.name}`}><Icon n="plus" /></button>
               </div>
+              <button type="button" className="rmi" data-rm={k} onClick={() => change(i.id, -i.qty)} aria-label={`Bỏ ${i.name}${i.lb ? ` (${i.lb})` : ""} khỏi giỏ`} title="Bỏ khỏi giỏ"><Icon n="trash" /></button>
             </div>
           ))}
           {has && (

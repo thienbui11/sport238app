@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { colorStock, defaultColor, HOURS, imgsFor, links, money, NEED_SIZE, optLabel, phone, priceText, sizeGroup, type Product } from "@/lib/shop";
+import { scrollMode, colorStock, defaultColor, HOURS, imgsFor, links, money, NEED_SIZE, optLabel, phone, priceText, sizeGroup, type Product } from "@/lib/shop";
 import { cartLabel } from "./Header";
 import { Icon } from "./Icons";
 import { useShop } from "./Providers";
@@ -14,7 +14,7 @@ function Gallery({ p, color }: { p: Product; color: string }) {
   const track = useRef<HTMLDivElement>(null);
   const [i, setI] = useState(0);
   useEffect(() => { setI(0); track.current?.scrollTo({ left: 0 }); }, [color]);
-  const go = (k: number) => { const t = track.current; if (t) t.scrollTo({ left: k * t.clientWidth, behavior: "smooth" }); setI(k); };
+  const go = (k: number) => { const t = track.current; if (t) t.scrollTo({ left: k * t.clientWidth, behavior: scrollMode() }); setI(k); };
   const onScroll = () => { const t = track.current; if (t && t.clientWidth) setI(Math.round(t.scrollLeft / t.clientWidth)); };
   return (
     <div className="gal">
@@ -66,7 +66,7 @@ export default function ProductDetail({ p, updated }: { p: Product; updated: str
   const pickSize = (s: string) => { setSize(s); setNeed(false); keep(color, s); };
   const addToCart = () => {
     if (!v) {
-      if (needSize) { setNeed(true); sizeBox.current?.scrollIntoView({ behavior: "smooth", block: "center" }); }
+      if (needSize) { setNeed(true); sizeBox.current?.scrollIntoView({ behavior: scrollMode(), block: "center" }); }
       return toast(needSize ? "Bạn chưa chọn size" : "Sản phẩm tạm hết hàng");
     }
     if (v.stock <= 0) return;

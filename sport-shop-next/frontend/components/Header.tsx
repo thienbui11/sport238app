@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { HOURS, links, phone } from "@/lib/shop";
+import { HOURS, links, phone, scrollMode } from "@/lib/shop";
 import { Icon } from "./Icons";
 import { useShop } from "./Providers";
 
@@ -10,12 +10,13 @@ const MENU: [string, string][] = [["top", "Trang chủ"], ["danh-muc", "Danh m�
 
 export const cartLabel = (n: number) => (n ? `Mở giỏ hàng, đang có ${n} món` : "Mở giỏ hàng, đang trống");
 
-/** Lối tắt tìm kiếm: về danh sách sản phẩm và đặt con trỏ vào ô tìm */
-export const searchIntent = { pending: false };
+/** Lối tắt tìm kiếm: về danh sách sản phẩm và đặt con trỏ vào ô tìm.
+    "at" = thời điểm bấm; quá 3 giây mà chưa tới trang chủ thì bỏ (tránh tự nhảy vào ô tìm ở lần vào sau). */
+export const searchIntent = { at: 0 };
 export function focusSearch() {
   const q = document.getElementById("q") as HTMLInputElement | null;
   if (!q) return false;
-  document.getElementById("san-pham")?.scrollIntoView({ behavior: "smooth" });
+  document.getElementById("san-pham")?.scrollIntoView({ behavior: scrollMode() });
   q.focus({ preventScroll: true });
   return true;
 }
@@ -50,7 +51,7 @@ export default function Header() {
 
   const search = () => {
     setMenu(false);
-    if (!focusSearch()) { searchIntent.pending = true; router.push("/#san-pham"); }
+    if (!focusSearch()) { searchIntent.at = Date.now(); router.push("/#san-pham"); }
   };
 
   return (

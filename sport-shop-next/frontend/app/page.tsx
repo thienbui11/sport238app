@@ -41,7 +41,6 @@ export default async function Home() {
             <ul>
               <li><Icon n="pin" /><span>{site.address}</span></li>
               <li><Icon n="clock" /><span>Mở cửa {HOURS.time}, {HOURS.days}</span></li>
-              <li><Icon n="box" /><span>Nhắn shop trước để shop giữ đúng size, màu cho bạn</span></li>
             </ul>
             <div className="row">
               <a className="btn ghost sm" data-map href={l.map} target="_blank" rel="noopener"><Icon n="map" />Chỉ đường</a>

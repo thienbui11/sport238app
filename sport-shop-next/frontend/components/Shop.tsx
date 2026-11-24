@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
-import { artColors, CATEGORIES, colorStock, defaultColor, fold, hexesIn, ICON_OF, imgsFor, links, money, optLabel, PAGE, stockStatus, unpack, type Packed, type Product } from "@/lib/shop";
+import { artColors, CATEGORIES, scrollMode, colorStock, defaultColor, fold, hexesIn, ICON_OF, imgsFor, links, money, optLabel, PAGE, stockStatus, unpack, type Packed, type Product } from "@/lib/shop";
 import { focusSearch, searchIntent } from "./Header";
 import { Art, CatIcon, Icon } from "./Icons";
 import { useShop } from "./Providers";
@@ -58,7 +58,7 @@ function Card({ p }: { p: Product }) {
         {first ? <img src={first} alt={p.name} loading="lazy" decoding="async" width={400} height={400} /> : <Placeholder p={p} color={color} />}
       </Link>
       <div className="cinfo">
-        <small>{p.cat}{p.brand && ` · ${p.brand}`}</small>
+        <small className={p.brand ? "hb" : undefined}><span className="mc">{p.cat}</span>{p.brand && <span className="mbr"><span className="sep"> · </span>{p.brand}</span>}</small>
         <h3><Link href={href} className="nm" onClick={remember}>{p.name}</Link></h3>
         <div className="price">{(lo !== hi ? "Từ " : "") + money(lo)}</div>
         {multi && (
@@ -119,8 +119,9 @@ export default function Storefront({ data, updated }: { data: Packed; updated: s
   }, [ret]);
   // Bấm nút tìm ở đầu trang khi đang ở trang khác: tới đây rồi đặt con trỏ vào ô tìm
   useEffect(() => {
-    if (!searchIntent.pending) return;
-    searchIntent.pending = false;
+    const fresh = searchIntent.at && Date.now() - searchIntent.at < 3000;
+    searchIntent.at = 0;
+    if (!fresh) return;
     const t = setTimeout(focusSearch, 60);
     return () => clearTimeout(t);
   }, []);
@@ -132,7 +133,7 @@ export default function Storefront({ data, updated }: { data: Packed; updated: s
   }, [S.limit]);
 
   const set = (patch: Partial<typeof S>) => setList((s) => ({ ...s, ...patch, limit: PAGE }));
-  const goCat = (c: string) => { set({ cat: c }); document.getElementById("san-pham")?.scrollIntoView({ behavior: "smooth" }); };
+  const goCat = (c: string) => { set({ cat: c }); document.getElementById("san-pham")?.scrollIntoView({ behavior: scrollMode() }); };
 
   return (
     <>

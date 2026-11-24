@@ -69,7 +69,7 @@ export default async function Page({ params }: Props) {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld).replace(/</g, "\\u003c") }} />
-      <ProductDetail p={p} updated={updated} />
+      <ProductDetail key={p.id} p={p} updated={updated} />
     </>
   );
 }

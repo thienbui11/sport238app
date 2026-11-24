@@ -11,7 +11,7 @@ const FLOOR = <ellipse cx="100" cy="176" rx="66" ry="7" stroke="none" style={{ f
 const NUM: CSSProperties = { fill: "var(--n)", fontFamily: "var(--font), system-ui, sans-serif" };
 const JERSEY = "M72 36 50 43 26 64l14 26 16-9v81q0 5 5 5h78q5 0 5-5V81l16 9 14-26-24-21-22-7q-7 14-28 15-21-1-28-15z";
 
-function Jersey({ crest, num }: { crest?: boolean; num: string }) {
+function Jersey({ crest, num = "" }: { crest?: boolean; num?: string }) {
   return (
     <>
       <path style={A} d={JERSEY} />
@@ -20,7 +20,7 @@ function Jersey({ crest, num }: { crest?: boolean; num: string }) {
       <path fill="rgba(0,0,0,.2)" stroke="none" d="M76 37q24 11 48 0-4 11-24 12-20-1-24-12z" />
       <path fill="none" style={{ stroke: "var(--b)" }} strokeWidth={6} d="M73 37q7 14 27 14t27-14" />
       {crest && <path style={B} strokeWidth={2} d="M117 66h14v8q0 7-7 10-7-3-7-10z" />}
-      <text x="100" y={crest ? 126 : 120} textAnchor="middle" fontSize={crest ? 27 : 32} fontWeight={800} stroke="none" letterSpacing="-1" style={NUM}>{num}</text>
+      {num && <text x="100" y={crest ? 126 : 120} textAnchor="middle" fontSize={crest ? 27 : 32} fontWeight={800} stroke="none" letterSpacing="-1" style={NUM}>{num}</text>}
       <path fill="none" d={JERSEY} />
     </>
   );
@@ -29,9 +29,9 @@ function Jersey({ crest, num }: { crest?: boolean; num: string }) {
 const LACES = <path fill="none" style={{ stroke: "var(--l)" }} strokeWidth={3.5} d="M120 77l9 9M114 84l9 9M108 91l9 9" />;
 
 const ART: Record<string, React.ReactNode> = {
-  jersey: <Jersey crest num="238" />,
-  tee: <Jersey num="238" />,
-  kids: <g transform="translate(22 40) scale(.78)"><Jersey num="8" /></g>,
+  jersey: <Jersey crest />,
+  tee: <Jersey />,
+  kids: <g transform="translate(22 40) scale(.78)"><Jersey /></g>,
   boot: (
     <>
       <path style={A} d="M30 132c-2-20 10-30 28-32l28-4c6-12 14-22 26-26l16 2c4 16 16 26 34 32l16 6c10 4 12 16 6 24l-4 4-146 2c-4-1-4-4-4-8z" />

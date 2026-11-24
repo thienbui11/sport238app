@@ -145,7 +145,8 @@ export const abs = (path: string) => (SITE_URL ? SITE_URL + path : "");
 
 export const money = (n: number) => n.toLocaleString("vi-VN") + "đ";
 export const phone = (z: string) => z.replace(/^(\d{4})(\d{3})(\d{3,4})$/, "$1 $2 $3");
-export const hueOf = (s: string) => [...s].reduce((h, c) => (h * 31 + c.charCodeAt(0)) % 360, 0);
+/** Kiểu cuộn: "auto" khi người dùng bật giảm chuyển động (lệnh cuộn ghi rõ "smooth" sẽ thắng CSS) */
+export const scrollMode = (): ScrollBehavior => (typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth");
 export const imgsFor = (p: Product, color: string) => p.images[`${p.id}:${color}`] ?? p.images[p.id] ?? [];
 export const priceText = (p: Product) => (p.min !== p.max ? "Từ " : "") + money(p.min);
 export const stockStatus = (p: Product): [string, string] => (p.stock <= 0 ? ["Hết hàng", "out"] : p.stock <= 5 ? ["Sắp hết", "warn"] : ["Còn hàng", ""]);
