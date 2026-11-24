@@ -67,7 +67,11 @@ async function api(req, res, u, p, m) {
   if (!p.startsWith("/api/admin/")) return json(res, 404, { error: "not_found" });
   if (!isAdmin(req)) return json(res, 401, { error: "unauthorized" });
   if (m === "GET" && p === "/api/admin/products") return json(res, 200, db.catalog(true));
-  if (m === "POST" && p === "/api/admin/import") return json(res, 200, db.importProducts((await readJson(req, 3e7)).products));
+  if (m === "POST" && p === "/api/admin/import") {
+    // Bản Node chỉ nhận JSON; tệp Excel (gửi dạng multipart) thì báo rõ để trang quản trị hướng dẫn
+    if (/multipart\/form-data/i.test(req.headers["content-type"] || "")) { req.resume(); return json(res, 415, { error: "xlsx_not_supported" }); }
+    return json(res, 200, db.importProducts((await readJson(req, 3e7)).products));
+  }
   const mp = p.match(/^\/api\/admin\/products\/([^/]+)$/);
   if (m === "PUT" && mp) return db.setProductInfo(mp[1], await readJson(req, 5e4)) ? json(res, 200, { ok: true }) : json(res, 404, { error: "not_found" });
   if (m === "POST" && p === "/api/admin/images") { const d = await readJson(req, 1e5); db.setImages(d.product_id, d.color || "", d.urls || []); return json(res, 200, { ok: true }); }
@@ -93,7 +97,7 @@ http.createServer(async (req, res) => {
     if (!f.startsWith(PUB + path.sep)) return json(res, 403, { error: "forbidden" });
     return file(res, f);
   } catch (e) {
-    const big = e.message === "too_large", bad = e instanceof SyntaxError || e.message === "bad_format" || e.message === "bad_product";
+    const big = e.message === "too_large", bad = e instanceof SyntaxError || e instanceof URIError || e.message === "bad_format" || e.message === "bad_product";
     if (!big && !bad) console.error(e);
     json(res, big ? 413 : bad ? 400 : 500, { error: big ? "too_large" : bad ? "bad_request" : "server_error" });
   }

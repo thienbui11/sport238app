@@ -55,10 +55,10 @@ HTML = `sport-shop-app/tools/storefront.template.html` (dựng ra `public/index.
 | L11 | Thông báo nhanh che giá và nút | Nhẹ | Bấm Thêm vào giỏ khi chưa chọn size | `09-chua-chon-size-dt.jpg` | **Đã sửa**: điện thoại hiện ở đầu màn hình |
 | L12 | Chế độ tối: chữ trắng trên nút đỏ 4,497:1 (dưới chuẩn 4,5) | Nhẹ | Đo tương phản | – | **Đã sửa**: 4,55:1 |
 | L13 | Không có giờ mở cửa ở đâu cả | Vừa | – | – | **Đã sửa**: 8:00–21:00 hằng ngày (chủ shop cung cấp) |
-| L14 | Địa chỉ web lỗi mã hóa (`/%E0`) làm máy chủ Node báo lỗi 500 | Nhẹ | `curl localhost:3000/%E0` | – | Chưa sửa |
+| L14 | Địa chỉ web lỗi mã hóa (`/%E0`) làm máy chủ Node báo lỗi 500 | Nhẹ | `curl localhost:3000/%E0` | – | **Đã sửa**: trả 400 (tests/py/test_server.py) |
 | L15 | "Hỏi shop về sản phẩm này" mở Messenger trống, khách phải gõ lại tên SP | Nhẹ | Bấm nút ở trang chi tiết | – | Chưa sửa (đưa vào PROPOSALS) |
 | L16 | Link sản phẩm `/#p-…` chia sẻ chỉ hiện tiêu đề chung; Google không đọc được từng SP | Vừa | Dán link vào Zalo | – | Chưa sửa (PROPOSALS, kiến trúc) |
-| L17 | Admin cho chọn `.xlsx` nhưng máy chủ Node chỉ nhận JSON, báo lỗi chung chung | Nhẹ | Tab Nhập từ Sapo, chọn .xlsx | – | Chưa sửa |
+| L17 | Admin cho chọn `.xlsx` nhưng máy chủ Node chỉ nhận JSON, báo lỗi chung chung | Nhẹ | Tab Nhập từ Sapo, chọn .xlsx | – | **Đã sửa**: báo rõ dùng cap-nhat-web.bat (tests/py/test_server.py) |
 | L18 | Danh mục "Giày bóng đá" lẫn giày vải, giày thể thao | Vừa | Xem danh mục | – | Chủ shop đã duyệt thêm "Giày thể thao" (PROPOSALS) |
 
 ## c) Vấn đề trải nghiệm còn lại

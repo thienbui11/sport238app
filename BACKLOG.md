@@ -35,8 +35,8 @@ Xếp theo lợi ích ÷ công sức (cao trước). Độ khó: S < nửa ngày
 ## Lỗi còn lại (từ AUDIT)
 | Mã | Lỗi | Độ khó | TT |
 |---|---|---|---|
-| L14 | Địa chỉ lỗi mã hóa làm máy chủ Node báo 500 | S | ⬜ |
-| L17 | Admin bản Node nhận `.xlsx` nhưng báo lỗi chung chung | S | ⬜ |
+| L14 | Địa chỉ lỗi mã hóa làm máy chủ Node báo 500 | S | ✅ |
+| L17 | Admin bản Node nhận `.xlsx` nhưng báo lỗi chung chung | S | ✅ |
 
 Các mục đã xong trước đó: xem PROGRESS.md.
 
