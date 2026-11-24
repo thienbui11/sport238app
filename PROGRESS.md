@@ -6,6 +6,14 @@ Cách làm tiếp: đọc tệp này → `CLAUDE.md` → `AUDIT.md` → `PROPOSA
 - Làm tuần tự từng việc, không chạy hàng chục agent cùng lúc; không dùng git worktree (đang lỗi đọc cấu hình git trên máy này).
 - Agent phụ mặc định chạy Sonnet (`CLAUDE_CODE_SUBAGENT_MODEL=sonnet` trong `~/.claude/settings.json`). Việc chỉ đọc, tìm kiếm, chép số liệu: dùng agent `doc-nhanh` (Haiku, `.claude/agents/doc-nhanh.md`). Opus chỉ cho việc lập trình khó.
 
+## TIẾN ĐỘ HIỆN TẠI (cập nhật 24/11/2026 chiều) — đọc phần này trước
+Chủ shop đã duyệt PROPOSALS: **A1–A7, B1–B6, C1, C3, D1–D7, E2**; việc mới **N1** (gửi đơn kèm hình SP), **N2** (giao diện trang quản trị dễ nhìn). Không đưa thẻ tích điểm lên web. Câu hỏi còn mở: `QUESTIONS.md`.
+- ✅ **A1** nạp ảnh hàng loạt theo SKU (`sport-shop-app/tools/nap_anh.py`, `nap-anh.bat`; pytest `tests/py/test_nap_anh.py`).
+- ✅ **A7** lỗi L14, L17 (pytest `tests/py/test_server.py`).
+- ✅ **A2** danh mục "Giày thể thao" (Python 2 bản + Java; `ParityWithPythonTest` Python = Java trên file thật; dữ liệu mẫu cập nhật).
+- ⏭ **Tiếp theo theo thứ tự:** E2 (Next.js xuất tĩnh, mỗi SP một trang, `tools/export_next.py`, nối vào `daily_update.py`) → D1–D7 (hệ thống thiết kế, làm lại giao diện trên bản Next) → A3 bảng size (dữ liệu từ `tai-lieu/bang-size-goc/`, Q3/Q4) + B1 gợi ý size → A4, A5, A6, B2–B5, C1, C3, N1 → B6 + N2 (trang quản trị) → G (nhập hàng an toàn, BACKLOG) → T (axe, Lighthouse, CI) → J (hướng dẫn đưa lên mạng).
+- Kiểm thử hiện tại: pytest 25 bài đạt (`py -m pytest`); `mvn test` 5 bài đạt (JDK/Maven di động ở `scratchpad/java`, có thể bị xóa — tải lại theo tests/README.md); 4 bài Playwright 0 lỗi trên Node 3000 và Next.js 3100.
+
 ## CHẾ ĐỘ TỰ CHỦ (từ 24/11/2026)
 Chủ shop đã chuyển sang chế độ tự chủ tối đa: không dừng chờ duyệt; việc cần chủ shop quyết định ghi vào `QUESTIONS.md` (tạm chọn phương án an toàn) rồi làm tiếp. Danh sách việc và tiêu chí "xong khi…": `BACKLOG.md`. Nhãn bản ổn định trước đợt này: `on-dinh-2026-11-24-sau-sua-loi-dt`.
 - **Đợt 1 (chạy song song 24/11 bị lỗi worktree + giới hạn lượt dùng, không có kết quả; nay làm tuần tự):** mỗi việc một nhánh `wf/…` (P1 Giày thể thao + pytest + đối chiếu Java; F nạp ảnh + quản trị; G nhập hàng an toàn; H Next.js xuất tĩnh; T axe/Lighthouse/CI; J hướng dẫn đưa lên mạng) + khảo sát sâu K1, ý tưởng K2, chép bảng size S1. Sau khi xong: gộp từng nhánh vào `dev`, chạy toàn bộ kiểm thử, cập nhật AUDIT/BACKLOG.
