@@ -14,7 +14,7 @@
 
 ## Cấu trúc
 - `sport-shop-app/` – **bản đang dùng để bán**: máy chủ Node không cần thư viện (Node ≥ 22.9, SQLite có sẵn) gồm trang quản trị `/admin` và API; cửa hàng là một tệp `public/index.html`. Có công cụ xuất **web tĩnh** (`dist/`) để đưa lên hosting. Hướng dẫn vận hành: `sport-shop-app/HUONG-DAN-DUA-LEN-MANG.md`.
-- `sport-shop-next/` – bản nâng cấp sau: `frontend/` (Next.js 15, TypeScript) và `backend/` (Spring Boot 3.5, Java 21, PostgreSQL, Flyway). **Cùng giao diện, cùng API, cùng quy tắc.**
+- `sport-shop-next/` – bản nâng cấp sau: `frontend/` (Next.js 16, TypeScript) và `backend/` (Spring Boot 3.5, Java 21, PostgreSQL, Flyway). **Cùng giao diện, cùng API, cùng quy tắc.**
 - `tests/` – kiểm thử bằng Chromium thật (Playwright). Xem `tests/README.md`.
 
 ## Hai bản giao diện phải luôn đồng bộ
@@ -47,9 +47,10 @@ Muốn có dữ liệu sạch để thử: xóa `sport-shop-app/data/shop.db*` v
 - Giao diện cửa hàng: chạy ba bài trong `tests/` (xem `tests/README.md`); phải ra "KẾT QUẢ: 0 lỗi" trên cả máy tính lẫn điện thoại.
 - Sửa quy tắc đọc Excel: đối chiếu Python và Java như trên.
 - Mở trình duyệt xem thật những chỗ vừa sửa (ảnh chụp, điện thoại 390 px, chế độ tối).
+- Trước khi kiểm thử, xem cổng đã trống chưa (`netstat -ano | findstr :3100`). Trên Windows, tắt cửa sổ lệnh có thể để sót tiến trình `node` vẫn phát bản build cũ, gây lỗi giả ("module factory is not available", bấm nút không ăn). Tắt hẳn bằng số tiến trình (PID).
 
 ## Tình trạng hiện tại và việc nên làm tiếp
-1. `sport-shop-next/frontend` đã `npm install` + `npm run build` (24/11/2026) và đạt cả ba bài kiểm thử Playwright (chạy `npx next start -p 3100` rồi dùng `http://localhost:3100`). Bản React dùng cùng `id`/`data-*`, cùng khóa giỏ `cart5` (`[{id,lb,qty}]`) và có `/products.json` như bản HTML; đường dẫn cũ `/#p-MÃ` tự chuyển sang `/san-pham/MÃ`. Khi sửa giao diện, giữ các mã này ở cả hai bản.
+1. `sport-shop-next/frontend` đã nâng lên Next.js 16.4.6 (24/11/2026; `npm audit` 0 lỗi), build và đạt cả ba bài kiểm thử Playwright (chạy `npx next start -p 3100` rồi dùng `http://localhost:3100`). Bản React dùng cùng `id`/`data-*`, cùng khóa giỏ `cart5` (`[{id,lb,qty}]`) và có `/products.json` như bản HTML; đường dẫn cũ `/#p-MÃ` tự chuyển sang `/san-pham/MÃ`. Khi sửa giao diện, giữ các mã này ở cả hai bản.
 2. `sport-shop-next/backend` đã biên dịch, `mvn test` đạt (24/11/2026). Chưa chạy thật với PostgreSQL (`docker compose up`).
 3. Hỏi người dùng có giữ việc **chặn đặt quá số tồn** trong giỏ không (tồn kho có thể chưa kịp cập nhật nên có thể làm mất đơn).
 4. Ảnh sản phẩm: hiện chưa có ảnh thật. Hỏi người dùng đang lưu ảnh ở đâu (thư mục máy hay link Facebook) để nạp hàng loạt.

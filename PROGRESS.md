@@ -23,16 +23,17 @@
 - Ba bài kiểm thử trong `tests/` đều ra 0 lỗi.
 - Chưa thử chế độ có backend (`API_URL`), vì backend chưa chạy được với PostgreSQL.
 
-Cách làm khi quyết định nâng cấp: `cd sport-shop-next/frontend && npm install next@16 react@latest react-dom@latest && npm run build`, rồi chạy lại ba bài kiểm thử và xem ảnh chụp.
-
-**Quyết định: chưa nâng cấp** (24/11/2026).
+**Đã nâng cấp lên Next.js 16.4.6 (24/11/2026)** trên nhánh `dev`, đã gộp vào `main`, nhãn `ban-on-dinh-next16`:
+- `npm audit`: 0 lỗi. Build không phải sửa mã (chỉ `tsconfig.json` tự chỉnh).
+- Ba bài kiểm thử: 0 lỗi, chạy hai lượt.
+- Bản trước khi nâng cấp (Next.js 15): nhãn `ban-on-dinh-2026-11-24`.
 
 ## Công cụ trên máy (kiểm tra ngày 24/11/2026)
 
 | Công cụ | Tình trạng | Cần cho việc gì |
 |---|---|---|
 | Node.js | Có (v26) | Trang quản trị `sport-shop-app`, build Next.js |
-| **Python** | **Chưa cài** | **Bắt buộc cho việc cập nhật hằng ngày** |
+| **Python** | **Đã cài 3.15.2 (24/11/2026)**, có pandas, openpyxl, pillow, playwright | **Bắt buộc cho việc cập nhật hằng ngày** |
 | Java 21 + Maven | Chưa cài | Chỉ cho backend `sport-shop-next` (chưa dùng để bán) |
 | Docker Desktop | Có cài nhưng bị treo, không chạy được | Chạy backend + PostgreSQL bằng `docker compose` |
 
@@ -43,4 +44,9 @@ Cài Python:
 2. Mở cửa sổ lệnh mới, chạy: `pip install pandas openpyxl pillow`
 3. Muốn chạy kiểm thử thì cài thêm: `pip install playwright` rồi `playwright install chromium`
 
-Ghi chú: lần kiểm thử ngày 24/11/2026 dùng Python, Java, Maven bản di động trong thư mục tạm (không cài vào máy, có thể đã bị xóa). Chromium của Playwright nằm ở `C:\Users\Admin\AppData\Local\ms-playwright`.
+Đã kiểm tra với Python vừa cài (24/11/2026):
+- `python tools\daily_update.py --export-only` chạy được, xuất `dist/` đủ 175 sản phẩm, 953 phiên bản.
+- Đọc file Sapo thật ngày 14/11/2026 (pandas 3.1.1): đúng mốc 175 sản phẩm, 953 phiên bản, bỏ 68 phiên bản giá 0. Kết quả giống hệt `data/seed-products.json`.
+- **Còn thiếu cho nút cập nhật đầy đủ:** tệp `sport-shop-app/.env` có `ADMIN_PASSWORD` (chép từ `.env.example`). Thiếu tệp này thì bước nhập Excel dừng với báo "Thiếu ADMIN_PASSWORD"; riêng `--export-only` vẫn chạy.
+
+Ghi chú: Java và Maven lúc kiểm thử backend là bản di động trong thư mục tạm, không cài vào máy. Chromium của Playwright nằm ở `C:\Users\Admin\AppData\Local\ms-playwright`.

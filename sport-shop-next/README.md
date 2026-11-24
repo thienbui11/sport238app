@@ -15,7 +15,7 @@ API tại http://localhost:8080 . Muốn chạy không dùng Docker: cần JDK 2
 (biến môi trường: DB_URL, DB_USER, DB_PASSWORD, ADMIN_PASSWORD...). Chạy kiểm thử: `mvn test`.
 
 ## Chạy frontend (Next.js)
-Cần Node.js 20 trở lên.
+Cần Node.js 20.9 trở lên (Next.js 16).
 
     cd frontend
     cp .env.example .env
