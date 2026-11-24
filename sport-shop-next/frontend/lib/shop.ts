@@ -75,9 +75,22 @@ const uniq = <T,>(a: T[]) => a.filter((x, i) => a.indexOf(x) === i);
 const ADULT = ["S", "M", "L", "XL", "XXL", "XXXL", "XXXXL"];
 export const sizeKey = (s: string) => (isNaN(+s) ? 100 + ADULT.indexOf(s) : +s);
 
-export async function getCatalog(): Promise<{ products: Product[]; updated: string }> {
+/** Dữ liệu công khai đúng như GET /api/products. Chỉ giữ các trường được phép (không bao giờ có giá nhập, giá vốn, giá buôn). */
+export async function getPublicCatalog(): Promise<ApiCatalog & { images: Record<string, string[]>; updated: string }> {
   const d = await load<ApiCatalog>("/api/products", raw as unknown as ApiCatalog);
-  const imgs: Record<string, string[]> = { ...(rawImages as Record<string, string[]>), ...(d.images ?? {}) };
+  return {
+    products: d.products.map((x) => ({
+      id: x.id, title: x.title, display_title: x.display_title, description: x.description, category: x.category, vendor: x.vendor, featured: x.featured,
+      variants: x.variants.map((v) => ({ id: v.id, sku: v.sku, option1: v.option1, option2: v.option2, price: v.price, inventory_quantity: v.inventory_quantity })),
+    })),
+    images: { ...(rawImages as Record<string, string[]>), ...(d.images ?? {}) },
+    updated: d.updated ?? "",
+  };
+}
+
+export async function getCatalog(): Promise<{ products: Product[]; updated: string }> {
+  const d = await getPublicCatalog();
+  const imgs = d.images;
   const products = d.products.map((x): Product => {
     const variants = x.variants.map((v) => ({ id: v.id, sku: v.sku || v.id, size: v.option1, color: v.option2, price: v.price, stock: Math.max(0, v.inventory_quantity) }));
     const prices = variants.map((v) => v.price);

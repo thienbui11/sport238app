@@ -20,7 +20,7 @@ export default async function Home() {
               <p>Xem size, màu và tình trạng hàng, thêm vào giỏ rồi gửi danh sách cho shop qua Zalo hoặc Messenger. Shop giữ hàng, bạn ghé lấy.</p>
               <div className="hbtns">
                 <a className="btn" href="#san-pham">Xem sản phẩm →</a>
-                <a className="btn ghost" href={l.zalo} target="_blank" rel="noopener">💬 Nhắn Zalo</a>
+                <a className="btn ghost" data-zl href={l.zalo} target="_blank" rel="noopener">💬 Nhắn Zalo</a>
               </div>
             </div>
             <div className="art" aria-hidden="true">
@@ -47,7 +47,7 @@ export default async function Home() {
           <p>{site.name} – KCN An Hiệp chuyên cung cấp quần áo, giày, phụ kiện bóng đá, cầu lông… Nhắn shop để được tư vấn size và giữ hàng, sau đó ghé shop nhận hàng.</p>
           <div className="tags">{SERVICES.map((s) => <span key={s}>{s}</span>)}</div>
           <p className="addr2">📍 {site.address}</p>
-          <div className="links"><a href={l.map} target="_blank" rel="noopener">Chỉ đường</a><a href={l.page} target="_blank" rel="noopener">Facebook</a><a href={l.zalo} target="_blank" rel="noopener">Zalo {phone(site.zalo)}</a></div>
+          <div className="links"><a data-map href={l.map} target="_blank" rel="noopener">Chỉ đường</a><a data-fp href={l.page} target="_blank" rel="noopener">Facebook</a><a data-zl href={l.zalo} target="_blank" rel="noopener">Zalo {phone(site.zalo)}</a></div>
         </div>
       </section>
       <section id="cach-mua" className="sec wrap">
@@ -58,7 +58,7 @@ export default async function Home() {
           <div className="step"><i>2</i><b>Nhắn shop</b><span>Gửi danh sách qua Zalo hoặc Messenger</span></div>
           <div className="step"><i>3</i><b>Ghé shop nhận hàng</b><span>Shop giữ hàng cho bạn, bạn ghé lấy tại cửa hàng</span></div>
         </div>
-        <div className="cta"><a className="btn" href={l.zalo} target="_blank" rel="noopener">💬 Nhắn Zalo {phone(site.zalo)}</a><a className="btn ghost" href={l.messenger} target="_blank" rel="noopener">Nhắn Messenger</a></div>
+        <div className="cta"><a className="btn" data-zl href={l.zalo} target="_blank" rel="noopener">💬 Nhắn Zalo {phone(site.zalo)}</a><a className="btn ghost" data-fb href={l.messenger} target="_blank" rel="noopener">Nhắn Messenger</a></div>
       </section>
     </>
   );

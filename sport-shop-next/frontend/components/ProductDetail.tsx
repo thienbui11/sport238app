@@ -42,7 +42,7 @@ export default function ProductDetail({ p, updated }: { p: Product; updated: str
           <div className="main">{imgs.length ? <img src={imgs[i] ?? imgs[0]} alt={p.name} /> : <Placeholder p={p} />}</div>
           {imgs.length > 1 && (
             <div className="thumbs">
-              {imgs.map((u, k) => <button key={u} aria-pressed={k === i} aria-label={`Ảnh ${k + 1}`} onClick={() => setI(k)}><img src={u} alt="" /></button>)}
+              {imgs.map((u, k) => <button key={u} data-i={k} aria-pressed={k === i} aria-label={`Ảnh ${k + 1}`} onClick={() => setI(k)}><img src={u} alt="" /></button>)}
             </div>
           )}
         </div>
@@ -53,7 +53,7 @@ export default function ProductDetail({ p, updated }: { p: Product; updated: str
           {p.colors.length > 1 ? (
             <>
               <div className="lab">{optLabel(p) === "Màu" ? "Màu sắc" : "Phân loại"}: <small>{color}</small></div>
-              <div className="opts">{p.colors.map((c) => <button key={c} className="opt" aria-pressed={c === color} onClick={() => pickColor(c)}>{c}<small>{colorStock(p, c) ? `còn ${colorStock(p, c)}` : "hết"}</small></button>)}</div>
+              <div className="opts">{p.colors.map((c) => <button key={c} className="opt" data-col={c} aria-pressed={c === color} onClick={() => pickColor(c)}>{c}<small>{colorStock(p, c) ? `còn ${colorStock(p, c)}` : "hết"}</small></button>)}</div>
             </>
           ) : p.colors[0] !== "Mặc định" && <div className="lab">{optLabel(p) === "Màu" ? "Màu sắc" : "Phân loại"}: <small>{p.colors[0]}</small></div>}
           {Object.entries(groups).map(([g, list]) => (
@@ -63,7 +63,7 @@ export default function ProductDetail({ p, updated }: { p: Product; updated: str
                 {list.map((s) => {
                   const x = p.variants.find((y) => y.color === color && y.size === s), o = !x || x.stock <= 0;
                   return (
-                    <button key={s} className={"opt" + (o ? " out" : "")} aria-pressed={size === s} title={o ? "Tạm hết hàng" : undefined} onClick={() => setSize(s)}>
+                    <button key={s} className={"opt" + (o ? " out" : "")} data-sz={s} aria-pressed={size === s} title={o ? "Tạm hết hàng" : undefined} onClick={() => setSize(s)}>
                       {s}<small>{o ? "hết" : `còn ${x!.stock}`}</small>
                     </button>
                   );
@@ -76,8 +76,8 @@ export default function ProductDetail({ p, updated }: { p: Product; updated: str
           <div className={"st" + (bad ? " out" : "")}>{status}{v && ` · Mã ${v.sku}`}</div>
           {p.desc && <p className="desc" style={{ margin: "0 0 12px", color: "var(--ink)" }}>{p.desc}</p>}
           <p className="desc" style={{ fontSize: 13 }}>{updated && `Tồn kho cập nhật ngày ${updated}. `}Shop xác nhận còn hàng khi chốt đơn.</p>
-          <button className="btn" onClick={addToCart} disabled={!!v && v.stock <= 0}>+ Thêm vào giỏ hàng</button>
-          <a className="btn ghost" href={l.messenger} target="_blank" rel="noopener">Hỏi shop về sản phẩm này</a>
+          <button className="btn" id="ad" onClick={addToCart} disabled={!!v && v.stock <= 0}>+ Thêm vào giỏ hàng</button>
+          <a className="btn ghost" data-fb href={l.messenger} target="_blank" rel="noopener">Hỏi shop về sản phẩm này</a>
           <div className="pick" style={{ marginTop: 14 }}>📍 Ghé shop nhận hàng: {site.address}</div>
         </div>
       </div>

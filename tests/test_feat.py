@@ -12,6 +12,9 @@ fails=[];errs=[]
 def ok(c,m):
     print(("  ✓ " if c else "  ✗ ")+m)
     if not c:fails.append(m)
+def clipboard(pg):
+    # Windows trả clipboard với \r\n thay cho \n: nội dung vẫn như nhau
+    return pg.evaluate("navigator.clipboard.readText()").replace("\r\n","\n")
 def pick(pred):
     return next(p for p in prods if pred(p))
 single_sized=pick(lambda p:len({v["option2"] for v in p["variants"]})==1 and any(v["option1"] for v in p["variants"]) and any(v["inventory_quantity"]>=3 for v in p["variants"]))
@@ -67,7 +70,7 @@ def run(label,viewport,touch=False):
         # --- 4. sao chép đơn ---
         pg.evaluate("navigator.clipboard.writeText('x')")
         pg.click("#cp");pg.wait_for_timeout(300)
-        clip=pg.evaluate("navigator.clipboard.readText()")
+        clip=clipboard(pg)
         ok(clip==txt,"bấm 'Sao chép đơn hàng' → clipboard đúng nội dung tin nhắn")
         ok(pg.is_visible("#cpok") and "Đã sao chép" in pg.inner_text("#cpok"),"hiện thông báo 'Đã sao chép' trong giỏ hàng")
         # --- 5. mở Zalo ---
@@ -75,7 +78,7 @@ def run(label,viewport,touch=False):
         with ctx.expect_page() as pi: pg.click("#zs")
         z=pi.value;z.wait_for_load_state("commit");pg.wait_for_timeout(300)
         ok(z.url.startswith("https://zalo.me/0962374770"),"mở Zalo: "+z.url)
-        ok(pg.evaluate("navigator.clipboard.readText()")==txt,"bấm 'Sao chép đơn & mở Zalo' → đã sao chép đơn")
+        ok(clipboard(pg)==txt,"bấm 'Sao chép đơn & mở Zalo' → đã sao chép đơn")
         ok("Zalo" in pg.inner_text("#cpok") and "Đã sao chép" in pg.inner_text("#cpok"),"thông báo hướng dẫn dán vào Zalo")
         z.close()
         # --- 6. mở Messenger ---
@@ -83,7 +86,7 @@ def run(label,viewport,touch=False):
         with ctx.expect_page() as pi: pg.click("#fs")
         m=pi.value;m.wait_for_load_state("commit");pg.wait_for_timeout(300)
         ok(m.url.startswith("https://m.me/Sport238"),"mở Messenger: "+m.url)
-        ok(pg.evaluate("navigator.clipboard.readText()")==txt,"bấm 'Sao chép đơn & mở Messenger' → đã sao chép đơn")
+        ok(clipboard(pg)==txt,"bấm 'Sao chép đơn & mở Messenger' → đã sao chép đơn")
         ok("Messenger" in pg.inner_text("#cpok"),"thông báo hướng dẫn dán vào Messenger")
         m.close()
         # --- 7. dự phòng khi trình duyệt không cho dùng clipboard ---

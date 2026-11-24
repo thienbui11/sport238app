@@ -23,16 +23,16 @@ export default function Header() {
   return (
     <>
       <div className="strip"><div className="wrap">
-        <span className="addr">📍 {site.address}</span>
-        <a href={l.page} target="_blank" rel="noopener">Facebook</a>
-        <a href={l.zalo} target="_blank" rel="noopener">Zalo {phone(site.zalo)}</a>
+        <span className="addr" id="sad">📍 {site.address}</span>
+        <a href={l.page} id="sfb" target="_blank" rel="noopener">Facebook</a>
+        <a href={l.zalo} id="szl" target="_blank" rel="noopener">Zalo {phone(site.zalo)}</a>
       </div></div>
       <header className="nav"><div className="wrap">
         <Link className="logo" href="/#top"><img src="/logo.png" alt="" width={42} height={42} />{site.name}</Link>
         <nav className="menu" aria-label="Điều hướng">
-          {MENU.map(([id, t]) => <Link key={id} href={`/#${id}`} className={active === id ? "on" : ""}>{t}</Link>)}
+          {MENU.map(([id, t]) => <Link key={id} data-s={id} href={`/#${id}`} className={active === id ? "on" : ""}>{t}</Link>)}
         </nav>
-        <button className="cartbtn" onClick={() => setOpen(true)} aria-label="Mở giỏ hàng">🛒{count > 0 && <b>{count}</b>}</button>
+        <button className="cartbtn" id="cb" onClick={() => setOpen(true)} aria-label="Mở giỏ hàng">🛒<b id="cn" hidden={!count}>{count}</b></button>
       </div></header>
     </>
   );

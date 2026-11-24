@@ -49,8 +49,8 @@ Muốn có dữ liệu sạch để thử: xóa `sport-shop-app/data/shop.db*` v
 - Mở trình duyệt xem thật những chỗ vừa sửa (ảnh chụp, điện thoại 390 px, chế độ tối).
 
 ## Tình trạng hiện tại và việc nên làm tiếp
-1. **`sport-shop-next/frontend` chưa từng được `npm install` / `npm run build`.** Mới được kiểm tra bằng bộ dựng thử giả. Việc đầu tiên: cài, build, chạy thử, sửa lỗi (nếu có), rồi chạy ba bài kiểm thử Playwright với Next.js.
-2. **`sport-shop-next/backend` chưa từng được biên dịch.** Chạy `mvn test`, sửa lỗi biên dịch. Riêng `SapoParser` đã được kiểm tra giống hệt bản Python bằng Java thuần.
+1. `sport-shop-next/frontend` đã `npm install` + `npm run build` (24/11/2026) và đạt cả ba bài kiểm thử Playwright (chạy `npx next start -p 3100` rồi dùng `http://localhost:3100`). Bản React dùng cùng `id`/`data-*`, cùng khóa giỏ `cart5` (`[{id,lb,qty}]`) và có `/products.json` như bản HTML; đường dẫn cũ `/#p-MÃ` tự chuyển sang `/san-pham/MÃ`. Khi sửa giao diện, giữ các mã này ở cả hai bản.
+2. `sport-shop-next/backend` đã biên dịch, `mvn test` đạt (24/11/2026). Chưa chạy thật với PostgreSQL (`docker compose up`).
 3. Hỏi người dùng có giữ việc **chặn đặt quá số tồn** trong giỏ không (tồn kho có thể chưa kịp cập nhật nên có thể làm mất đơn).
 4. Ảnh sản phẩm: hiện chưa có ảnh thật. Hỏi người dùng đang lưu ảnh ở đâu (thư mục máy hay link Facebook) để nạp hàng loạt.
 5. Đưa lên mạng: đề xuất Cloudflare Pages cho web tĩnh (Vercel gói miễn phí chỉ cho phi thương mại nên không dùng). Người dùng tự lo tài khoản, tên miền. Chưa xác nhận thủ tục thông báo website theo Luật Thương mại điện tử 2025 và Nghị định 248/2026/NĐ-CP: nhắc người dùng hỏi Sở Công Thương.

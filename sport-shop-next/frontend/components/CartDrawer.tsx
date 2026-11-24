@@ -16,7 +16,7 @@ export default function CartDrawer() {
     document.addEventListener("keydown", k);
     return () => document.removeEventListener("keydown", k);
   }, [setOpen]);
-  useEffect(() => setMsg(null), [items]);
+  useEffect(() => setMsg(null), [items.length, total]);
 
   // Sao chép chắc chắn: dùng Clipboard API, nếu trình duyệt không cho thì chọn chữ trong khung và dùng lệnh copy cũ
   const copyText = async (t: string): Promise<boolean> => {
@@ -38,39 +38,35 @@ export default function CartDrawer() {
 
   return (
     <>
-      <div className={"veil" + (open ? " on" : "")} onClick={() => setOpen(false)} />
-      <aside className={"drawer" + (open ? " on" : "")} aria-label="Giỏ hàng">
-        <div className="dh"><h3>Giỏ hàng của bạn</h3><button onClick={() => setOpen(false)} aria-label="Đóng giỏ hàng">✕</button></div>
-        <div className="dl">
-          {!has && <p className="empty" style={{ padding: "40px 0" }}>Giỏ hàng đang trống. Chọn vài món để bắt đầu nhé.</p>}
-          {items.map((i) => (
+      <div className={"veil" + (open ? " on" : "")} id="veil" onClick={() => setOpen(false)} />
+      <aside className={"drawer" + (open ? " on" : "")} id="dr" aria-label="Giỏ hàng">
+        <div className="dh"><h3>Giỏ hàng của bạn</h3><button id="dx" onClick={() => setOpen(false)} aria-label="Đóng giỏ hàng">✕</button></div>
+        <div className="dl" id="dl">
+          {!has && <p className="empty" style={{ padding: "40px 0", textAlign: "center", color: "var(--muted)" }}>Giỏ hàng đang trống. Chọn vài món để bắt đầu nhé.</p>}
+          {items.map((i, k) => (
             <div className="ci" key={i.id}>
-              <div><b>{i.name}</b><span>{money(i.price)}{i.label && ` · ${i.label}`}</span></div>
+              <div><b>{i.name}</b><span>{money(i.price)}{i.lb && ` · ${i.lb}`}</span></div>
               <div className="qty">
-                <button onClick={() => change(i.id, -1)} aria-label="Giảm">−</button>{i.qty}<button onClick={() => change(i.id, 1)} aria-label="Tăng">+</button>
+                <button data-q="-1" data-k={k} onClick={() => change(i.id, -1)} aria-label="Giảm">−</button>{i.qty}<button data-q="1" data-k={k} onClick={() => change(i.id, 1)} aria-label="Tăng">+</button>
               </div>
             </div>
           ))}
         </div>
         <div className="df">
-          <div className="sum"><span>Tạm tính</span><b>{money(total)}</b></div>
-          {has && (
-            <div className="ordbox">
-              <div className="ordh"><b>Tin nhắn gửi cho shop</b><button type="button" className="cpb" onClick={() => run("")}>📋 Sao chép đơn hàng</button></div>
-              <textarea ref={taRef} readOnly rows={6} value={text} aria-label="Nội dung đơn hàng" />
-              {msg && (
-                <div className={"cpok " + (msg.ok ? "ok" : "bad")} role="status">
-                  {msg.ok
-                    ? `✓ Đã sao chép đơn hàng. ${msg.where ? `Trong ${msg.where}, bấm vào khung chat, dán (Ctrl+V hoặc bấm giữ rồi chọn Dán) và gửi cho shop.` : "Mở Zalo hoặc Messenger, dán vào khung chat rồi gửi cho shop."}`
-                    : "Chưa sao chép được tự động. Hãy bấm vào khung tin nhắn ở trên, chọn hết (Ctrl+A), sao chép (Ctrl+C) rồi dán vào chat."}
-                </div>
-              )}
+          <div className="sum"><span>Tạm tính</span><b id="dt">{money(total)}</b></div>
+          <div className="ordbox" id="ordbox" hidden={!has}>
+            <div className="ordh"><b>Tin nhắn gửi cho shop</b><button type="button" className="cpb" id="cp" onClick={() => run("")}>📋 Sao chép đơn hàng</button></div>
+            <textarea ref={taRef} id="ordtxt" readOnly rows={6} value={text} aria-label="Nội dung đơn hàng" />
+            <div className={"cpok " + (msg ? (msg.ok ? "ok" : "bad") : "")} id="cpok" role="status" hidden={!msg}>
+              {msg && (msg.ok
+                ? `✓ Đã sao chép đơn hàng. ${msg.where ? `Trong ${msg.where}, bấm vào khung chat, dán (Ctrl+V hoặc bấm giữ rồi chọn Dán) và gửi cho shop.` : "Mở Zalo hoặc Messenger, dán vào khung chat rồi gửi cho shop."}`
+                : "Chưa sao chép được tự động. Hãy bấm vào khung tin nhắn ở trên, chọn hết (Ctrl+A), sao chép (Ctrl+C) rồi dán vào chat.")}
             </div>
-          )}
-          <div className="pick">📍 Ghé shop nhận hàng: {site.address}. Shop sẽ nhắn xác nhận và giữ hàng cho bạn ❤️</div>
-          <a className="btn" href={l.zalo} target="_blank" rel="noopener" onClick={() => { if (has) void run("Zalo"); }}>{has ? "📋 Sao chép đơn & mở Zalo" : "💬 Nhắn Zalo cho shop"}</a>
-          <a className="btn ghost" href={l.messenger} target="_blank" rel="noopener" onClick={() => { if (has) void run("Messenger"); }}>{has ? "Sao chép đơn & mở Messenger" : "Nhắn Messenger"}</a>
-          <button className="rm" onClick={clear}>Xóa giỏ hàng</button>
+          </div>
+          <div className="pick" id="dpick">📍 Ghé shop nhận hàng: {site.address}. Shop sẽ nhắn xác nhận và giữ hàng cho bạn ❤️</div>
+          <a className="btn" id="zs" href={l.zalo} target="_blank" rel="noopener" onClick={() => { if (has) void run("Zalo"); }}>{has ? "📋 Sao chép đơn & mở Zalo" : "💬 Nhắn Zalo cho shop"}</a>
+          <a className="btn ghost" id="fs" href={l.messenger} target="_blank" rel="noopener" onClick={() => { if (has) void run("Messenger"); }}>{has ? "Sao chép đơn & mở Messenger" : "Nhắn Messenger"}</a>
+          <button className="rm" id="cc" onClick={clear}>Xóa giỏ hàng</button>
         </div>
       </aside>
     </>

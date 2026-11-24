@@ -34,7 +34,7 @@ function Card({ p }: { p: Product }) {
     add({ id: chosen.id, name: p.name, label, sku: chosen.sku, price: chosen.price, stock: chosen.stock });
   };
   return (
-    <article className={"card" + (need ? " need" : "")}>
+    <article className={"card" + (need ? " need" : "")} data-pid={p.id}>
       <Link className="thumb" href={href} aria-label={`Xem ${p.name}`}>
         <span className={`badge l ${cls}`}>{st}</span>
         {p.feat && <span className="badge r">Nổi bật</span>}
@@ -46,7 +46,7 @@ function Card({ p }: { p: Product }) {
         {multi && (
           <div className="cl" role="group" aria-label={`Chọn ${lbl.toLowerCase()}`}>
             {p.colors.map((c) => (
-              <button key={c} type="button" className={"clb" + (colorStock(p, c) ? "" : " x")} aria-pressed={c === color} onClick={() => pickColor(c)}>{c}</button>
+              <button key={c} type="button" className={"clb" + (colorStock(p, c) ? "" : " x")} data-col={c} aria-pressed={c === color} onClick={() => pickColor(c)}>{c}</button>
             ))}
           </div>
         )}
@@ -55,7 +55,7 @@ function Card({ p }: { p: Product }) {
             {sizes.map((s) => {
               const v = ofColor.find((x) => x.size === s), ok = !!v && v.stock > 0;
               return (
-                <button key={s} type="button" className={"szb" + (ok ? "" : " x")} aria-pressed={size === s} disabled={!ok} title={ok ? undefined : "Hết hàng"}
+                <button key={s} type="button" className={"szb" + (ok ? "" : " x")} data-sz={s} aria-pressed={size === s} disabled={!ok} title={ok ? undefined : "Hết hàng"}
                   onClick={() => { setSize(s); setNeed(false); }}>{s}</button>
               );
             })}
@@ -68,7 +68,7 @@ function Card({ p }: { p: Product }) {
         </div>
         <div className="price">{(lo !== hi ? "Từ " : "") + money(lo)}</div>
         {p.stock <= 0 ? <Link className="btn ghost" href={href}>Xem chi tiết</Link>
-          : <button type="button" className="btn" onClick={addQuick}>+ Thêm vào giỏ</button>}
+          : <button type="button" className="btn" data-quick="1" onClick={addQuick}>+ Thêm vào giỏ</button>}
       </div>
     </article>
   );
@@ -103,7 +103,7 @@ export default function Storefront({ products, updated }: { products: Product[];
           {CATEGORIES.map((c) => {
             const n = products.filter((p) => p.cat === c.name).length;
             return (
-              <button key={c.name} className="cat" style={{ "--c1": c.c1, "--c2": c.c2 } as CSSProperties} onClick={() => goCat(c.name)}>
+              <button key={c.name} className="cat" data-go={c.name} style={{ "--c1": c.c1, "--c2": c.c2 } as CSSProperties} onClick={() => goCat(c.name)}>
                 <i>{c.emoji}</i><b>{c.name}</b><span>{n ? `${n} sản phẩm` : "Đang cập nhật"}</span>
               </button>
             );
@@ -125,7 +125,7 @@ export default function Storefront({ products, updated }: { products: Product[];
           <div>
             <h2>Đồng phục đội nhóm, công ty</h2>
             <p>Nhắn shop để được tư vấn mẫu áo, in tên số và báo giá theo số lượng.</p>
-            <a className="btn" href={l.zalo} target="_blank" rel="noopener">💬 Nhắn Zalo tư vấn</a>
+            <a className="btn" data-zl href={l.zalo} target="_blank" rel="noopener">💬 Nhắn Zalo tư vấn</a>
           </div>
           <div className="big" aria-hidden="true">🎽</div>
         </div>
@@ -136,21 +136,21 @@ export default function Storefront({ products, updated }: { products: Product[];
         <h2>Sản phẩm đang bán</h2>
         <p className="sub">Chọn size, màu rồi thêm vào giỏ; gửi danh sách cho shop qua Zalo hoặc Messenger.{updated && ` Tồn kho cập nhật ngày ${updated}.`}</p>
         <div className="tools">
-          <label className="search">🔍<input type="search" placeholder="Tìm sản phẩm (vd: giày, áo, tất…)" aria-label="Tìm sản phẩm" value={q} onChange={(e) => setQ(e.target.value)} /></label>
-          <select className="sel" aria-label="Tình trạng" value={st} onChange={(e) => setSt(e.target.value)}>
+          <label className="search">🔍<input id="q" type="search" placeholder="Tìm sản phẩm (vd: giày, áo, tất…)" aria-label="Tìm sản phẩm" value={q} onChange={(e) => setQ(e.target.value)} /></label>
+          <select className="sel" id="st" aria-label="Tình trạng" value={st} onChange={(e) => setSt(e.target.value)}>
             <option value="">Mọi tình trạng</option><option value="in">Còn hàng</option><option value="out">Hết hàng</option>
           </select>
-          <select className="sel" aria-label="Sắp xếp" value={sort} onChange={(e) => setSort(e.target.value)}>
+          <select className="sel" id="so" aria-label="Sắp xếp" value={sort} onChange={(e) => setSort(e.target.value)}>
             <option value="">Sắp xếp: Mặc định</option><option value="asc">Giá thấp → cao</option><option value="desc">Giá cao → thấp</option>
           </select>
         </div>
         <div className="chips">
           {["Tất cả", ...CATEGORIES.map((c) => c.name)].map((c) => (
-            <button key={c} className="chip" aria-pressed={c === cat} onClick={() => setCat(c)}>{c === "Tất cả" ? "✨" : EMO[c]} {c}</button>
+            <button key={c} className="chip" data-c={c} aria-pressed={c === cat} onClick={() => setCat(c)}>{c === "Tất cả" ? "✨" : EMO[c]} {c}</button>
           ))}
         </div>
-        <p className="count">{list.length} sản phẩm{cat !== "Tất cả" && ` trong “${cat}”`}</p>
-        <div className="grid">
+        <p className="count" id="cnt">{list.length} sản phẩm{cat !== "Tất cả" && ` trong “${cat}”`}</p>
+        <div className="grid" id="grid">
           {list.length ? list.map((p) => <Card key={p.id} p={p} />) : <p className="empty">Không tìm thấy sản phẩm phù hợp. Thử từ khóa khác nhé.</p>}
         </div>
       </section>

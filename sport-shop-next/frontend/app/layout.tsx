@@ -24,11 +24,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <main>{children}</main>
           <footer><div className="wrap">
             <b>{site.name} – KCN AN HIỆP</b><br />
-            📍 {site.address}<br />
-            Zalo <a href={l.zalo} target="_blank" rel="noopener">{phone(site.zalo)}</a> · <a href={l.page} target="_blank" rel="noopener">Facebook</a><br />
+            <span id="fad">📍 {site.address}</span><br />
+            Zalo <a id="fz" href={l.zalo} target="_blank" rel="noopener">{phone(site.zalo)}</a> · <a id="ff" href={l.page} target="_blank" rel="noopener">Facebook</a><br />
             © {site.name}. Tồn kho cập nhật theo đợt, shop xác nhận còn hàng khi chốt đơn.
           </div></footer>
-          <a className="fab" href={l.zalo} target="_blank" rel="noopener" aria-label="Nhắn Zalo cho shop">💬</a>
+          <a className="fab" id="fab" href={l.zalo} target="_blank" rel="noopener" aria-label="Nhắn Zalo cho shop">💬</a>
           <CartDrawer />
         </Providers>
       </body>
