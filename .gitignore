@@ -1,0 +1,12 @@
+node_modules
+.next
+next-env.d.ts
+.env
+**/data/shop.db*
+**/data/uploads
+**/data/last_import.txt
+**/dist
+**/inbox/da-xu-ly
+tests/out
+__pycache__
+daily_update.log

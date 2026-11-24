@@ -1,0 +1,8 @@
+{
+  "name": "sport-shop-app",
+  "version": "1.0.0",
+  "description": "Web bán đồ thể thao: danh sách sản phẩm, giỏ hàng, chốt đơn qua Zalo/Messenger, trang quản trị",
+  "private": true,
+  "engines": { "node": ">=22.9" },
+  "scripts": { "start": "node --disable-warning=ExperimentalWarning --env-file-if-exists=.env src/server.js" }
+}

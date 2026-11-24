@@ -1,0 +1,4 @@
+Mỗi lần cập nhật hàng: xuất danh sách sản phẩm từ Sapo (Excel .xlsx) rồi lưu vào thư mục này.
+Chương trình cập nhật (cap-nhat-web.bat hoặc tools/daily_update.py) sẽ lấy file mới nhất,
+nhập vào trang quản trị, rồi xuất web mới vào thư mục dist.
+File đã xử lý được chuyển sang thư mục da-xu-ly.

@@ -1,0 +1,41 @@
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: sportshop
+      POSTGRES_USER: sportshop
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-sportshop}
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"          # chỉ để phát triển; khi đưa lên mạng thì xóa dòng này
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sportshop"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/sportshop
+      DB_USER: sportshop
+      DB_PASSWORD: ${DB_PASSWORD:-sportshop}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+      SHOP_NAME: ${SHOP_NAME:-SPORT 238}
+      MESSENGER_USER: ${MESSENGER_USER:-Sport238}
+      ZALO_PHONE: ${ZALO_PHONE:-0962374770}
+      UPLOAD_DIR: /app/uploads
+    volumes:
+      - uploads:/app/uploads
+    ports:
+      - "8080:8080"
+
+volumes:
+  dbdata:
+  uploads:

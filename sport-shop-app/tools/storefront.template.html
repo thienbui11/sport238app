@@ -1,0 +1,150 @@
+<!DOCTYPE html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SPORT 238 – Đồ bóng đá, giày, phụ kiện | KCN An Hiệp</title>
+<meta name="description" content="SPORT 238 – KCN An Hiệp, Vĩnh Long: áo bóng đá CLB, đội tuyển, giày bóng đá, phụ kiện, đồng phục đội nhóm. Chọn size, thêm vào giỏ rồi nhắn shop qua Zalo hoặc Messenger.">
+<meta property="og:title" content="SPORT 238 – Đồ bóng đá, giày, phụ kiện"><meta property="og:description" content="Chọn size, thêm vào giỏ rồi nhắn shop qua Zalo hoặc Messenger. Ghé shop nhận hàng tại KCN An Hiệp, Vĩnh Long."><meta property="og:type" content="website"><!--OG_EXTRA-->
+<link rel="icon" href="/*LOGO48*/">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
+<style>/*CSS*/</style></head><body>
+<div class="strip"><div class="wrap"><span class="addr" id="sad">📍</span><a href="#" id="sfb" target="_blank" rel="noopener">Facebook</a><a href="#" id="szl" target="_blank" rel="noopener">Zalo</a></div></div>
+<header class="nav"><div class="wrap"><a class="logo" href="#top"><img src="/*LOGO96*/" alt="" width="42" height="42">SPORT 238</a>
+<nav class="menu" aria-label="Điều hướng"><a data-s="top" href="#top">Trang chủ</a><a data-s="danh-muc" href="#danh-muc">Danh mục</a><a data-s="san-pham" href="#san-pham">Sản phẩm</a><a data-s="ve-shop" href="#ve-shop">Về shop</a><a data-s="cach-mua" href="#cach-mua">Cách mua</a></nav>
+<button class="cartbtn" id="cb" aria-label="Mở giỏ hàng">🛒<b id="cn" hidden>0</b></button></div></header>
+<main id="app"></main>
+<footer><div class="wrap"><b>SPORT 238 – KCN AN HIỆP</b><br><span id="fad"></span><br>Zalo <a id="fz" href="#" target="_blank" rel="noopener"></a> · <a id="ff" href="#" target="_blank" rel="noopener">Facebook</a><br>© SPORT 238. Tồn kho cập nhật theo đợt, shop xác nhận còn hàng khi chốt đơn.</div></footer>
+<div class="veil" id="veil"></div>
+<aside class="drawer" id="dr" aria-label="Giỏ hàng"><div class="dh"><h3>Giỏ hàng của bạn</h3><button id="dx" aria-label="Đóng giỏ hàng">✕</button></div><div class="dl" id="dl"></div>
+<div class="df"><div class="sum"><span>Tạm tính</span><b id="dt">0đ</b></div>
+<div class="ordbox" id="ordbox" hidden><div class="ordh"><b>Tin nhắn gửi cho shop</b><button class="cpb" id="cp" type="button">📋 Sao chép đơn hàng</button></div><textarea id="ordtxt" readonly rows="6" aria-label="Nội dung đơn hàng"></textarea><div class="cpok" id="cpok" role="status" hidden></div></div>
+<div class="pick" id="dpick"></div>
+<a class="btn" id="zs" target="_blank" rel="noopener">💬 Nhắn Zalo cho shop</a><a class="btn ghost" id="fs" target="_blank" rel="noopener">Nhắn Messenger</a><button class="rm" id="cc">Xóa giỏ hàng</button></div></aside>
+<a class="fab" id="fab" target="_blank" rel="noopener" aria-label="Nhắn Zalo cho shop">💬</a><div class="toast" id="toast" role="status"></div>
+<script>
+(function(){
+var CFG={zalo:"0962374770",fb:"Sport238",addr:"238 ấp Thuận Điền, xã Phú Túc, tỉnh Vĩnh Long (Ngã 3 KCN An Hiệp)",updated:""};
+function fbUser(v){v=String(v||"").trim();var m=v.match(/(?:facebook\.com|fb\.com|m\.me)\/(?:profile\.php\?id=)?([^\/?#&\s]+)/i);if(m)v=m[1];return v.replace(/^@/,"")}
+function zshow(z){return String(z).replace(/^(\d{4})(\d{3})(\d{3,4})$/,"$1 $2 $3")}
+var $=function(s){return document.querySelector(s)},all=function(s){return Array.prototype.slice.call(document.querySelectorAll(s))};
+var esc=function(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})};
+var money=function(n){return n.toLocaleString("vi-VN")+"đ"};
+var uniq=function(a){return a.filter(function(x,i){return a.indexOf(x)===i})};
+var ADULT=["S","M","L","XL","XXL","XXXL","XXXXL"];
+function sk(s){var n=+s;return isNaN(n)?100+ADULT.indexOf(s):n}
+function grp(c,s){return c==="Giày bóng đá"||!s?"":(/^\d+$/.test(s)?"Trẻ em":/^(XS|S|M|L|XL|XXL|XXXL|XXXXL|[2-6]XL)$/i.test(s)?"Người lớn":"")}
+var CATS=[["Cờ, Cúp, Huy Chương","🏆","#7c5a10","#c99a2e"],["Giày bóng đá","👟","#a3122a","#d63a50"],["Quần áo CLB/Đội tuyển","⚽","#2b2b30","#55555e"],["Quần áo không logo","👕","#8a0f23","#bd2a3f"],["Quần áo trẻ em","🧒","#c2410c","#f0883e"],["Phụ kiện thể thao","🎒","#3a3a40","#1d1d20"],["Vớ/tất ống đồng","🧦","#b3202f","#e0566a"],["Cầu lông","🏸","#0f6a45","#2faa6f"]];
+var EMO={};CATS.forEach(function(c){EMO[c[0]]=c[1]});
+var NEEDSIZE=["Giày bóng đá","Quần áo CLB/Đội tuyển","Quần áo không logo","Quần áo trẻ em"];
+function hue(t){var h=0;String(t).split("").forEach(function(c){h=(h*31+c.charCodeAt(0))%360});return h}
+var P=[],VM={},IMG={};
+function build(d){IMG=d.images||{};CS={};CFG.updated=d.updated||"";
+ P=d.products.map(function(x){var vs=x.variants.map(function(v){return{id:v.id,sku:v.sku||v.id,size:v.option1,color:v.option2,price:v.price,stock:Math.max(0,v.inventory_quantity)}}),pr=vs.map(function(v){return v.price});
+  return{id:x.id,name:x.display_title||x.title,cat:EMO[x.category]?x.category:"Phụ kiện thể thao",brand:x.vendor,desc:x.description||"",feat:!!x.featured,vs:vs,colors:uniq(vs.map(function(v){return v.color})),sizes:uniq(vs.map(function(v){return v.size})).sort(function(a,b){return sk(a)-sk(b)}),
+   min:Math.min.apply(null,pr),max:Math.max.apply(null,pr),stock:vs.reduce(function(a,v){return a+v.stock},0),hue:hue(x.id)}});
+ VM={};P.forEach(function(p){p.vs.forEach(function(v){VM[v.id]={p:p,v:v}})})}
+function get(u){return fetch(u).then(function(r){if(!r.ok)throw 0;return r.json()})}
+function imgs(p,c){return IMG[p.id+":"+c]||IMG[p.id]||[]}
+function ph(p){return '<div class="ph" style="background:linear-gradient(135deg,hsl('+p.hue+',70%,88%),hsl('+((p.hue+35)%360)+',65%,72%))">'+EMO[p.cat]+'</div>'}
+function thumb(p,c){var u=imgs(p,c||p.colors[0])[0];return u?'<img src="'+esc(u)+'" alt="'+esc(p.name)+'" loading="lazy">':ph(p)}
+function mainImg(p,s){var a=imgs(p,s.c);return a.length?'<img src="'+esc(a[s.i]||a[0])+'" alt="'+esc(p.name)+'">':ph(p)}
+function thumbsHtml(p,s){var a=imgs(p,s.c);return a.length>1?'<div class="thumbs">'+a.map(function(u,i){return '<button data-i="'+i+'" aria-pressed="'+(i===s.i)+'" aria-label="Ảnh '+(i+1)+'"><img src="'+esc(u)+'" alt=""></button>'}).join("")+'</div>':""}
+function priceTxt(p){return(p.min!==p.max?"Từ ":"")+money(p.min)}
+function status(p){return p.stock<=0?["Hết hàng","out"]:p.stock<=5?["Sắp hết","warn"]:["Còn hàng",""]}
+var cart=[];try{cart=JSON.parse(localStorage.getItem("cart5")||"[]")}catch(e){}
+function saveCart(){try{localStorage.setItem("cart5",JSON.stringify(cart))}catch(e){}renderCart()}
+var tt;function toast(t){var e=$("#toast");e.textContent=t;e.classList.add("on");clearTimeout(tt);tt=setTimeout(function(){e.classList.remove("on")},1900)}
+function stockOf(id){return VM[id]?VM[id].v.stock:0}
+function add(id,lb){var f=cart.find(function(i){return i.id===id}),n=stockOf(id);if(n<=0){toast("Sản phẩm này tạm hết hàng");return}
+ if(f&&f.qty>=n){toast("Chỉ còn "+n+" sản phẩm, trong giỏ đã có đủ. Nhắn shop nếu cần nhiều hơn.");return}
+ if(f)f.qty++;else cart.push({id:id,lb:lb||"",qty:1});saveCart();toast("Đã thêm vào giỏ hàng")}
+function total(){return cart.reduce(function(a,i){return a+(VM[i.id]?VM[i.id].v.price*i.qty:0)},0)}
+function orderText(){var ls=cart.filter(function(i){return VM[i.id]});if(!ls.length)return"Chào shop, mình muốn hỏi về sản phẩm ạ.";
+ return"Chào shop, mình muốn đặt:\n"+ls.map(function(i,n){var m=VM[i.id];return(n+1)+". "+m.p.name+(i.lb?" – "+i.lb:"")+" ["+m.v.sku+"] x"+i.qty+" = "+money(m.v.price*i.qty)}).join("\n")+"\nTổng: "+money(total())+"\nMình sẽ ghé shop nhận hàng. Shop giữ hàng giúp mình nhé!"}
+function renderCart(){var n=cart.reduce(function(a,i){return a+i.qty},0);$("#cn").textContent=n;$("#cn").hidden=!n;
+ $("#dl").innerHTML=cart.length?cart.map(function(i,k){var m=VM[i.id];if(!m)return"";return '<div class="ci"><div><b>'+esc(m.p.name)+'</b><span>'+money(m.v.price)+(i.lb?' · '+esc(i.lb):'')+'</span></div><div class="qty"><button data-q="-1" data-k="'+k+'" aria-label="Giảm">−</button>'+i.qty+'<button data-q="1" data-k="'+k+'" aria-label="Tăng">+</button></div></div>'}).join(""):'<p class="empty" style="padding:40px 0;text-align:center;color:var(--muted)">Giỏ hàng đang trống. Chọn vài món để bắt đầu nhé.</p>';
+ $("#dt").textContent=money(total());var has=cart.some(function(i){return VM[i.id]});$("#ordbox").hidden=!has;$("#ordtxt").value=has?orderText():"";$("#cpok").hidden=true;$("#zs").textContent=has?"📋 Sao chép đơn & mở Zalo":"💬 Nhắn Zalo cho shop";$("#fs").textContent=has?"Sao chép đơn & mở Messenger":"Nhắn Messenger";all("[data-q]").forEach(function(b){b.onclick=function(){var i=cart[+b.dataset.k],d=+b.dataset.q,n=stockOf(i.id);if(d>0&&i.qty>=n){toast("Chỉ còn "+n+" sản phẩm trong kho");return}i.qty+=d;if(i.qty<1)cart.splice(+b.dataset.k,1);saveCart()}})}
+function drawer(on){$("#dr").classList.toggle("on",on);$("#veil").classList.toggle("on",on)}
+function copyText(t){
+ function legacy(){try{var a=$("#ordtxt");a.value=t;a.focus();a.select();a.setSelectionRange(0,t.length);var ok=document.execCommand("copy");a.blur();return ok}catch(e){return false}}
+ if(navigator.clipboard&&window.isSecureContext)return navigator.clipboard.writeText(t).then(function(){return true},function(){return legacy()});
+ return Promise.resolve(legacy())}
+function afterCopy(ok,where){var e=$("#cpok");e.hidden=false;e.className="cpok "+(ok?"ok":"bad");
+ e.textContent=ok?"✓ Đã sao chép đơn hàng. "+(where?"Trong "+where+", bấm vào khung chat, dán (Ctrl+V hoặc bấm giữ rồi chọn Dán) và gửi cho shop.":"Mở Zalo hoặc Messenger, dán vào khung chat rồi gửi cho shop."):"Chưa sao chép được tự động. Hãy bấm vào khung tin nhắn ở trên, chọn hết (Ctrl+A), sao chép (Ctrl+C) rồi dán vào chat.";
+ toast(ok?"Đã sao chép đơn hàng":"Chưa sao chép được, hãy sao chép thủ công")}
+function hasItems(){return cart.some(function(i){return VM[i.id]})}
+var S={cat:"Tất cả",q:"",st:"",sort:""},view="";
+function cmp(a,b){if(S.sort==="asc")return a.min-b.min;if(S.sort==="desc")return b.min-a.min;return(Number(b.feat)-Number(a.feat))||((b.stock>0)-(a.stock>0))}
+var CS={};
+// Biến thể có phải là màu không (nếu là mẫu/loại thì gọi là "Loại" thay vì "Màu")
+var CW=/(trắng|đen|đỏ|xanh|vàng|cam|tím|hồng|xám|nâu|be|kem|navy|sen|bã trầu|cổ vịt|rêu|bích|ghi|bạc|chuối|lam|lục|ngọc|white|black|red|blue)/i;
+function optLbl(p){return p.colors.every(function(c){return CW.test(c)})?"Màu":"Loại"}
+function colStock(p,c){return p.vs.filter(function(v){return v.color===c}).reduce(function(a,v){return a+v.stock},0)}
+function defColor(p){return p.colors.find(function(c){return colStock(p,c)>0})||p.colors[0]}
+function cst(p){return CS[p.id]||(CS[p.id]={c:defColor(p),s:null,need:false})}
+function card(p){var S0=cst(p),st=status(p),sz=p.sizes.filter(Boolean),ns=sz.length>0,multi=p.colors.length>1,h="#p-"+encodeURIComponent(p.id);
+ var vsC=p.vs.filter(function(v){return v.color===S0.c}),chosen=ns?(S0.s?p.vs.find(function(v){return v.color===S0.c&&v.size===S0.s}):null):vsC[0];
+ var cl=multi?'<div class="cl" role="group" aria-label="Chọn '+optLbl(p).toLowerCase()+'">'+p.colors.map(function(c){return '<button type="button" class="clb'+(colStock(p,c)?'':' x')+'" data-col="'+esc(c)+'" aria-pressed="'+(c===S0.c)+'">'+esc(c)+'</button>'}).join("")+'</div>':"";
+ var zs=ns?'<div class="sz" role="group" aria-label="Chọn size">'+sz.map(function(x){var v=p.vs.find(function(y){return y.color===S0.c&&y.size===x}),ok=v&&v.stock>0;return '<button type="button" class="szb'+(ok?'':' x')+'" data-sz="'+esc(x)+'" aria-pressed="'+(S0.s===x)+'"'+(ok?'':' disabled title="Hết hàng"')+'>'+esc(x)+'</button>'}).join("")+'</div>':"";
+ var tot=colStock(p,S0.c),out=chosen?chosen.stock<=0:tot<=0;
+ var stk=chosen?(chosen.stock>0?(chosen.size?'Size '+esc(chosen.size)+' · ':'')+'Còn <b>'+chosen.stock+'</b> sản phẩm':'Tạm hết hàng'):(tot>0?'Tồn kho'+(multi?' '+optLbl(p).toLowerCase()+' này':'')+': <b>'+tot+'</b> sản phẩm':'Tạm hết hàng');
+ var prs=(chosen?[chosen]:vsC).map(function(v){return v.price}),lo=Math.min.apply(null,prs),hi=Math.max.apply(null,prs);
+ var btn=!p.stock?'<a class="btn ghost" href="'+h+'">Xem chi tiết</a>':'<button type="button" class="btn" data-quick="1">+ Thêm vào giỏ</button>';
+ return '<article class="card'+(S0.need?' need':'')+'" data-pid="'+esc(p.id)+'"><a class="thumb" href="'+h+'" aria-label="Xem '+esc(p.name)+'"><span class="badge l '+st[1]+'">'+st[0]+'</span>'+(p.feat?'<span class="badge r">Nổi bật</span>':'')+thumb(p,S0.c)+'</a><div class="cinfo"><small>'+esc(p.cat)+(p.brand?' · '+esc(p.brand):'')+'</small><h3><a href="'+h+'" class="nm">'+esc(p.name)+'</a></h3>'+cl+zs+'<div class="stk'+(out?' out':'')+'">'+stk+'</div><div class="price">'+(lo!==hi?'Từ ':'')+money(lo)+'</div>'+btn+'</div></article>'}
+function bindAdd(){}
+function redraw(p,from,sel){var rail=!!from.closest(".rail"),q='.card[data-pid="'+p.id.replace(/"/g,'\\"')+'"]';
+ all(q).forEach(function(el){var d=document.createElement("div");d.innerHTML=card(p);el.replaceWith(d.firstChild)});
+ if(sel){var root=rail?document.querySelector(".rail"):document.getElementById("grid"),f=root&&root.querySelector(q+" "+sel);if(f&&!f.disabled)f.focus()}}
+document.addEventListener("click",function(e){var t=e.target.closest&&e.target.closest(".szb,.clb,[data-quick],[data-add]");if(!t)return;
+ if(t.dataset.add){add(t.dataset.add,"");return}
+ var cardEl=t.closest(".card");if(!cardEl)return;var p=P.find(function(x){return x.id===cardEl.dataset.pid});if(!p)return;var s=cst(p);
+ if(t.classList.contains("clb")){s.c=t.dataset.col;if(!(s.s&&p.vs.some(function(v){return v.color===s.c&&v.size===s.s&&v.stock>0})))s.s=null;s.need=false;redraw(p,cardEl,'.clb[aria-pressed="true"]');return}
+ if(t.classList.contains("szb")){s.s=t.dataset.sz;s.need=false;redraw(p,cardEl,'.szb[aria-pressed="true"]');return}
+ var v;if(p.sizes.some(Boolean)){if(!s.s){s.need=true;redraw(p,cardEl,"");toast("Bạn chưa chọn size. Bấm vào một size ở trên thẻ.");return}v=p.vs.find(function(x){return x.color===s.c&&x.size===s.s})}else v=p.vs.find(function(x){return x.color===s.c});
+ if(!v||v.stock<=0){toast(p.colors.length>1?optLbl(p)+" này tạm hết hàng, hãy chọn "+optLbl(p).toLowerCase()+" khác":"Sản phẩm tạm hết hàng");return}
+ var lb=[];if(v.size)lb.push("Size "+v.size);if(p.colors.length>1)lb.push(optLbl(p)+" "+v.color);add(v.id,lb.join(" · "))});
+function list(){var q=S.q.trim().toLowerCase(),a=P.filter(function(p){return(S.cat==="Tất cả"||p.cat===S.cat)&&(!S.st||(S.st==="in")===(p.stock>0))&&p.name.toLowerCase().indexOf(q)>-1}).sort(cmp);
+ $("#cnt").textContent=a.length+" sản phẩm"+(S.cat!=="Tất cả"?" trong “"+S.cat+"”":"");$("#grid").innerHTML=a.length?a.map(card).join(""):'<p class="empty">Không tìm thấy sản phẩm phù hợp. Thử từ khóa khác nhé.</p>';bindAdd()}
+function syncChips(){all(".chip").forEach(function(x){x.setAttribute("aria-pressed",x.dataset.c===S.cat)})}
+function home(){var cn=["Tất cả"].concat(CATS.map(function(c){return c[0]})),fresh=P.filter(function(p){return p.stock>0}).slice(0,10);
+ $("#app").innerHTML='<div class="herobg"><div class="wrap"><section id="top" class="hero"><div><span class="pill">⚽ PASSION FOR FOOTBALL</span><h1>Đồ bóng đá,<br><span class="hl">chọn đúng size</span><br>nhận tại shop</h1><p>Xem size, màu và tình trạng hàng, thêm vào giỏ rồi gửi danh sách cho shop qua Zalo hoặc Messenger. Shop giữ hàng, bạn ghé lấy.</p><div class="hbtns"><a class="btn" href="#san-pham">Xem sản phẩm →</a><a class="btn ghost" data-zl target="_blank" rel="noopener">💬 Nhắn Zalo</a></div></div>'+
+ '<div class="art" aria-hidden="true"><div class="b2"></div><div class="b1"></div><img class="lg" src="/*LOGO200*/" alt=""><span class="e1">⚽</span><span class="e2">👟</span><span class="e3">🏆</span><span class="cf f1">👟 Giày bóng đá</span><span class="cf f2">🏆 Cúp · Huy chương</span><span class="cf f3">⚽ Áo CLB &amp; đội tuyển</span></div></section>'+
+ '<div class="stats"><div class="stat"><b>'+P.length+'</b><span>sản phẩm</span></div><div class="stat"><b>'+CATS.length+'</b><span>danh mục</span></div><div class="stat"><b>📏</b><span>Xem tồn từng size</span></div><div class="stat"><b>📍</b><span>Ghé shop nhận hàng</span></div></div></div></div>'+
+ '<div class="ribbon" aria-hidden="true"><div><span>ÁO CLB &amp; ĐỘI TUYỂN ⚽</span><span>GIÀY BÓNG ĐÁ 👟</span><span>ĐỒNG PHỤC ĐỘI NHÓM 🎽</span><span>CÚP · HUY CHƯƠNG 🏆</span><span>PHỤ KIỆN 🎒</span><span>CẦU LÔNG 🏸</span><span>ÁO CLB &amp; ĐỘI TUYỂN ⚽</span><span>GIÀY BÓNG ĐÁ 👟</span><span>ĐỒNG PHỤC ĐỘI NHÓM 🎽</span><span>CÚP · HUY CHƯƠNG 🏆</span><span>PHỤ KIỆN 🎒</span><span>CẦU LÔNG 🏸</span></div></div>'+
+ '<section id="danh-muc" class="sec wrap"><span class="eyebrow">DANH MỤC</span><h2>Bạn đang tìm gì?</h2><p class="sub">Chọn một danh mục để xem sản phẩm.</p><div class="cats">'+CATS.map(function(c){var n=P.filter(function(p){return p.cat===c[0]}).length;return '<button class="cat" data-go="'+esc(c[0])+'" style="--c1:'+c[2]+';--c2:'+c[3]+'"><i>'+c[1]+'</i><b>'+esc(c[0])+'</b><span>'+(n?n+' sản phẩm':'Đang cập nhật')+'</span></button>'}).join("")+'</div></section>'+
+ (fresh.length?'<section id="moi" class="sec wrap"><span class="eyebrow">MỚI CẬP NHẬT</span><h2>Hàng đang có sẵn</h2><p class="sub">Vuốt sang để xem thêm.</p><div class="rail">'+fresh.map(card).join("")+'</div></section>':'')+
+ '<section class="sec wrap"><div class="promo"><div><h2>Đồng phục đội nhóm, công ty</h2><p>Nhắn shop để được tư vấn mẫu áo, in tên số và báo giá theo số lượng.</p><a class="btn" data-zl target="_blank" rel="noopener">💬 Nhắn Zalo tư vấn</a></div><div class="big" aria-hidden="true">🎽</div></div></section>'+
+ '<section id="san-pham" class="sec wrap"><span class="eyebrow">TẤT CẢ SẢN PHẨM</span><h2>Sản phẩm đang bán</h2><p class="sub">Chọn size, màu rồi thêm vào giỏ; gửi danh sách cho shop qua Zalo hoặc Messenger.'+(CFG.updated?' Tồn kho cập nhật ngày '+esc(CFG.updated)+'.':'')+'</p>'+
+ '<div class="tools"><label class="search">🔍<input id="q" type="search" placeholder="Tìm sản phẩm (vd: giày, áo, tất…)" aria-label="Tìm sản phẩm" value="'+esc(S.q)+'"></label><select class="sel" id="st" aria-label="Tình trạng"><option value="">Mọi tình trạng</option><option value="in">Còn hàng</option><option value="out">Hết hàng</option></select><select class="sel" id="so" aria-label="Sắp xếp"><option value="">Sắp xếp: Mặc định</option><option value="asc">Giá thấp → cao</option><option value="desc">Giá cao → thấp</option></select></div>'+
+ '<div class="chips">'+cn.map(function(c){return '<button class="chip" data-c="'+esc(c)+'" aria-pressed="'+(c===S.cat)+'">'+(c==="Tất cả"?"✨":EMO[c])+' '+esc(c)+'</button>'}).join("")+'</div><p class="count" id="cnt"></p><div class="grid" id="grid"></div></section>'+
+ '<section id="ve-shop" class="sec wrap"><div class="about"><h2>Về SPORT 238</h2><p>SPORT 238 – KCN An Hiệp chuyên cung cấp quần áo, giày, phụ kiện bóng đá, cầu lông… Nhắn shop để được tư vấn size và giữ hàng, sau đó ghé shop nhận hàng.</p><div class="tags"><span>Áo bóng đá CLB và đội tuyển</span><span>Áo bóng đá không logo</span><span>Giày bóng đá, giày thể dục</span><span>Quần áo thể thao</span><span>Đồng phục đội nhóm, công ty</span><span>Phụ kiện bóng đá, thể thao</span></div><p class="addr2">📍 '+esc(CFG.addr)+'</p><div class="links"><a data-map target="_blank" rel="noopener">Chỉ đường</a><a data-fp target="_blank" rel="noopener">Facebook</a><a data-zl target="_blank" rel="noopener">Zalo '+CFG.zshow+'</a></div></div></section>'+
+ '<section id="cach-mua" class="sec wrap"><span class="eyebrow">CÁCH MUA</span><h2>Mua hàng siêu dễ</h2><p class="sub"></p><div class="steps"><div class="step"><i>1</i><b>Chọn món</b><span>Chọn size, màu rồi thêm vào giỏ</span></div><div class="step"><i>2</i><b>Nhắn shop</b><span>Gửi danh sách qua Zalo hoặc Messenger</span></div><div class="step"><i>3</i><b>Ghé shop nhận hàng</b><span>Shop giữ hàng cho bạn, bạn ghé lấy tại cửa hàng</span></div></div><div class="cta"><a class="btn" data-zl target="_blank" rel="noopener">💬 Nhắn Zalo '+CFG.zshow+'</a><a class="btn ghost" data-fb target="_blank" rel="noopener">Nhắn Messenger</a></div></section>';
+ links();bindAdd();$("#q").oninput=function(e){S.q=e.target.value;list()};$("#st").value=S.st;$("#st").onchange=function(e){S.st=e.target.value;list()};$("#so").value=S.sort;$("#so").onchange=function(e){S.sort=e.target.value;list()};
+ all(".chip").forEach(function(b){b.onclick=function(){S.cat=b.dataset.c;syncChips();list()}});
+ all("[data-go]").forEach(function(b){b.onclick=function(){S.cat=b.dataset.go;syncChips();list();$("#san-pham").scrollIntoView()}});list();spy()}
+function detail(id){var p=P.find(function(x){return x.id===id});if(!p){location.hash="#san-pham";return}
+ var ns=p.sizes.some(Boolean),sel={c:p.colors[0],s:ns?null:"",i:0};
+ function find(){return p.vs.find(function(v){return v.color===sel.c&&v.size===sel.s})}
+ function draw(){var v=find(),g={},anyOut=false;p.sizes.filter(Boolean).forEach(function(s){var k=grp(p.cat,s);(g[k]=g[k]||[]).push(s)});
+  var sh=Object.keys(g).map(function(k){return '<div class="lab">'+(k||"Chọn size")+'</div><div class="opts">'+g[k].map(function(s){var vv=p.vs.find(function(x){return x.color===sel.c&&x.size===s}),out=!vv||vv.stock<=0;if(out)anyOut=true;return '<button class="opt'+(out?' out':'')+'" data-sz="'+esc(s)+'" aria-pressed="'+(sel.s===s)+'"'+(out?' title="Tạm hết hàng"':'')+'>'+esc(s)+'<small>'+(vv&&vv.stock>0?'còn '+vv.stock:'hết')+'</small></button>'}).join("")+'</div>'}).join("")+(anyOut?'<div class="legend">Size gạch chéo là tạm hết hàng. Bạn vẫn có thể nhắn shop để hỏi.</div>':'');
+  var needInfo=!ns&&NEEDSIZE.indexOf(p.cat)>-1?'<div class="note">Chưa có thông tin size của sản phẩm này. Vui lòng nhắn shop để được tư vấn size.</div>':'';
+  var ch=p.colors.length>1?'<div class="lab">'+(optLbl(p)==="Màu"?"Màu sắc":"Phân loại")+': <small>'+esc(sel.c)+'</small></div><div class="opts">'+p.colors.map(function(c){return '<button class="opt" data-col="'+esc(c)+'" aria-pressed="'+(c===sel.c)+'">'+esc(c)+'<small>'+(colStock(p,c)?'còn '+colStock(p,c):'hết')+'</small></button>'}).join("")+'</div>':(p.colors[0]!=="Mặc định"?'<div class="lab">'+(optLbl(p)==="Màu"?"Màu sắc":"Phân loại")+': <small>'+esc(p.colors[0])+'</small></div>':"");
+  var stt=!v?(ns?"Tồn kho"+(p.colors.length>1?" "+optLbl(p).toLowerCase()+" này":"")+": "+colStock(p,sel.c)+" sản phẩm. Chọn size để xem từng size.":"Tạm hết hàng"):v.stock<=0?"Tạm hết hàng. Nhắn shop để hỏi khi nào có hàng.":"Còn "+v.stock+" sản phẩm";
+  var bad=v&&v.stock<=0||(!v&&!ns);
+  $("#app").innerHTML='<div class="wrap"><a class="back" href="#san-pham">← Tất cả sản phẩm</a><div class="det"><div class="gal"><div class="main">'+mainImg(p,sel)+'</div>'+thumbsHtml(p,sel)+'</div><div><span class="pill">'+esc(p.cat)+(p.brand?' · '+esc(p.brand):'')+'</span><h1>'+esc(p.name)+'</h1><div class="bigp">'+(v?money(v.price):priceTxt(p))+'</div>'+ch+sh+needInfo+'<div class="st'+(bad?' out':'')+'">'+stt+(v?' · Mã '+esc(v.sku):'')+'</div>'+(p.desc?'<p class="desc" style="margin:0 0 12px;color:var(--ink)">'+esc(p.desc)+'</p>':'')+'<p class="desc" style="font-size:13px">'+(CFG.updated?'Tồn kho cập nhật ngày '+esc(CFG.updated)+'. ':'')+'Shop xác nhận còn hàng khi chốt đơn.</p><button class="btn" id="ad"'+(v&&v.stock<=0?' disabled':'')+'>+ Thêm vào giỏ hàng</button><a class="btn ghost" data-fb target="_blank" rel="noopener">Hỏi shop về sản phẩm này</a><div class="pick" style="margin-top:14px">📍 Ghé shop nhận hàng: '+esc(CFG.addr)+'</div></div></div></div>';
+  links();all("[data-i]").forEach(function(b){b.onclick=function(){sel.i=+b.dataset.i;draw()}});all("[data-sz]").forEach(function(b){b.onclick=function(){sel.s=b.dataset.sz;draw()}});
+  all("[data-col]").forEach(function(b){b.onclick=function(){sel.c=b.dataset.col;sel.i=0;if(ns&&!p.vs.some(function(x){return x.color===sel.c&&x.size===sel.s&&x.stock>0}))sel.s=null;draw()}});
+  $("#ad").onclick=function(){var x=find();if(!x){toast(ns?"Bạn chưa chọn size":"Sản phẩm tạm hết hàng");return}if(x.stock<=0)return;var lb=[];if(x.size)lb.push("Size "+x.size);if(p.colors.length>1)lb.push(optLbl(p)+" "+x.color);add(x.id,lb.join(" · "))}}
+ draw()}
+function links(){var z="https://zalo.me/"+CFG.zalo,m="https://m.me/"+CFG.fb,f="https://www.facebook.com/"+CFG.fb,mp="https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(CFG.addr);
+ all("[data-zl]").forEach(function(a){a.href=z});all("[data-fb]").forEach(function(a){a.href=m});all("[data-fp]").forEach(function(a){a.href=f});all("[data-map]").forEach(function(a){a.href=mp})}
+var io;function spy(){if(io)io.disconnect();if(!("IntersectionObserver" in window))return;io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)all(".menu a").forEach(function(a){a.classList.toggle("on",a.dataset.s===e.target.id)})})},{rootMargin:"-45% 0px -50% 0px"});["top","danh-muc","san-pham","ve-shop","cach-mua"].forEach(function(i){var el=document.getElementById(i);if(el)io.observe(el)})}
+function route(){var h=location.hash,m=h.match(/^#p-([\w%-]+)$/);
+ if(m){view="d";if(io)io.disconnect();all(".menu a").forEach(function(a){a.classList.remove("on")});detail(decodeURIComponent(m[1]));window.scrollTo(0,0);return}
+ if(view!=="h"){view="h";home()}var id=h.slice(1),el=id&&document.getElementById(id);if(el)el.scrollIntoView();else window.scrollTo(0,0)}
+$("#cb").onclick=function(){drawer(true)};$("#dx").onclick=function(){drawer(false)};$("#veil").onclick=function(){drawer(false)};
+document.addEventListener("keydown",function(e){if(e.key==="Escape")drawer(false)});
+$("#cc").onclick=function(){cart=[];saveCart()};$("#cp").onclick=function(){copyText(orderText()).then(function(ok){afterCopy(ok,"")})};$("#zs").onclick=function(){if(hasItems())copyText(orderText()).then(function(ok){afterCopy(ok,"Zalo")})};$("#fs").onclick=function(){if(hasItems())copyText(orderText()).then(function(ok){afterCopy(ok,"Messenger")})};
+function applyCfg(){CFG.zshow=zshow(CFG.zalo);var z="https://zalo.me/"+CFG.zalo,m="https://m.me/"+CFG.fb;$("#zs").href=z;$("#fs").href=m;$("#fab").href=z;$("#szl").href=z;$("#szl").textContent="Zalo "+CFG.zshow;$("#sfb").href="https://www.facebook.com/"+CFG.fb;$("#ff").href="https://www.facebook.com/"+CFG.fb;$("#fz").href=z;$("#fz").textContent=CFG.zshow;
+ $("#sad").textContent="📍 "+CFG.addr;$("#fad").textContent="📍 "+CFG.addr;$("#dpick").textContent="📍 Ghé shop nhận hàng: "+CFG.addr+". Shop sẽ nhắn xác nhận và giữ hàng cho bạn ❤️"}
+window.addEventListener("hashchange",route);CFG.zshow=zshow(CFG.zalo);renderCart();applyCfg();
+get("/api/config").then(function(c){if(c.zaloPhone)CFG.zalo=c.zaloPhone.replace(/\s+/g,"");if(c.messengerUser)CFG.fb=fbUser(c.messengerUser)||CFG.fb}).catch(function(){}).then(function(){applyCfg();return get("/api/products")}).then(function(d){build(d);cart=cart.filter(function(i){return VM[i.id]});saveCart();route()}).catch(function(){$("#app").innerHTML='<div class="wrap"><p class="empty">Không tải được sản phẩm. Vui lòng tải lại trang.</p></div>'});
+})();
+</script></body></html>
