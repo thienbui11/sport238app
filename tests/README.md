@@ -45,3 +45,14 @@ Cài một lần: `cd tests && npm install` (axe-core 4.14.0, lighthouse 13.6.0;
 
     py tests/test_a11y.py http://localhost:3602     # axe: 5 màn hình × máy tính/điện thoại × sáng/tối; đạt khi 0 lỗi critical/serious
     py tests/lighthouse.py http://localhost:3602    # điện thoại giả lập; trang chủ + 1 trang SP; đạt khi cả 4 mục ≥ 90; báo cáo tests/out/lighthouse/
+
+## Giao diện mới (D1–D4) và ảnh chụp (D7)
+
+    py tests/test_giao_dien.py http://localhost:3602     # chống tái phát giao diện mới (chỉ bản Next.js; bản HTML dự phòng vẫn dùng emoji); in "KẾT QUẢ: 0 lỗi"
+    py tests/chup_anh.py http://localhost:3602 screenshots/after   # chụp 17 màn hình chính (JPG nén), so sánh ở screenshots/so-sanh.html
+
+`test_giao_dien.py` kiểm tra: không emoji trang trí (ô danh mục, ô giữ chỗ ảnh, nút, thanh trên/dưới, CSS), biểu tượng là SVG;
+thanh "Thêm vào giỏ" dính đáy màn hình ở trang chi tiết trên điện thoại (thay thanh dưới, không che nút/link nào, bấm được, chân trang không bị che);
+không tràn ngang ở 320/390/768/1366 px; không chuyển động lặp vô hạn, không backdrop-filter, tôn trọng "giảm chuyển động";
+tương phản chữ các thành phần mới ở sáng/tối; khung ảnh vuông, ảnh có width/height, CLS < 0,05; nút tìm nhanh ở đầu trang.
+Ô giữ chỗ ảnh tô theo màu sản phẩm (ví dụ áo "… Đỏ" ra màu đỏ).
