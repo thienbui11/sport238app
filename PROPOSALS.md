@@ -6,6 +6,60 @@ Mỗi mục ghi: **lợi ích** (cho khách hay chủ shop), **độ khó** (S: 
 Đã xong ở đợt sửa lỗi 24/11 (không cần duyệt lại): điện thoại 2 cột, menu, tìm không dấu, quay lại đúng chỗ, nút ≥ 44 px, giữ màu/size, hỏi lại khi xóa giỏ, cảnh báo vượt tồn, giờ mở cửa, đăng xuất quản trị. Xem `screenshots/so-sanh.html`.
 
 ---
+## TÌNH TRẠNG (cập nhật 24/11/2026 tối)
+
+> **Các chức năng mới nằm ở bản chính (Next.js).** Trang `http://localhost:3000` (mở cùng trang quản trị) là **bản HTML dự phòng cũ**, không có các chức năng này.
+> Muốn xem đúng bản khách sẽ thấy: bấm `cap-nhat-web.bat` rồi `xem-web.bat` (mở `http://localhost:8080`).
+
+| Mã | Tình trạng | Xem ở đâu |
+|---|---|---|
+| A1 | ✅ Xong | `nap-anh.bat` (kéo thả thư mục ảnh đặt tên theo mã SKU) |
+| A2 | ✅ Xong | Danh mục "Giày thể thao" |
+| **A3** | ✅ Xong | Trang **Bảng size** (`/bang-size/`, có ở menu và chân trang); ở trang sản phẩm có nút "Bảng size … và gợi ý size" ngay cạnh chỗ chọn size |
+| **A4** | ✅ Xong | Trang sản phẩm: "Hỏi qua Zalo" (sao chép sẵn câu hỏi), "Hỏi qua Messenger" (**điền sẵn** câu hỏi) |
+| A5 | ✅ Xong (không có nút gọi – Q2) | Khối "Ghé shop nhận hàng": bản đồ, chỉ đường, giờ mở cửa |
+| A6 | ✅ Xong; **lọc giá nay luôn hiện** cả trên điện thoại | Ô "Mọi mức giá" cạnh ô tìm kiếm |
+| A7 | ✅ Xong | – |
+| **B1** | ✅ Xong | Nhập chiều cao, cân nặng ở trang sản phẩm hoặc trang Bảng size → gợi ý size theo bảng của hãng |
+| B2 | ✅ Xong | Trang **Đặt đồng phục đội** (`/dat-doi/`) |
+| **B3** | ✅ Xong | Mỗi sản phẩm một trang riêng `/san-pham/<MÃ>/` (dán link vào Zalo/Facebook hiện tên, giá) |
+| **B4** | ✅ Xong | Trang sản phẩm: "Sản phẩm cùng loại", "Bạn đã xem gần đây" (cả ở trang chủ) |
+| **B5** | ✅ Xong | Nút chia sẻ ở trang sản phẩm |
+| **B6** | ✅ Xong | Trang quản trị mới: lọc Hết hàng / Chưa có ảnh / Chưa có mô tả, xếp theo tồn, sửa hàng loạt |
+| **B7** | ✅ Xong | Mỗi lần bấm `cap-nhat-web.bat`: báo cáo thay đổi tự mở (thư mục `bao-cao`) |
+| B8 | ⬜ Chưa duyệt | – |
+| B9 | ✖ Không đưa lên web (anh/chị quyết định) | – |
+| C1 | ✅ Xong | Trái tim "Yêu thích" trên sản phẩm, lọc "Yêu thích" |
+| **C3** | ⬜ **Chưa làm** – tôi đã nhầm làm C4 thay cho C3. Sẽ làm tiếp (bản đơn giản: hỏi cần gì → cho ai → size/chiều cao → tầm giá → ra danh sách còn hàng). Không hỏi "đá sân gì" được vì tên giày trong Sapo không ghi loại sân (chỉ 1/33 đôi có "TF") | – |
+| C4 | ✅ Đã làm (ngoài danh sách duyệt) | Cài web lên màn hình điện thoại |
+| D1–D7, E2 | ✅ Xong | Ảnh trước–sau: `screenshots/so-sanh.html` |
+
+**Tự dán đơn và ảnh vào khung chat (yêu cầu 24/11):** trình duyệt **không cho** trang web tự dán vào ứng dụng khác, và Zalo **không có** link điền sẵn tin nhắn. Đã làm cách gần nhất:
+- **Messenger:** nút "Mở Messenger (đơn điền sẵn)" mở khung chat có sẵn đơn (link `m.me/Sport238?text=…`, theo tài liệu của Meta), khách chỉ bấm Gửi. Messenger không nhận ảnh qua link. Nguồn: [Meta – m.me Links](https://developers.facebook.com/docs/messenger-platform/discovery/m-me-links).
+- **Điện thoại (Zalo, Messenger…):** nút "Gửi đơn qua Zalo, Messenger… (điền sẵn)" mở bảng Chia sẻ của máy; chọn Zalo → chọn Sport 238 → Gửi. Chữ đơn **và ảnh từng món** (khi đã nạp ảnh) được đưa vào sẵn, không cần dán.
+- **Zalo trên máy tính:** vẫn phải dán (Ctrl+V); đơn được sao chép sẵn khi bấm nút.
+
+---
+## ĐỀ XUẤT MỚI (đợt 2, 24/11/2026 tối) – chờ anh/chị duyệt
+
+| Mã | Việc | Lợi ích | Độ khó | Cần anh/chị |
+|---|---|---|---|---|
+| **M1** | **Hẹn giờ ghé lấy hàng** trong giỏ: chọn ngày và giờ (trong 8:00–21:00) → tin nhắn ghi "Mình ghé lấy lúc 17:30, thứ Bảy 29/11" | Shop chuẩn bị sẵn hàng, khách đến không phải chờ | S | – |
+| **M2** | **"Đang mở cửa · đóng lúc 21:00" / "Đã đóng cửa · mở lại 8:00"** theo giờ thật, ở đầu trang và khối Ghé shop | Khách biết lúc nào ghé được | S | – |
+| **M3** | **Hàng mới về**: sản phẩm mới xuất hiện trong file Sapo có nhãn "Mới" 14 ngày và một mục "Hàng mới về" ở trang chủ (tự động từ báo cáo nhập) | Khách quen có lý do quay lại web | S–M | – |
+| **M4** | **"Báo mình khi có hàng"** ở size/sản phẩm hết hàng: Messenger điền sẵn "Shop báo mình khi … size 42 về nhé" | Không mất khách khi hết size | S | – |
+| **M5** | **Mã QR dán tại shop** (BACKLOG E8): tấm A5 có QR về web + tem QR từng sản phẩm dán lên kệ/móc áo → khách quét xem size còn, đặt giữ | Khách tại shop vào web, đặt lần sau | S–M | In và dán |
+| **M6** | **Gợi ý mua kèm** trong giỏ và trang SP: áo → vớ/tất; giày → vớ, bó gối, túi rút (chỉ hàng còn trong shop) | Giỏ hàng lớn hơn | S | – |
+| **M7** | **Tìm theo tên CLB, tên gọi quen**: gõ "mu", "man u", "real", "barca", "đội tuyển"… ra đúng áo; gợi ý ngay khi gõ | Khách tìm áo CLB nhanh | S–M | – |
+| **M8** | **Gửi link giỏ hàng/đơn đội**: đội trưởng gom size cả đội, gửi một link cho đồng đội kiểm tra hoặc gửi shop (mở link là thấy đúng giỏ) | Đặt đội dễ hơn | S–M | – |
+| **M9** | **Khối khuyến mãi bật/tắt trong trang quản trị**: chỉ hiện đúng chữ anh/chị nhập (không tự bịa), có ngày hết hạn tự ẩn | Chạy khuyến mãi mùa giải không cần sửa mã | M | Nội dung khuyến mãi khi có |
+| **M10** | **"Bán nhiều tuần này"** ước tính từ tồn kho giảm giữa các lần nhập Excel (ghi rõ "theo tồn kho") | Khách thấy món được ưa chuộng | M | Đồng ý cách tính |
+| **M11** | **In bảng giá / tem giá** theo danh mục từ trang quản trị (A4, có QR) | Treo tại shop, đồng bộ giá với web | S | – |
+| **M12** | **Hồ sơ Google Maps (Google Business Profile)**: hướng dẫn hoàn thiện, link "Đánh giá trên Google" thật | Khách quanh KCN tìm thấy shop trên Maps | S (anh/chị tự làm theo hướng dẫn) | Tài khoản Google |
+
+Ý tưởng **không nên làm**: thanh toán online (trái quy tắc shop), "có X người đang xem"/đánh giá tự tạo (thông tin không thật), tự đăng bài Facebook/Zalo (cần API, dễ bị khóa trang).
+
+---
 ## LÀM NGAY
 
 | Mã | Việc | Lợi ích | Độ khó | Rủi ro | Cần anh/chị |

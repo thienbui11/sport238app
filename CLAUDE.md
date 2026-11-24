@@ -11,7 +11,9 @@
 - Dữ liệu hàng lấy từ **Sapo POS** bằng file Excel (nút "Xuất file"), **không có API**. Tồn kho là ảnh chụp theo đợt (ghi "Tồn kho cập nhật ngày …", shop xác nhận khi chốt đơn).
 - **Tuyệt đối không đưa giá nhập, giá vốn, giá buôn lên web.** Bộ đọc Excel chỉ đọc giá bán lẻ và tồn kho. Đừng thêm các cột khác vào API công khai.
 - Shop còn bán đồ mẹ và bé trong cùng Sapo: các sản phẩm đó phải bị loại (xem `classify`).
-- 9 danh mục: Cờ, Cúp, Huy Chương · Giày bóng đá · **Giày thể thao** (giày vải, thể dục, thể thao không phải giày đá bóng; chủ shop duyệt 24/11/2026) · Quần áo CLB/Đội tuyển · Quần áo không logo · Quần áo trẻ em · Phụ kiện thể thao · Vớ/tất ống đồng · Cầu lông. Người dùng có thể chọn tay danh mục trong trang quản trị (không bị ghi đè khi nhập lại Excel).
+- 9 danh mục, **theo thứ tự hiển thị** (chủ shop yêu cầu 24/11/2026: quần áo, giày trước Cờ cúp): Quần áo CLB/Đội tuyển · Quần áo không logo · Quần áo trẻ em · Giày bóng đá · **Giày thể thao** (giày vải, thể dục, thể thao không phải giày đá bóng; chủ shop duyệt 24/11/2026) · Cờ, Cúp, Huy Chương · Phụ kiện thể thao · Vớ/tất ống đồng · Cầu lông. Thứ tự sửa ở `CATEGORIES` (`lib/shop.ts`), `CATS` (bản HTML, trang quản trị).
+- Khẩu hiệu (chủ shop đặt 24/11/2026): **"Áo bóng đá đẹp, chọn size vừa ý, đặt ngay tại Sport 238!"** (`SLOGAN` trong `lib/shop.ts`, tiêu đề lớn trang chủ cả hai bản).
+- Gửi đơn: web **không thể tự dán** vào khung chat Zalo (Zalo không có link điền sẵn). Messenger điền sẵn chữ bằng `m.me/<trang>?text=` (`mText`); điện thoại dùng nút Chia sẻ của máy (chữ + ảnh điền sẵn). Luôn sao chép đơn làm dự phòng. Người dùng có thể chọn tay danh mục trong trang quản trị (không bị ghi đè khi nhập lại Excel).
 - Giao diện: tiếng Việt, màu theo logo (đỏ đô + xám đen), dùng được trên điện thoại, có chế độ tối, bàn phím và trình đọc màn hình dùng được.
 
 ## Cấu trúc

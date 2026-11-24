@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { SLOGAN } from "@/lib/shop";
 
 export const dynamic = "force-static";
 
@@ -7,7 +8,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "SPORT 238 – KCN An Hiệp",
     short_name: "SPORT 238",
-    description: "Đồ bóng đá, giày, phụ kiện. Chọn size, nhắn Zalo, ghé shop nhận hàng tại KCN An Hiệp, Vĩnh Long.",
+    description: `${SLOGAN} Ghé shop nhận hàng tại KCN An Hiệp, Vĩnh Long.`,
     lang: "vi",
     start_url: "/",
     scope: "/",

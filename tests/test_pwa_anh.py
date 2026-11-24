@@ -1,7 +1,7 @@
 """Kiểm thử cài web như ứng dụng (C3) và gửi đơn kèm ảnh (N1) – chỉ bản Next.js.
 - manifest.webmanifest: tên, start_url, display standalone, màu; biểu tượng 192/512/maskable đúng kích thước; trang có link manifest, apple-touch-icon.
 - Giỏ hàng: món có ảnh → tin nhắn có dòng "Ảnh: <link đầy đủ>"; máy chia sẻ được tệp → nút "Gửi đơn kèm ảnh" gửi đúng ảnh + chữ đơn;
-  không có ảnh hoặc máy không chia sẻ được tệp → không hiện nút.
+  không có ảnh → nút chỉ gửi chữ đơn (điền sẵn); máy tính không có bảng chia sẻ → không hiện nút.
 (Chưa có ảnh thật nên bài này gắn tạm ảnh /icon-192.png cho 1 sản phẩm bằng cách chặn products.json.)
 Chạy:  py tests/test_pwa_anh.py http://localhost:3602      (in "KẾT QUẢ: N lỗi")"""
 import io, json, sys, urllib.request
@@ -50,7 +50,7 @@ with sync_playwright() as pw:
     pg.add_init_script(MOCK)
     pg.evaluate("id=>localStorage.setItem('cart5',JSON.stringify([{id,lb:'',qty:1}]))", vid)
     pg.reload(); pg.wait_for_selector("#grid .card"); pg.click("#bc"); pg.wait_for_timeout(500)
-    ok("Ảnh:" not in pg.input_value("#ordtxt") and pg.locator("#shareimg").count() == 0, "món chưa có ảnh: không có dòng Ảnh, không hiện nút gửi kèm ảnh")
+    ok("Ảnh:" not in pg.input_value("#ordtxt") and "ảnh)" not in pg.inner_text("#shareimg"), "món chưa có ảnh: không có dòng Ảnh; nút chia sẻ chỉ gửi chữ (không ghi số ảnh)")
     # 2) món có ảnh
     pg.route("**/products.json*", lambda r: r.fulfill(body=body, content_type="application/json"))
     pg.reload(); pg.wait_for_selector("#grid .card"); pg.click("#bc"); pg.wait_for_timeout(600)

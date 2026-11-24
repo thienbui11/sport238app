@@ -1,15 +1,16 @@
 import raw from "../data/products.json";
 import rawImages from "../data/images.json";
 
-/** 9 danh mục của web. Thứ tự và biểu tượng (SVG trong components/Icons.tsx) sửa ở đây. Tên phải khớp với tên danh mục trong dữ liệu. */
+/** 9 danh mục của web. Thứ tự và biểu tượng (SVG trong components/Icons.tsx) sửa ở đây. Tên phải khớp với tên danh mục trong dữ liệu.
+ *  Thứ tự (chủ shop yêu cầu 24/11/2026): quần áo, giày trước; Cờ, Cúp, Huy Chương sau. */
 export type CatIconName = "trophy" | "boot" | "sneaker" | "jersey" | "tee" | "kids" | "bag" | "sock" | "shuttle";
 export const CATEGORIES: readonly { name: string; icon: CatIconName }[] = [
-  { name: "Cờ, Cúp, Huy Chương", icon: "trophy" },
-  { name: "Giày bóng đá", icon: "boot" },
-  { name: "Giày thể thao", icon: "sneaker" },
   { name: "Quần áo CLB/Đội tuyển", icon: "jersey" },
   { name: "Quần áo không logo", icon: "tee" },
   { name: "Quần áo trẻ em", icon: "kids" },
+  { name: "Giày bóng đá", icon: "boot" },
+  { name: "Giày thể thao", icon: "sneaker" },
+  { name: "Cờ, Cúp, Huy Chương", icon: "trophy" },
   { name: "Phụ kiện thể thao", icon: "bag" },
   { name: "Vớ/tất ống đồng", icon: "sock" },
   { name: "Cầu lông", icon: "shuttle" },
@@ -50,6 +51,15 @@ export const PRICE_RANGES = [
 export const OVER = "Số lượng vượt tồn kho trên web, shop sẽ kiểm tra lại khi chốt đơn";
 /** Bỏ dấu tiếng Việt để tìm kiếm: "Giày" -> "giay", "Đỏ" -> "do" */
 export const fold = (s: string) => (s ?? "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d");
+/** Câu khẩu hiệu của shop (chủ shop đặt 24/11/2026) */
+export const SLOGAN = "Áo bóng đá đẹp, chọn size vừa ý, đặt ngay tại Sport 238!";
+/** Link Messenger điền sẵn tin nhắn (tham số text của m.me – tài liệu Meta). Zalo không có cách điền sẵn từ web.
+ *  Link quá dài thì bỏ phần điền sẵn (khách dán đơn đã sao chép). */
+export const mText = (url: string, t: string) => {
+  if (!t) return url;
+  const u = `${url}?text=${encodeURIComponent(t)}`;
+  return u.length <= 8000 ? u : url;
+};
 export const links = (s: Site) => ({
   zalo: `https://zalo.me/${s.zalo}`,
   messenger: `https://m.me/${s.messenger}`,

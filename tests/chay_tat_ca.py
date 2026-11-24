@@ -11,7 +11,7 @@ import argparse, os, pathlib, re, subprocess, sys, time
 HERE = pathlib.Path(__file__).resolve().parent
 LOGS = HERE / "out" / "chay-tat-ca"
 CO_BAN = ["test_all", "test_feat", "test_cards", "test_mobile"]
-NEXT = CO_BAN + ["test_giao_dien", "test_a11y", "test_bang_size", "test_trang_sp", "test_loc", "test_dat_doi", "test_pwa_anh"]
+NEXT = CO_BAN + ["test_giao_dien", "test_a11y", "test_bang_size", "test_trang_sp", "test_loc", "test_dat_doi", "test_pwa_anh", "test_gui_don"]
 
 
 def chay(ten, args, nhan):

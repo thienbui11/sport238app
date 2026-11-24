@@ -117,7 +117,7 @@ export default function Storefront({ data, updated }: { data: Packed; updated: s
   const inCat = useMemo(() => products.filter((p) => S.cat === "Tất cả" || p.cat === S.cat), [products, S.cat]);
   const sizeOpts = useMemo(() => [...new Set(inCat.flatMap((p) => p.variants.filter((v) => v.size && v.stock > 0).map((v) => v.size)))].sort((a, b) => sizeKey(a) - sizeKey(b) || a.localeCompare(b)), [inCat]);
   const brandOpts = useMemo(() => Object.entries(inCat.reduce<Record<string, number>>((a, p) => { if (p.brand) a[p.brand] = (a[p.brand] ?? 0) + 1; return a; }, {})).sort((a, b) => b[1] - a[1]), [inCat]);
-  const nFilter = [S.size, S.price, S.brand, S.fav].filter(Boolean).length;
+  const nFilter = [S.size, S.brand, S.fav].filter(Boolean).length;   // giá nằm ngoài "Lọc thêm" nên không đếm
   const found = useMemo(() => {
     const words = fold(S.q).split(/\s+/).filter(Boolean);
     return products
@@ -174,6 +174,10 @@ export default function Storefront({ data, updated }: { data: Packed; updated: s
         <div className="sh"><div><h2 id="sp-h">Sản phẩm đang bán</h2><p className="sub">Chọn size, màu rồi thêm vào giỏ.{updated && ` Tồn kho cập nhật ngày ${updated}.`}</p></div></div>
         <div className="tools">
           <label className="search"><Icon n="search" /><input id="q" type="search" placeholder="Tìm: giày, áo, tất, mã SP…" aria-label="Tìm sản phẩm" value={S.q} onChange={(e) => set({ q: e.target.value })} /></label>
+          {/* Lọc giá luôn hiện (chủ shop yêu cầu 24/11): không cần mở "Lọc thêm" */}
+          <select className="sel gia" id="fgia" aria-label="Lọc theo giá" value={S.price} onChange={(e) => set({ price: e.target.value })}>
+            <option value="">Mọi mức giá</option>{PRICE_RANGES.map((r) => <option key={r.id} value={r.id}>{r.label}</option>)}
+          </select>
           <select className="sel" id="st" aria-label="Tình trạng" value={S.st} onChange={(e) => set({ st: e.target.value })}>
             <option value="">Mọi tình trạng</option><option value="in">Còn hàng</option><option value="out">Hết hàng</option>
           </select>
@@ -189,14 +193,11 @@ export default function Storefront({ data, updated }: { data: Packed; updated: s
             <select className="sel" id="fsz" aria-label="Lọc theo size còn hàng" value={S.size} onChange={(e) => set({ size: e.target.value })}>
               <option value="">Mọi size</option>{sizeOpts.map((s) => <option key={s} value={s}>Size {s} còn hàng</option>)}
             </select>
-            <select className="sel" id="fgia" aria-label="Lọc theo giá" value={S.price} onChange={(e) => set({ price: e.target.value })}>
-              <option value="">Mọi mức giá</option>{PRICE_RANGES.map((r) => <option key={r.id} value={r.id}>{r.label}</option>)}
-            </select>
             <select className="sel" id="fhang" aria-label="Lọc theo hãng" value={S.brand} onChange={(e) => set({ brand: e.target.value })}>
               <option value="">Mọi hãng</option>{brandOpts.map(([b, n]) => <option key={b} value={b}>{b} ({n})</option>)}
             </select>
             <button type="button" className="chip" id="ffav" aria-pressed={S.fav} onClick={() => set({ fav: !S.fav })}><Icon n={S.fav ? "heart-on" : "heart"} />Yêu thích ({favs.length})</button>
-            {nFilter > 0 && <button type="button" className="clr" id="fclear" onClick={() => set({ size: "", price: "", brand: "", fav: false })}>Xóa lọc</button>}
+            {(nFilter > 0 || S.price) && <button type="button" className="clr" id="fclear" onClick={() => set({ size: "", price: "", brand: "", fav: false })}>Xóa lọc</button>}
           </div>
         </div>
         <div className="chips" role="group" aria-label="Lọc theo danh mục">

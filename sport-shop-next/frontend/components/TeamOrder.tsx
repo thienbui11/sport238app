@@ -3,7 +3,7 @@
    Giá in tên + số do chủ shop xác nhận (24/11/2026): từ 5 bộ 15.000đ/bộ, từ 10 bộ 10.000đ/bộ; dưới 5 bộ shop báo giá.
    Logo đội: shop báo giá. Không thanh toán online; ghé shop nhận hàng. */
 import { useMemo, useState } from "react";
-import { colorStock, defaultColor, links, money, PRINT_PRICES, type Product } from "@/lib/shop";
+import { colorStock, defaultColor, links, money, mText, PRINT_PRICES, type Product } from "@/lib/shop";
 import { copyText } from "./Extras";
 import { Icon } from "./Icons";
 import { useShop } from "./Providers";
@@ -154,10 +154,10 @@ export default function TeamOrder({ products }: { products: Product[] }) {
               <p className="tt"><span>Tạm tính</span><b id="tm-tong">{money(shirt + printTotal)}</b></p>
             </div>
             <textarea className="inp ta" id="tm-msg" readOnly rows={8} value={text} aria-label="Tin nhắn đặt đồng phục gửi shop" />
-            {msg && <p className={"cpok " + (msg.ok ? "ok" : "bad")} role="status">{msg.ok ? `Đã sao chép. ${msg.where ? `Trong ${msg.where}, dán vào khung chat rồi gửi cho shop.` : "Mở Zalo hoặc Messenger, dán rồi gửi."}` : "Chưa sao chép được tự động. Hãy chọn hết chữ trong khung trên, sao chép rồi dán vào chat."}</p>}
+            {msg && <p className={"cpok " + (msg.ok ? "ok" : "bad")} role="status">{msg.ok ? (msg.where === "Messenger" ? "Messenger đã điền sẵn đơn, bạn chỉ cần bấm Gửi. Nếu khung chat trống: bấm giữ rồi chọn Dán." : `Đã sao chép. ${msg.where ? `Trong ${msg.where}, dán vào khung chat rồi gửi cho shop.` : "Mở Zalo hoặc Messenger, dán rồi gửi."}`) : "Chưa sao chép được tự động. Hãy chọn hết chữ trong khung trên, sao chép rồi dán vào chat."}</p>}
             <div className="tact">
               <a className="btn" id="tm-zalo" data-zl href={l.zalo} target="_blank" rel="noopener" onClick={(e) => { if (!sets) { e.preventDefault(); toast("Bạn chưa nhập số lượng"); return; } void send("Zalo"); }}><Icon n="chat" />Sao chép đơn & mở Zalo</a>
-              <a className="btn ghost" id="tm-mess" href={l.messenger} target="_blank" rel="noopener" onClick={(e) => { if (!sets) { e.preventDefault(); toast("Bạn chưa nhập số lượng"); return; } void send("Messenger"); }}><Icon n="messenger" />Sao chép đơn & mở Messenger</a>
+              <a className="btn ghost" id="tm-mess" href={sets ? mText(l.messenger, text) : l.messenger} target="_blank" rel="noopener" onClick={(e) => { if (!sets) { e.preventDefault(); toast("Bạn chưa nhập số lượng"); return; } void send("Messenger"); }}><Icon n="messenger" />Mở Messenger (đơn điền sẵn)</a>
             </div>
           </li>
         )}

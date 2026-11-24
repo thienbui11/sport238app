@@ -6,7 +6,7 @@ import CartDrawer from "@/components/CartDrawer";
 import Header, { BottomBar } from "@/components/Header";
 import { Icon } from "@/components/Icons";
 import Providers from "@/components/Providers";
-import { getSite, HOURS, links, phone, SITE_URL } from "@/lib/shop";
+import { getSite, HOURS, links, phone, SITE_URL, SLOGAN } from "@/lib/shop";
 import "./globals.css";
 
 // 3 độ đậm là đủ cho hệ thống thiết kế (thường, nhãn/nút, tiêu đề/giá): ít tệp phông hơn, trang nhanh hơn
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   icons: { apple: "/icon-192.png" },
   appleWebApp: { capable: true, title: "SPORT 238", statusBarStyle: "default" },
   ...(SITE_URL ? { metadataBase: new URL(SITE_URL), alternates: { canonical: "/" } } : {}),
-  openGraph: { type: "website", locale: "vi_VN", siteName: "SPORT 238", title: "SPORT 238 – Đồ bóng đá, giày, phụ kiện", description: "Chọn size, thêm vào giỏ rồi nhắn shop qua Zalo hoặc Messenger. Ghé shop nhận hàng tại KCN An Hiệp, Vĩnh Long.", ...(SITE_URL ? { url: "/", images: [{ url: "/logo.png", alt: "SPORT 238" }] } : {}) },
+  openGraph: { type: "website", locale: "vi_VN", siteName: "SPORT 238", title: "SPORT 238 – Đồ bóng đá, giày, phụ kiện", description: `${SLOGAN} Chọn size, nhắn shop qua Zalo hoặc Messenger, ghé shop nhận hàng tại KCN An Hiệp, Vĩnh Long.`, ...(SITE_URL ? { url: "/", images: [{ url: "/logo.png", alt: "SPORT 238" }] } : {}) },
   title: "SPORT 238 – Đồ bóng đá, giày, phụ kiện | KCN An Hiệp",
   description: "SPORT 238 – KCN An Hiệp, Vĩnh Long: áo bóng đá, giày bóng đá, quần áo thể thao, đồng phục đội nhóm, phụ kiện bóng đá. Mở cửa 8:00–21:00 hằng ngày.",
 };

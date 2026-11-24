@@ -21,6 +21,9 @@ Công cụ sẽ tự làm:
 | 7 | Xuất web vào thư mục `dist` | Rồi đưa lên mạng (xem `HUONG-DAN-DUA-LEN-MANG.md`) |
 
 Trang quản trị chưa mở thì công cụ tự mở tạm rồi tự tắt khi xong.
+
+**Xem trước web trên máy:** bấm `xem-web.bat` (mở http://localhost:8080) – đây đúng là bản khách sẽ thấy.
+Lưu ý: `http://localhost:3000` (mở cùng trang quản trị) là **bản HTML dự phòng cũ**, không có các chức năng mới (bảng size, gợi ý size, lọc giá, đặt đội…).
 Hôm nào không có file mới thì công cụ chỉ xuất lại web (để ảnh, mô tả vừa sửa lên mạng).
 
 ## Khi công cụ dừng lại

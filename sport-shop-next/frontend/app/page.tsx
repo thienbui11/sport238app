@@ -25,8 +25,8 @@ export default async function Home() {
         <div className="wrap">
           <div>
             <span className="kick">Shop bóng đá · KCN An Hiệp</span>
-            <h1 id="hero-h">Chọn size, nhắn Zalo, <em>ghé shop nhận hàng</em></h1>
-            <p className="lead">Áo CLB, áo không logo, giày bóng đá, vớ và phụ kiện. Xem tồn kho từng size, gửi đơn qua Zalo hoặc Messenger, shop giữ hàng cho bạn.</p>
+            <h1 id="hero-h">Áo bóng đá đẹp, chọn size vừa ý, <em>đặt ngay tại Sport 238!</em></h1>
+            <p className="lead">Áo CLB, áo không logo, giày bóng đá, vớ và phụ kiện. Xem tồn kho từng size, gửi đơn qua Zalo hoặc Messenger, shop giữ hàng, bạn ghé shop nhận hàng.</p>
             <div className="hbtns">
               <a className="btn" href="#san-pham">Xem sản phẩm<Icon n="arrow" /></a>
               <a className="btn light" data-zl href={l.zalo} target="_blank" rel="noopener"><Icon n="chat" />Nhắn Zalo</a>

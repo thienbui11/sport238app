@@ -133,7 +133,7 @@ code{background:var(--sf2);padding:1px 5px;border-radius:5px}
 </dialog>
 <script>
 var $=function(s){return document.querySelector(s)},all=function(s){return Array.prototype.slice.call(document.querySelectorAll(s))},esc=function(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})};
-var CATS=["Cờ, Cúp, Huy Chương","Giày bóng đá","Giày thể thao","Quần áo CLB/Đội tuyển","Quần áo không logo","Quần áo trẻ em","Phụ kiện thể thao","Vớ/tất ống đồng","Cầu lông"];
+var CATS=["Quần áo CLB/Đội tuyển","Quần áo không logo","Quần áo trẻ em","Giày bóng đá","Giày thể thao","Cờ, Cúp, Huy Chương","Phụ kiện thể thao","Vớ/tất ống đồng","Cầu lông"];
 function fbUser(v){v=String(v||"").trim();var m=v.match(/(?:facebook\.com|fb\.com|m\.me)\/(?:profile\.php\?id=)?([^\/?#&\s]+)/i);if(m)v=m[1];return v.replace(/^@/,"")}
 var data={products:[],images:{}},cur=null,edit={},flt={q:"",chip:"all",type:"",sort:""},dirty=false,order=[],sel={},busy=false;
 function nm(p){return p.display_title||p.title}

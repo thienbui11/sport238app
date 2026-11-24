@@ -25,6 +25,8 @@ a{color:inherit}button{font:inherit;cursor:pointer;color:inherit}img{max-width:1
 .hero{display:grid;grid-template-columns:1.15fr 1fr;gap:30px;align-items:center;padding:56px 0 30px}
 .pill{display:inline-block;background:var(--soft);color:var(--accent2);font-weight:600;font-size:14px;padding:7px 16px;border-radius:99px}
 .hero h1{font-size:clamp(34px,5.4vw,62px);line-height:1.08;font-weight:800;margin:18px 0 16px;letter-spacing:-.02em}.hl{color:var(--accent)}
+/* khẩu hiệu dài hơn (24/11/2026): nhỏ chữ để giữ 3 dòng trên máy tính */
+.hero h1.slg{font-size:clamp(28px,4vw,48px)}
 .hero p{font-size:19px;color:var(--ink);margin:0 0 26px;max-width:30em}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:2px solid var(--accent);background:var(--accent);color:var(--on);font-weight:700;padding:15px 34px;border-radius:99px;text-decoration:none;box-shadow:0 10px 24px -10px var(--accent)}
 .btn.ghost{background:transparent;color:var(--accent2);box-shadow:none}.btn:disabled{opacity:.5;cursor:default}

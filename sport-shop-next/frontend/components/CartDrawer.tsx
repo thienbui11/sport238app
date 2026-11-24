@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { HOURS, links, money, OVER } from "@/lib/shop";
+import { HOURS, links, money, mText, OVER } from "@/lib/shop";
 import { Icon } from "./Icons";
 import { useShop } from "./Providers";
 
@@ -10,7 +10,7 @@ export default function CartDrawer() {
   const taRef = useRef<HTMLTextAreaElement>(null);
   const dr = useRef<HTMLDivElement>(null);
   const opener = useRef<HTMLElement | null>(null);
-  const [msg, setMsg] = useState<{ ok: boolean; where: string } | null>(null);
+  const [msg, setMsg] = useState<{ ok: boolean; where: string; shared?: boolean } | null>(null);
   const [ask, setAsk] = useState(false);
   const has = items.length > 0;
   const text = has ? orderText() : "";
@@ -60,24 +60,27 @@ export default function CartDrawer() {
     setMsg({ ok, where });
     toast(ok ? "Đã sao chép đơn hàng" : "Chưa sao chép được, hãy sao chép thủ công");
   };
-  // N1: gửi đơn kèm ảnh sản phẩm bằng nút chia sẻ của điện thoại (chọn Zalo/Messenger trong bảng chia sẻ).
-  // Chỉ hiện khi máy chia sẻ được tệp và có món có ảnh thật. Chép chữ trước: một số ứng dụng bỏ chữ khi nhận ảnh.
+  // N1 + "không cần dán": trên điện thoại, nút Chia sẻ của máy đưa sẵn chữ đơn (và ảnh từng món nếu có) vào Zalo/Messenger,
+  // khách chỉ chọn Zalo → chọn shop → Gửi. Web không thể tự dán vào khung chat Zalo (Zalo không cho), nên đây là cách gần nhất.
+  // Chép chữ trước: một số ứng dụng bỏ chữ khi nhận ảnh.
+  const [canShare, setCanShare] = useState(false);
   const [canFiles, setCanFiles] = useState(false);
   useEffect(() => {
+    setCanShare(typeof navigator.share === "function" && matchMedia("(pointer: coarse)").matches);
     try { setCanFiles(!!navigator.canShare?.({ files: [new File([new Blob(["x"])], "a.jpg", { type: "image/jpeg" })] })); } catch { setCanFiles(false); }
   }, []);
-  const withImg = items.filter((i) => i.img);
-  const shareImages = async () => {
+  const withImg = canFiles ? items.filter((i) => i.img) : [];
+  const shareOrder = async () => {
     const ok = await copyText(text);
     try {
       const files = await Promise.all([...new Map(withImg.map((i) => [i.img!, i])).values()].map(async (i) => {
         const b = await (await fetch(i.img!)).blob();
         return new File([b], `${i.sku}.${(b.type.split("/")[1] || "jpg").replace("jpeg", "jpg")}`, { type: b.type || "image/jpeg" });
       }));
-      await navigator.share({ files, text });
-      setMsg({ ok, where: "ứng dụng vừa chọn" });
+      await navigator.share(files.length ? { files, text } : { text });
+      setMsg({ ok, where: "", shared: true });
     } catch (e) {
-      if ((e as Error)?.name !== "AbortError") toast("Máy chưa gửi được ảnh. Hãy dùng nút Sao chép đơn & mở Zalo.");
+      if ((e as Error)?.name !== "AbortError") toast("Máy chưa chia sẻ được. Hãy dùng nút Sao chép đơn & mở Zalo.");
     }
   };
 
@@ -128,8 +131,12 @@ export default function CartDrawer() {
             <textarea ref={taRef} id="ordtxt" readOnly rows={5} value={text} aria-label="Nội dung đơn hàng" />
             <div className={"cpok " + (msg ? (msg.ok ? "ok" : "bad") : "")} id="cpok" role="status" hidden={!msg}>
               {msg && <Icon n={msg.ok ? "check" : "warn"} />}
-              <span>{msg && (msg.ok
-                ? `Đã sao chép đơn hàng. ${msg.where ? `Trong ${msg.where}, bấm vào khung chat, dán (Ctrl+V hoặc bấm giữ rồi chọn Dán) và gửi cho shop.` : "Mở Zalo hoặc Messenger, dán vào khung chat rồi gửi cho shop."}`
+              <span>{msg && (msg.shared
+                ? "Đơn đã được điền sẵn trong ứng dụng bạn chọn. Chọn Sport 238 rồi bấm Gửi."
+                : msg.ok
+                ? msg.where === "Messenger"
+                  ? "Messenger đã điền sẵn đơn vào khung chat, bạn chỉ cần bấm Gửi. Nếu khung chat trống: bấm giữ rồi chọn Dán (đơn đã được sao chép)."
+                  : `Đã sao chép đơn hàng. ${msg.where ? `Trong ${msg.where}, bấm vào khung chat, dán (Ctrl+V hoặc bấm giữ rồi chọn Dán) và gửi cho shop.` : "Mở Zalo hoặc Messenger, dán vào khung chat rồi gửi cho shop."}`
                 : "Chưa sao chép được tự động. Hãy bấm vào khung tin nhắn ở trên, chọn hết (Ctrl+A), sao chép (Ctrl+C) rồi dán vào chat.")}</span>
             </div>
           </div>
@@ -138,8 +145,8 @@ export default function CartDrawer() {
         <div className="df">
           <div className="sum" hidden={!has}><span>Tạm tính</span><b id="dt">{money(total)}</b></div>
           <a className="btn" id="zs" href={l.zalo} target="_blank" rel="noopener" onClick={() => { if (has) void run("Zalo"); }}><Icon n="chat" />{has ? "Sao chép đơn & mở Zalo" : "Nhắn Zalo cho shop"}</a>
-          <a className="btn ghost" id="fs" href={l.messenger} target="_blank" rel="noopener" onClick={() => { if (has) void run("Messenger"); }}><Icon n="messenger" />{has ? "Sao chép đơn & mở Messenger" : "Nhắn Messenger"}</a>
-          {has && canFiles && withImg.length > 0 && <button type="button" className="btn ghost" id="shareimg" onClick={() => void shareImages()}><Icon n="share" />Gửi đơn kèm ảnh ({withImg.length} ảnh)</button>}
+          <a className="btn ghost" id="fs" href={has ? mText(l.messenger, text) : l.messenger} target="_blank" rel="noopener" onClick={() => { if (has) void run("Messenger"); }}><Icon n="messenger" />{has ? "Mở Messenger (đơn điền sẵn)" : "Nhắn Messenger"}</a>
+          {has && canShare && <button type="button" className="btn ghost" id="shareimg" onClick={() => void shareOrder()}><Icon n="share" />{withImg.length ? `Gửi đơn kèm ảnh (${withImg.length} ảnh)` : "Gửi đơn qua Zalo, Messenger… (điền sẵn)"}</button>}
         </div>
       </div>
     </>

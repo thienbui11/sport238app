@@ -3,7 +3,7 @@
    A4 hỏi shop (sao chép sẵn câu hỏi), B5 chia sẻ, A5 bản đồ tải khi bấm, B4 sản phẩm cùng loại + đã xem gần đây. */
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { hexesIn, ICON_OF } from "@/lib/shop";
+import { hexesIn, ICON_OF, mText } from "@/lib/shop";
 import { Art, Icon } from "./Icons";
 import { useShop } from "./Providers";
 
@@ -24,14 +24,18 @@ export async function copyText(t: string): Promise<boolean> {
 /** A4: hỏi shop về sản phẩm — sao chép sẵn câu hỏi (tên, mã, size, màu, link) rồi mở Zalo/Messenger */
 export function AskShop({ question }: { question: () => string }) {
   const { site, toast } = useShop();
+  // Link Messenger điền sẵn câu hỏi: chỉ tính trên máy khách (câu hỏi có địa chỉ trang, lúc dựng sẵn chưa có)
+  const base = `https://m.me/${site.messenger}`;
+  const [mHref, setMHref] = useState(base);
+  useEffect(() => { const h = mText(base, question()); if (h !== mHref) setMHref(h); });
   const go = async (where: string) => {
     const ok = await copyText(question());
-    toast(ok ? `Đã sao chép câu hỏi. Trong ${where}, dán vào khung chat rồi gửi.` : `Chưa sao chép được, hãy gõ câu hỏi trong ${where}.`);
+    toast(where === "Messenger" ? "Messenger sẽ điền sẵn câu hỏi, bạn chỉ cần bấm Gửi." : ok ? `Đã sao chép câu hỏi. Trong ${where}, dán vào khung chat rồi gửi.` : `Chưa sao chép được, hãy gõ câu hỏi trong ${where}.`);
   };
   return (
     <div className="ask" role="group" aria-label="Hỏi shop về sản phẩm này">
       <a className="btn ghost" id="askz" href={`https://zalo.me/${site.zalo}`} target="_blank" rel="noopener" onClick={() => void go("Zalo")}><Icon n="chat" />Hỏi qua Zalo</a>
-      <a className="btn ghost" id="askm" data-fb href={`https://m.me/${site.messenger}`} target="_blank" rel="noopener" onClick={() => void go("Messenger")}><Icon n="messenger" />Hỏi qua Messenger</a>
+      <a className="btn ghost" id="askm" data-fb href={mHref} target="_blank" rel="noopener" onClick={() => void go("Messenger")}><Icon n="messenger" />Hỏi qua Messenger</a>
     </div>
   );
 }
